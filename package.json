@@ -7,13 +7,14 @@
     "build": "vite build",
     "start": "node server/index.js",
     "migrate": "node migrate-to-postgres.js",
-    "render-build": "npm install && node setup-database.js && vite build"
+    "render-build": "npm install && vite build"
   },
   "dependencies": {
     "@vitejs/plugin-react": "^4.2.1",
     "bcryptjs": "^2.4.3",
     "concurrently": "^8.2.2",
     "cors": "^2.8.5",
+    "dotenv": "^17.3.1",
     "express": "^4.18.2",
     "lucide-react": "^0.563.0",
     "multer": "^2.0.2",
