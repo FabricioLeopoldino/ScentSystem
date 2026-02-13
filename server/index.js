@@ -15,7 +15,24 @@ const __dirname = dirname(__filename);
 const app = express();
 app.use(cors());
 app.use(express.json());
+// Exemplo de rota dashboard
+app.get('/api/dashboard', async (req, res) => {
+  try {
+    console.log('Requisição para /api/dashboard recebida');
+    const result = await pool.query('SELECT COUNT(*) FROM products'); // Exemplo simples
+    console.log('Query ok:', result.rows);
+    res.json({ productsCount: result.rows[0].count });
+  } catch (err) {
+    console.error('Erro em /api/dashboard:', err.message, err.stack);
+    res.status(500).json({ error: 'Erro interno no dashboard', details: err.message });
+  }
+});
 
+// Middleware global de erro (no final do arquivo)
+app.use((err, req, res, next) => {
+  console.error('Erro global:', err.stack);
+  res.status(500).json({ error: 'Erro no servidor' });
+});
 // PostgreSQL Connection Pool
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
