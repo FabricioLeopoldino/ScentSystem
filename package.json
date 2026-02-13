@@ -7,7 +7,7 @@
     "build": "vite build",
     "start": "node server/index.js",
     "migrate": "node migrate-to-postgres.js",
-    "render-build": "npm install && vite build"
+    "render-build": "npm install && node setup-database.js && vite build"
   },
   "dependencies": {
     "@vitejs/plugin-react": "^4.2.1",
