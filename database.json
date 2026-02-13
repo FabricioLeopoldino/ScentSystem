@@ -1,0 +1,5872 @@
+{
+  "products": [
+    {
+      "id": "OIL_1",
+      "tag": "#SA00001",
+      "productCode": "FRAG_0001",
+      "name": "Armani Woods",
+      "category": "OILS",
+      "currentStock": 9600,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA231902",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00001",
+        "SA_1L": "SA_1L_00001",
+        "SA_CDIFF": "SA_CDIFF_00001",
+        "SA_PRO": "SA_PRO_00001",
+        "SA_HF": "SA_HF_00001"
+      }
+    },
+    {
+      "id": "OIL_2",
+      "tag": "#SA00002",
+      "productCode": "FRAG_0002",
+      "name": "Allure",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Scent Method",
+      "supplierCode": "SLC2600",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00002",
+        "SA_1L": "SA_1L_00002",
+        "SA_CDIFF": "SA_CDIFF_00002",
+        "SA_PRO": "SA_PRO_00002",
+        "SA_HF": "SA_HF_00002"
+      }
+    },
+    {
+      "id": "OIL_3",
+      "tag": "#SA00003",
+      "productCode": "FRAG_0003",
+      "name": "Adventure",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Luxaroma",
+      "supplierCode": "LUX1100",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00003",
+        "SA_1L": "SA_1L_00003",
+        "SA_CDIFF": "SA_CDIFF_00003",
+        "SA_PRO": "SA_PRO_00003",
+        "SA_HF": "SA_HF_00003"
+      }
+    },
+    {
+      "id": "OIL_4",
+      "tag": "#SA00004",
+      "productCode": "FRAG_0004",
+      "name": "Ambrette, Magnolia & Chamomile",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Scent Method",
+      "supplierCode": "SLC0803",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00004",
+        "SA_1L": "SA_1L_00004",
+        "SA_CDIFF": "SA_CDIFF_00004",
+        "SA_PRO": "SA_PRO_00004",
+        "SA_HF": "SA_HF_00004"
+      }
+    },
+    {
+      "id": "OIL_5",
+      "tag": "#SA00005",
+      "productCode": "FRAG_0005",
+      "name": "Australian Bush Lemon Myrtle",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Luxaroma",
+      "supplierCode": "LUX1220",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00005",
+        "SA_1L": "SA_1L_00005",
+        "SA_CDIFF": "SA_CDIFF_00005",
+        "SA_PRO": "SA_PRO_00005",
+        "SA_HF": "SA_HF_00005"
+      }
+    },
+    {
+      "id": "OIL_6",
+      "tag": "#SA00006",
+      "productCode": "FRAG_0006",
+      "name": "Australian Bush",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Luxaroma",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00006",
+        "SA_1L": "SA_1L_00006",
+        "SA_CDIFF": "SA_CDIFF_00006",
+        "SA_PRO": "SA_PRO_00006",
+        "SA_HF": "SA_HF_00006"
+      }
+    },
+    {
+      "id": "OIL_7",
+      "tag": "#SA00007",
+      "productCode": "FRAG_0007",
+      "name": "Australian Bush & Eucalyptus",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA242846",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00007",
+        "SA_1L": "SA_1L_00007",
+        "SA_CDIFF": "SA_CDIFF_00007",
+        "SA_PRO": "SA_PRO_00007",
+        "SA_HF": "SA_HF_00007"
+      }
+    },
+    {
+      "id": "OIL_8",
+      "tag": "#SA00008",
+      "productCode": "FRAG_0008",
+      "name": "Amalfi Coast",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Luxaroma",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00008",
+        "SA_1L": "SA_1L_00008",
+        "SA_CDIFF": "SA_CDIFF_00008",
+        "SA_PRO": "SA_PRO_00008",
+        "SA_HF": "SA_HF_00008"
+      }
+    },
+    {
+      "id": "OIL_9",
+      "tag": "#SA00009",
+      "productCode": "FRAG_0009",
+      "name": "Australian Bamboo grass",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Luxaroma",
+      "supplierCode": "Lux0400",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00009",
+        "SA_1L": "SA_1L_00009",
+        "SA_CDIFF": "SA_CDIFF_00009",
+        "SA_PRO": "SA_PRO_00009",
+        "SA_HF": "SA_HF_00009"
+      }
+    },
+    {
+      "id": "OIL_10",
+      "tag": "#SA00010",
+      "productCode": "FRAG_0010",
+      "name": "Avocado & Mint",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Luxaroma",
+      "supplierCode": "LUX0783",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00010",
+        "SA_1L": "SA_1L_00010",
+        "SA_CDIFF": "SA_CDIFF_00010",
+        "SA_PRO": "SA_PRO_00010",
+        "SA_HF": "SA_HF_00010"
+      }
+    },
+    {
+      "id": "OIL_11",
+      "tag": "#SA00011",
+      "productCode": "FRAG_0011",
+      "name": "Aqua Positano",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA241035",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00011",
+        "SA_1L": "SA_1L_00011",
+        "SA_CDIFF": "SA_CDIFF_00011",
+        "SA_PRO": "SA_PRO_00011",
+        "SA_HF": "SA_HF_00011"
+      }
+    },
+    {
+      "id": "OIL_12",
+      "tag": "#SA00012",
+      "productCode": "FRAG_0012",
+      "name": "Baies ",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA213481",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00012",
+        "SA_1L": "SA_1L_00012",
+        "SA_CDIFF": "SA_CDIFF_00012",
+        "SA_PRO": "SA_PRO_00012",
+        "SA_HF": "SA_HF_00012"
+      }
+    },
+    {
+      "id": "OIL_13",
+      "tag": "#SA00013",
+      "productCode": "FRAG_0013",
+      "name": "Bois Secret",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Luxaroma",
+      "supplierCode": "LUX0929",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00013",
+        "SA_1L": "SA_1L_00013",
+        "SA_CDIFF": "SA_CDIFF_00013",
+        "SA_PRO": "SA_PRO_00013",
+        "SA_HF": "SA_HF_00013"
+      }
+    },
+    {
+      "id": "OIL_14",
+      "tag": "#SA00014",
+      "productCode": "FRAG_0014",
+      "name": "Baccarat Rouge",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Scent Method",
+      "supplierCode": "SLC0778",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00014",
+        "SA_1L": "SA_1L_00014",
+        "SA_CDIFF": "SA_CDIFF_00014",
+        "SA_PRO": "SA_PRO_00014",
+        "SA_HF": "SA_HF_00014"
+      }
+    },
+    {
+      "id": "OIL_15",
+      "tag": "#SA00015",
+      "productCode": "FRAG_0015",
+      "name": "Beach Party",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Luxaroma",
+      "supplierCode": "LUX1189",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00015",
+        "SA_1L": "SA_1L_00015",
+        "SA_CDIFF": "SA_CDIFF_00015",
+        "SA_PRO": "SA_PRO_00015",
+        "SA_HF": "SA_HF_00015"
+      }
+    },
+    {
+      "id": "OIL_16",
+      "tag": "#SA00016",
+      "productCode": "FRAG_0016",
+      "name": "Blue Bergamot",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Bell",
+      "supplierCode": "6133475",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00016",
+        "SA_1L": "SA_1L_00016",
+        "SA_CDIFF": "SA_CDIFF_00016",
+        "SA_PRO": "SA_PRO_00016",
+        "SA_HF": "SA_HF_00016"
+      }
+    },
+    {
+      "id": "OIL_17",
+      "tag": "#SA00017",
+      "productCode": "FRAG_0017",
+      "name": "Black Orchid",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA223423",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00017",
+        "SA_1L": "SA_1L_00017",
+        "SA_CDIFF": "SA_CDIFF_00017",
+        "SA_PRO": "SA_PRO_00017",
+        "SA_HF": "SA_HF_00017"
+      }
+    },
+    {
+      "id": "OIL_18",
+      "tag": "#SA00018",
+      "productCode": "FRAG_0018",
+      "name": "Burberry Hero",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Scent Method",
+      "supplierCode": "SLC2431",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00018",
+        "SA_1L": "SA_1L_00018",
+        "SA_CDIFF": "SA_CDIFF_00018",
+        "SA_PRO": "SA_PRO_00018",
+        "SA_HF": "SA_HF_00018"
+      }
+    },
+    {
+      "id": "OIL_19",
+      "tag": "#SA00019",
+      "productCode": "FRAG_0019",
+      "name": "Blue Ice",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA221772",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00019",
+        "SA_1L": "SA_1L_00019",
+        "SA_CDIFF": "SA_CDIFF_00019",
+        "SA_PRO": "SA_PRO_00019",
+        "SA_HF": "SA_HF_00019"
+      }
+    },
+    {
+      "id": "OIL_20",
+      "tag": "#SA00020",
+      "productCode": "FRAG_0020",
+      "name": "Blonde Woods & Cashmere",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Australia Aromatics",
+      "supplierCode": "AA171829",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00020",
+        "SA_1L": "SA_1L_00020",
+        "SA_CDIFF": "SA_CDIFF_00020",
+        "SA_PRO": "SA_PRO_00020",
+        "SA_HF": "SA_HF_00020"
+      }
+    },
+    {
+      "id": "OIL_21",
+      "tag": "#SA00021",
+      "productCode": "FRAG_0021",
+      "name": "Bergamot Oakmos",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA213666",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00021",
+        "SA_1L": "SA_1L_00021",
+        "SA_CDIFF": "SA_CDIFF_00021",
+        "SA_PRO": "SA_PRO_00021",
+        "SA_HF": "SA_HF_00021"
+      }
+    },
+    {
+      "id": "OIL_22",
+      "tag": "#SA00022",
+      "productCode": "FRAG_0022",
+      "name": "Blue Grass",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA231317",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00022",
+        "SA_1L": "SA_1L_00022",
+        "SA_CDIFF": "SA_CDIFF_00022",
+        "SA_PRO": "SA_PRO_00022",
+        "SA_HF": "SA_HF_00022"
+      }
+    },
+    {
+      "id": "OIL_23",
+      "tag": "#SA00023",
+      "productCode": "FRAG_0023",
+      "name": "Blondewood",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA250463",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00023",
+        "SA_1L": "SA_1L_00023",
+        "SA_CDIFF": "SA_CDIFF_00023",
+        "SA_PRO": "SA_PRO_00023",
+        "SA_HF": "SA_HF_00023"
+      }
+    },
+    {
+      "id": "OIL_24",
+      "tag": "#SA00024",
+      "productCode": "FRAG_0024",
+      "name": "B Natural",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA250716",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00024",
+        "SA_1L": "SA_1L_00024",
+        "SA_CDIFF": "SA_CDIFF_00024",
+        "SA_PRO": "SA_PRO_00024",
+        "SA_HF": "SA_HF_00024"
+      }
+    },
+    {
+      "id": "OIL_25",
+      "tag": "#SA00025",
+      "productCode": "FRAG_0025",
+      "name": "Bushwood",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA223425",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00025",
+        "SA_1L": "SA_1L_00025",
+        "SA_CDIFF": "SA_CDIFF_00025",
+        "SA_PRO": "SA_PRO_00025",
+        "SA_HF": "SA_HF_00025"
+      }
+    },
+    {
+      "id": "OIL_26",
+      "tag": "#SA00026",
+      "productCode": "FRAG_0026",
+      "name": "By The Fireplace",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA232061",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00026",
+        "SA_1L": "SA_1L_00026",
+        "SA_CDIFF": "SA_CDIFF_00026",
+        "SA_PRO": "SA_PRO_00026",
+        "SA_HF": "SA_HF_00026"
+      }
+    },
+    {
+      "id": "OIL_27",
+      "tag": "#SA00027",
+      "productCode": "FRAG_0027",
+      "name": "CR Fig",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00027",
+        "SA_1L": "SA_1L_00027",
+        "SA_CDIFF": "SA_CDIFF_00027",
+        "SA_PRO": "SA_PRO_00027",
+        "SA_HF": "SA_HF_00027"
+      }
+    },
+    {
+      "id": "OIL_28",
+      "tag": "#SA00028",
+      "productCode": "FRAG_0028",
+      "name": "Christmas B",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00028",
+        "SA_1L": "SA_1L_00028",
+        "SA_CDIFF": "SA_CDIFF_00028",
+        "SA_PRO": "SA_PRO_00028",
+        "SA_HF": "SA_HF_00028"
+      }
+    },
+    {
+      "id": "OIL_29",
+      "tag": "#SA00029",
+      "productCode": "FRAG_0029",
+      "name": "Caju Fruit & Lime",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Luxaroma",
+      "supplierCode": "LUX1545",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00029",
+        "SA_1L": "SA_1L_00029",
+        "SA_CDIFF": "SA_CDIFF_00029",
+        "SA_PRO": "SA_PRO_00029",
+        "SA_HF": "SA_HF_00029"
+      }
+    },
+    {
+      "id": "OIL_30",
+      "tag": "#SA00030",
+      "productCode": "FRAG_0030",
+      "name": "Concerto",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Luxaroma",
+      "supplierCode": "LUX0706",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00030",
+        "SA_1L": "SA_1L_00030",
+        "SA_CDIFF": "SA_CDIFF_00030",
+        "SA_PRO": "SA_PRO_00030",
+        "SA_HF": "SA_HF_00030"
+      }
+    },
+    {
+      "id": "OIL_31",
+      "tag": "#SA00031",
+      "productCode": "FRAG_0031",
+      "name": "Crossfit",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Scent Method",
+      "supplierCode": "SLC3016",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00031",
+        "SA_1L": "SA_1L_00031",
+        "SA_CDIFF": "SA_CDIFF_00031",
+        "SA_PRO": "SA_PRO_00031",
+        "SA_HF": "SA_HF_00031"
+      }
+    },
+    {
+      "id": "OIL_32",
+      "tag": "#SA00032",
+      "productCode": "FRAG_0032",
+      "name": "Coco lime punch",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Luxaroma",
+      "supplierCode": "LUX1036",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00032",
+        "SA_1L": "SA_1L_00032",
+        "SA_CDIFF": "SA_CDIFF_00032",
+        "SA_PRO": "SA_PRO_00032",
+        "SA_HF": "SA_HF_00032"
+      }
+    },
+    {
+      "id": "OIL_33",
+      "tag": "#SA00033",
+      "productCode": "FRAG_0033",
+      "name": "Chai Tea",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Luxaroma",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00033",
+        "SA_1L": "SA_1L_00033",
+        "SA_CDIFF": "SA_CDIFF_00033",
+        "SA_PRO": "SA_PRO_00033",
+        "SA_HF": "SA_HF_00033"
+      }
+    },
+    {
+      "id": "OIL_34",
+      "tag": "#SA00034",
+      "productCode": "FRAG_0034",
+      "name": "Christmas Night Xmas Pudding",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Luxaroma",
+      "supplierCode": " WO0028199 -20267 ",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00034",
+        "SA_1L": "SA_1L_00034",
+        "SA_CDIFF": "SA_CDIFF_00034",
+        "SA_PRO": "SA_PRO_00034",
+        "SA_HF": "SA_HF_00034"
+      }
+    },
+    {
+      "id": "OIL_35",
+      "tag": "#SA00035",
+      "productCode": "FRAG_0035",
+      "name": "Christmas Cedar",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Luxaroma",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00035",
+        "SA_1L": "SA_1L_00035",
+        "SA_CDIFF": "SA_CDIFF_00035",
+        "SA_PRO": "SA_PRO_00035",
+        "SA_HF": "SA_HF_00035"
+      }
+    },
+    {
+      "id": "OIL_36",
+      "tag": "#SA00036",
+      "productCode": "FRAG_0036",
+      "name": "Chinique Happy",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Luxaroma",
+      "supplierCode": "LUX1186",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00036",
+        "SA_1L": "SA_1L_00036",
+        "SA_CDIFF": "SA_CDIFF_00036",
+        "SA_PRO": "SA_PRO_00036",
+        "SA_HF": "SA_HF_00036"
+      }
+    },
+    {
+      "id": "OIL_37",
+      "tag": "#SA00037",
+      "productCode": "FRAG_0037",
+      "name": "Country Linen",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Luxaroma",
+      "supplierCode": "LUX1188",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00037",
+        "SA_1L": "SA_1L_00037",
+        "SA_CDIFF": "SA_CDIFF_00037",
+        "SA_PRO": "SA_PRO_00037",
+        "SA_HF": "SA_HF_00037"
+      }
+    },
+    {
+      "id": "OIL_38",
+      "tag": "#SA00038",
+      "productCode": "FRAG_0038",
+      "name": "Coffe Airfreshener ",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA220415",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00038",
+        "SA_1L": "SA_1L_00038",
+        "SA_CDIFF": "SA_CDIFF_00038",
+        "SA_PRO": "SA_PRO_00038",
+        "SA_HF": "SA_HF_00038"
+      }
+    },
+    {
+      "id": "OIL_39",
+      "tag": "#SA00039",
+      "productCode": "FRAG_0039",
+      "name": "Coco Mademoiselle",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Guangzhou",
+      "supplierCode": "FH20376880",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00039",
+        "SA_1L": "SA_1L_00039",
+        "SA_CDIFF": "SA_CDIFF_00039",
+        "SA_PRO": "SA_PRO_00039",
+        "SA_HF": "SA_HF_00039"
+      }
+    },
+    {
+      "id": "OIL_40",
+      "tag": "#SA00040",
+      "productCode": "FRAG_0040",
+      "name": "Citrus Bushwood B",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA231263",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00040",
+        "SA_1L": "SA_1L_00040",
+        "SA_CDIFF": "SA_CDIFF_00040",
+        "SA_PRO": "SA_PRO_00040",
+        "SA_HF": "SA_HF_00040"
+      }
+    },
+    {
+      "id": "OIL_41",
+      "tag": "#SA00041",
+      "productCode": "FRAG_0041",
+      "name": "Cologne",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Guangzhou",
+      "supplierCode": "FH20376931",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00041",
+        "SA_1L": "SA_1L_00041",
+        "SA_CDIFF": "SA_CDIFF_00041",
+        "SA_PRO": "SA_PRO_00041",
+        "SA_HF": "SA_HF_00041"
+      }
+    },
+    {
+      "id": "OIL_42",
+      "tag": "#SA00042",
+      "productCode": "FRAG_0042",
+      "name": "Campfire",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA230279",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00042",
+        "SA_1L": "SA_1L_00042",
+        "SA_CDIFF": "SA_CDIFF_00042",
+        "SA_PRO": "SA_PRO_00042",
+        "SA_HF": "SA_HF_00042"
+      }
+    },
+    {
+      "id": "OIL_43",
+      "tag": "#SA00043",
+      "productCode": "FRAG_0043",
+      "name": "Coast",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA250654",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00043",
+        "SA_1L": "SA_1L_00043",
+        "SA_CDIFF": "SA_CDIFF_00043",
+        "SA_PRO": "SA_PRO_00043",
+        "SA_HF": "SA_HF_00043"
+      }
+    },
+    {
+      "id": "OIL_44",
+      "tag": "#SA00044",
+      "productCode": "FRAG_0044",
+      "name": "Cyrnos",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA213958",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00044",
+        "SA_1L": "SA_1L_00044",
+        "SA_CDIFF": "SA_CDIFF_00044",
+        "SA_PRO": "SA_PRO_00044",
+        "SA_HF": "SA_HF_00044"
+      }
+    },
+    {
+      "id": "OIL_45",
+      "tag": "#SA00045",
+      "productCode": "FRAG_0045",
+      "name": "Dream",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Luxaroma",
+      "supplierCode": "LUX1073",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00045",
+        "SA_1L": "SA_1L_00045",
+        "SA_CDIFF": "SA_CDIFF_00045",
+        "SA_PRO": "SA_PRO_00045",
+        "SA_HF": "SA_HF_00045"
+      }
+    },
+    {
+      "id": "OIL_46",
+      "tag": "#SA00046",
+      "productCode": "FRAG_0046",
+      "name": "Denim",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA224008",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00046",
+        "SA_1L": "SA_1L_00046",
+        "SA_CDIFF": "SA_CDIFF_00046",
+        "SA_PRO": "SA_PRO_00046",
+        "SA_HF": "SA_HF_00046"
+      }
+    },
+    {
+      "id": "OIL_47",
+      "tag": "#SA00047",
+      "productCode": "FRAG_0047",
+      "name": "Dessert Flower",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA250462",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00047",
+        "SA_1L": "SA_1L_00047",
+        "SA_CDIFF": "SA_CDIFF_00047",
+        "SA_PRO": "SA_PRO_00047",
+        "SA_HF": "SA_HF_00047"
+      }
+    },
+    {
+      "id": "OIL_48",
+      "tag": "#SA00048",
+      "productCode": "FRAG_0048",
+      "name": "Eucalyptus",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Luxaroma",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00048",
+        "SA_1L": "SA_1L_00048",
+        "SA_CDIFF": "SA_CDIFF_00048",
+        "SA_PRO": "SA_PRO_00048",
+        "SA_HF": "SA_HF_00048"
+      }
+    },
+    {
+      "id": "OIL_49",
+      "tag": "#SA00049",
+      "productCode": "FRAG_0049",
+      "name": "Eucalyptus Citriodora",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Luxaroma",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00049",
+        "SA_1L": "SA_1L_00049",
+        "SA_CDIFF": "SA_CDIFF_00049",
+        "SA_PRO": "SA_PRO_00049",
+        "SA_HF": "SA_HF_00049"
+      }
+    },
+    {
+      "id": "OIL_50",
+      "tag": "#SA00050",
+      "productCode": "FRAG_0050",
+      "name": "EVE",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Scent Method",
+      "supplierCode": "SLC1946",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00050",
+        "SA_1L": "SA_1L_00050",
+        "SA_CDIFF": "SA_CDIFF_00050",
+        "SA_PRO": "SA_PRO_00050",
+        "SA_HF": "SA_HF_00050"
+      }
+    },
+    {
+      "id": "OIL_51",
+      "tag": "#SA00051",
+      "productCode": "FRAG_0051",
+      "name": "EO Blend",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA242843",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00051",
+        "SA_1L": "SA_1L_00051",
+        "SA_CDIFF": "SA_CDIFF_00051",
+        "SA_PRO": "SA_PRO_00051",
+        "SA_HF": "SA_HF_00051"
+      }
+    },
+    {
+      "id": "OIL_52",
+      "tag": "#SA00052",
+      "productCode": "FRAG_0052",
+      "name": "Elevated Lotus Blossom + Lemon",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA231877",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00052",
+        "SA_1L": "SA_1L_00052",
+        "SA_CDIFF": "SA_CDIFF_00052",
+        "SA_PRO": "SA_PRO_00052",
+        "SA_HF": "SA_HF_00052"
+      }
+    },
+    {
+      "id": "OIL_53",
+      "tag": "#SA00053",
+      "productCode": "FRAG_0053",
+      "name": "Elevated Tokyo",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA231877",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00053",
+        "SA_1L": "SA_1L_00053",
+        "SA_CDIFF": "SA_CDIFF_00053",
+        "SA_PRO": "SA_PRO_00053",
+        "SA_HF": "SA_HF_00053"
+      }
+    },
+    {
+      "id": "OIL_54",
+      "tag": "#SA00054",
+      "productCode": "FRAG_0054",
+      "name": "Figuier ",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Luxaroma",
+      "supplierCode": "LUX0438",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00054",
+        "SA_1L": "SA_1L_00054",
+        "SA_CDIFF": "SA_CDIFF_00054",
+        "SA_PRO": "SA_PRO_00054",
+        "SA_HF": "SA_HF_00054"
+      }
+    },
+    {
+      "id": "OIL_55",
+      "tag": "#SA00055",
+      "productCode": "FRAG_0055",
+      "name": "Fresh Coffe",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Luxaroma",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00055",
+        "SA_1L": "SA_1L_00055",
+        "SA_CDIFF": "SA_CDIFF_00055",
+        "SA_PRO": "SA_PRO_00055",
+        "SA_HF": "SA_HF_00055"
+      }
+    },
+    {
+      "id": "OIL_56",
+      "tag": "#SA00056",
+      "productCode": "FRAG_0056",
+      "name": "Fierce Type",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Luxaroma",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00056",
+        "SA_1L": "SA_1L_00056",
+        "SA_CDIFF": "SA_CDIFF_00056",
+        "SA_PRO": "SA_PRO_00056",
+        "SA_HF": "SA_HF_00056"
+      }
+    },
+    {
+      "id": "OIL_57",
+      "tag": "#SA00057",
+      "productCode": "FRAG_0057",
+      "name": "Feu de Camp",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA242164",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00057",
+        "SA_1L": "SA_1L_00057",
+        "SA_CDIFF": "SA_CDIFF_00057",
+        "SA_PRO": "SA_PRO_00057",
+        "SA_HF": "SA_HF_00057"
+      }
+    },
+    {
+      "id": "OIL_58",
+      "tag": "#SA00058",
+      "productCode": "FRAG_0058",
+      "name": "Fig & Linen",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA223463",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00058",
+        "SA_1L": "SA_1L_00058",
+        "SA_CDIFF": "SA_CDIFF_00058",
+        "SA_PRO": "SA_PRO_00058",
+        "SA_HF": "SA_HF_00058"
+      }
+    },
+    {
+      "id": "OIL_59",
+      "tag": "#SA00059",
+      "productCode": "FRAG_0059",
+      "name": "Flower Bomb",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA213960",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00059",
+        "SA_1L": "SA_1L_00059",
+        "SA_CDIFF": "SA_CDIFF_00059",
+        "SA_PRO": "SA_PRO_00059",
+        "SA_HF": "SA_HF_00059"
+      }
+    },
+    {
+      "id": "OIL_60",
+      "tag": "#SA00060",
+      "productCode": "FRAG_0060",
+      "name": "Fig, Jasmine & Santal",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA220519",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00060",
+        "SA_1L": "SA_1L_00060",
+        "SA_CDIFF": "SA_CDIFF_00060",
+        "SA_PRO": "SA_PRO_00060",
+        "SA_HF": "SA_HF_00060"
+      }
+    },
+    {
+      "id": "OIL_61",
+      "tag": "#SA00061",
+      "productCode": "FRAG_0061",
+      "name": "Floral Drop ",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA250658",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00061",
+        "SA_1L": "SA_1L_00061",
+        "SA_CDIFF": "SA_CDIFF_00061",
+        "SA_PRO": "SA_PRO_00061",
+        "SA_HF": "SA_HF_00061"
+      }
+    },
+    {
+      "id": "OIL_62",
+      "tag": "#SA00062",
+      "productCode": "FRAG_0062",
+      "name": "Green",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Luxaroma",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00062",
+        "SA_1L": "SA_1L_00062",
+        "SA_CDIFF": "SA_CDIFF_00062",
+        "SA_PRO": "SA_PRO_00062",
+        "SA_HF": "SA_HF_00062"
+      }
+    },
+    {
+      "id": "OIL_63",
+      "tag": "#SA00063",
+      "productCode": "FRAG_0063",
+      "name": "Green Tea",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Luxaroma",
+      "supplierCode": "Lux0748",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00063",
+        "SA_1L": "SA_1L_00063",
+        "SA_CDIFF": "SA_CDIFF_00063",
+        "SA_PRO": "SA_PRO_00063",
+        "SA_HF": "SA_HF_00063"
+      }
+    },
+    {
+      "id": "OIL_64",
+      "tag": "#SA00064",
+      "productCode": "FRAG_0064",
+      "name": "Green Tea and Lemongrass",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Luxaroma",
+      "supplierCode": "LUX13377",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00064",
+        "SA_1L": "SA_1L_00064",
+        "SA_CDIFF": "SA_CDIFF_00064",
+        "SA_PRO": "SA_PRO_00064",
+        "SA_HF": "SA_HF_00064"
+      }
+    },
+    {
+      "id": "OIL_65",
+      "tag": "#SA00065",
+      "productCode": "FRAG_0065",
+      "name": "Ginger Flower",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Luxaroma",
+      "supplierCode": "LUX0362",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00065",
+        "SA_1L": "SA_1L_00065",
+        "SA_CDIFF": "SA_CDIFF_00065",
+        "SA_PRO": "SA_PRO_00065",
+        "SA_HF": "SA_HF_00065"
+      }
+    },
+    {
+      "id": "OIL_66",
+      "tag": "#SA00066",
+      "productCode": "FRAG_0066",
+      "name": "Givenchy Gentlemen ",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA222191",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00066",
+        "SA_1L": "SA_1L_00066",
+        "SA_CDIFF": "SA_CDIFF_00066",
+        "SA_PRO": "SA_PRO_00066",
+        "SA_HF": "SA_HF_00066"
+      }
+    },
+    {
+      "id": "OIL_67",
+      "tag": "#SA00067",
+      "productCode": "FRAG_0067",
+      "name": "Gingerbread A",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA252391",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00067",
+        "SA_1L": "SA_1L_00067",
+        "SA_CDIFF": "SA_CDIFF_00067",
+        "SA_PRO": "SA_PRO_00067",
+        "SA_HF": "SA_HF_00067"
+      }
+    },
+    {
+      "id": "OIL_68",
+      "tag": "#SA00068",
+      "productCode": "FRAG_0068",
+      "name": "Gypsy Water",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA213584",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00068",
+        "SA_1L": "SA_1L_00068",
+        "SA_CDIFF": "SA_CDIFF_00068",
+        "SA_PRO": "SA_PRO_00068",
+        "SA_HF": "SA_HF_00068"
+      }
+    },
+    {
+      "id": "OIL_69",
+      "tag": "#SA00069",
+      "productCode": "FRAG_0069",
+      "name": "Grape Chupa Chup",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA222907",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00069",
+        "SA_1L": "SA_1L_00069",
+        "SA_CDIFF": "SA_CDIFF_00069",
+        "SA_PRO": "SA_PRO_00069",
+        "SA_HF": "SA_HF_00069"
+      }
+    },
+    {
+      "id": "OIL_70",
+      "tag": "#SA00070",
+      "productCode": "FRAG_0070",
+      "name": "Garden Symphony",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA241471",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00070",
+        "SA_1L": "SA_1L_00070",
+        "SA_CDIFF": "SA_CDIFF_00070",
+        "SA_PRO": "SA_PRO_00070",
+        "SA_HF": "SA_HF_00070"
+      }
+    },
+    {
+      "id": "OIL_71",
+      "tag": "#SA00071",
+      "productCode": "FRAG_0071",
+      "name": "Golden Garden",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA250769",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00071",
+        "SA_1L": "SA_1L_00071",
+        "SA_CDIFF": "SA_CDIFF_00071",
+        "SA_PRO": "SA_PRO_00071",
+        "SA_HF": "SA_HF_00071"
+      }
+    },
+    {
+      "id": "OIL_72",
+      "tag": "#SA00072",
+      "productCode": "FRAG_0072",
+      "name": "Grey Vetiver",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00072",
+        "SA_1L": "SA_1L_00072",
+        "SA_CDIFF": "SA_CDIFF_00072",
+        "SA_PRO": "SA_PRO_00072",
+        "SA_HF": "SA_HF_00072"
+      }
+    },
+    {
+      "id": "OIL_73",
+      "tag": "#SA00073",
+      "productCode": "FRAG_0073",
+      "name": "Hermes Country",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Smart Fragrances > BELL",
+      "supplierCode": "SFA1683",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00073",
+        "SA_1L": "SA_1L_00073",
+        "SA_CDIFF": "SA_CDIFF_00073",
+        "SA_PRO": "SA_PRO_00073",
+        "SA_HF": "SA_HF_00073"
+      }
+    },
+    {
+      "id": "OIL_74",
+      "tag": "#SA00074",
+      "productCode": "FRAG_0074",
+      "name": "Home Department",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA250611",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00074",
+        "SA_1L": "SA_1L_00074",
+        "SA_CDIFF": "SA_CDIFF_00074",
+        "SA_PRO": "SA_PRO_00074",
+        "SA_HF": "SA_HF_00074"
+      }
+    },
+    {
+      "id": "OIL_75",
+      "tag": "#SA00075",
+      "productCode": "FRAG_0075",
+      "name": "Isopropyl Myristate (IPM)",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA251436",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00075",
+        "SA_1L": "SA_1L_00075",
+        "SA_CDIFF": "SA_CDIFF_00075",
+        "SA_PRO": "SA_PRO_00075",
+        "SA_HF": "SA_HF_00075"
+      }
+    },
+    {
+      "id": "OIL_76",
+      "tag": "#SA00076",
+      "productCode": "FRAG_0076",
+      "name": "Inpiration - NEW HOPE",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Smart Fragrances > BELL",
+      "supplierCode": "SFA1226/2",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00076",
+        "SA_1L": "SA_1L_00076",
+        "SA_CDIFF": "SA_CDIFF_00076",
+        "SA_PRO": "SA_PRO_00076",
+        "SA_HF": "SA_HF_00076"
+      }
+    },
+    {
+      "id": "OIL_77",
+      "tag": "#SA00077",
+      "productCode": "FRAG_0077",
+      "name": "Intense Air",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA250553",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00077",
+        "SA_1L": "SA_1L_00077",
+        "SA_CDIFF": "SA_CDIFF_00077",
+        "SA_PRO": "SA_PRO_00077",
+        "SA_HF": "SA_HF_00077"
+      }
+    },
+    {
+      "id": "OIL_78",
+      "tag": "#SA00078",
+      "productCode": "FRAG_0078",
+      "name": "Jardin de Carthage",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Luxaroma",
+      "supplierCode": "Lux0639",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00078",
+        "SA_1L": "SA_1L_00078",
+        "SA_CDIFF": "SA_CDIFF_00078",
+        "SA_PRO": "SA_PRO_00078",
+        "SA_HF": "SA_HF_00078"
+      }
+    },
+    {
+      "id": "OIL_79",
+      "tag": "#SA00079",
+      "productCode": "FRAG_0079",
+      "name": "JM Jasmin & Mint",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Smart Fragrances > BELL",
+      "supplierCode": "SFA1367",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00079",
+        "SA_1L": "SA_1L_00079",
+        "SA_CDIFF": "SA_CDIFF_00079",
+        "SA_PRO": "SA_PRO_00079",
+        "SA_HF": "SA_HF_00079"
+      }
+    },
+    {
+      "id": "OIL_80",
+      "tag": "#SA00080",
+      "productCode": "FRAG_0080",
+      "name": "Japanese Honeysuckle",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Luxaroma",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00080",
+        "SA_1L": "SA_1L_00080",
+        "SA_CDIFF": "SA_CDIFF_00080",
+        "SA_PRO": "SA_PRO_00080",
+        "SA_HF": "SA_HF_00080"
+      }
+    },
+    {
+      "id": "OIL_81",
+      "tag": "#SA00081",
+      "productCode": "FRAG_0081",
+      "name": "Jasmine Sambac & Marigold",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Luxaroma",
+      "supplierCode": "LUX1027",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00081",
+        "SA_1L": "SA_1L_00081",
+        "SA_CDIFF": "SA_CDIFF_00081",
+        "SA_PRO": "SA_PRO_00081",
+        "SA_HF": "SA_HF_00081"
+      }
+    },
+    {
+      "id": "OIL_82",
+      "tag": "#SA00082",
+      "productCode": "FRAG_0082",
+      "name": "JPG Le Beau",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA250842",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00082",
+        "SA_1L": "SA_1L_00082",
+        "SA_CDIFF": "SA_CDIFF_00082",
+        "SA_PRO": "SA_PRO_00082",
+        "SA_HF": "SA_HF_00082"
+      }
+    },
+    {
+      "id": "OIL_83",
+      "tag": "#SA00083",
+      "productCode": "FRAG_0083",
+      "name": "Jardin Zen - Zen Garden",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Luxaroma",
+      "supplierCode": "LUX0928",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00083",
+        "SA_1L": "SA_1L_00083",
+        "SA_CDIFF": "SA_CDIFF_00083",
+        "SA_PRO": "SA_PRO_00083",
+        "SA_HF": "SA_HF_00083"
+      }
+    },
+    {
+      "id": "OIL_84",
+      "tag": "#SA00084",
+      "productCode": "FRAG_0084",
+      "name": "Kookai Signature",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA250770",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00084",
+        "SA_1L": "SA_1L_00084",
+        "SA_CDIFF": "SA_CDIFF_00084",
+        "SA_PRO": "SA_PRO_00084",
+        "SA_HF": "SA_HF_00084"
+      }
+    },
+    {
+      "id": "OIL_85",
+      "tag": "#SA00085",
+      "productCode": "FRAG_0085",
+      "name": "Kiwi Coconut",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA230965",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00085",
+        "SA_1L": "SA_1L_00085",
+        "SA_CDIFF": "SA_CDIFF_00085",
+        "SA_PRO": "SA_PRO_00085",
+        "SA_HF": "SA_HF_00085"
+      }
+    },
+    {
+      "id": "OIL_86",
+      "tag": "#SA00086",
+      "productCode": "FRAG_0086",
+      "name": "London",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Bell",
+      "supplierCode": "6132618",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00086",
+        "SA_1L": "SA_1L_00086",
+        "SA_CDIFF": "SA_CDIFF_00086",
+        "SA_PRO": "SA_PRO_00086",
+        "SA_HF": "SA_HF_00086"
+      }
+    },
+    {
+      "id": "OIL_87",
+      "tag": "#SA00087",
+      "productCode": "FRAG_0087",
+      "name": "La Vie Est Belle",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Guangzhou",
+      "supplierCode": "FH20376936",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00087",
+        "SA_1L": "SA_1L_00087",
+        "SA_CDIFF": "SA_CDIFF_00087",
+        "SA_PRO": "SA_PRO_00087",
+        "SA_HF": "SA_HF_00087"
+      }
+    },
+    {
+      "id": "OIL_88",
+      "tag": "#SA00088",
+      "productCode": "FRAG_0088",
+      "name": "Lotus Zen",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Luxaroma",
+      "supplierCode": "LUX1335",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00088",
+        "SA_1L": "SA_1L_00088",
+        "SA_CDIFF": "SA_CDIFF_00088",
+        "SA_PRO": "SA_PRO_00088",
+        "SA_HF": "SA_HF_00088"
+      }
+    },
+    {
+      "id": "OIL_89",
+      "tag": "#SA00089",
+      "productCode": "FRAG_0089",
+      "name": "Lacoste Original",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Scent Method",
+      "supplierCode": "SLC3015",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00089",
+        "SA_1L": "SA_1L_00089",
+        "SA_CDIFF": "SA_CDIFF_00089",
+        "SA_PRO": "SA_PRO_00089",
+        "SA_HF": "SA_HF_00089"
+      }
+    },
+    {
+      "id": "OIL_90",
+      "tag": "#SA00090",
+      "productCode": "FRAG_0090",
+      "name": "Leather + Woods",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA230899",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00090",
+        "SA_1L": "SA_1L_00090",
+        "SA_CDIFF": "SA_CDIFF_00090",
+        "SA_PRO": "SA_PRO_00090",
+        "SA_HF": "SA_HF_00090"
+      }
+    },
+    {
+      "id": "OIL_91",
+      "tag": "#SA00091",
+      "productCode": "FRAG_0091",
+      "name": "Lemongrass and Persian Lime",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00091",
+        "SA_1L": "SA_1L_00091",
+        "SA_CDIFF": "SA_CDIFF_00091",
+        "SA_PRO": "SA_PRO_00091",
+        "SA_HF": "SA_HF_00091"
+      }
+    },
+    {
+      "id": "OIL_92",
+      "tag": "#SA00092",
+      "productCode": "FRAG_0092",
+      "name": "Light Blue",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA250554",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00092",
+        "SA_1L": "SA_1L_00092",
+        "SA_CDIFF": "SA_CDIFF_00092",
+        "SA_PRO": "SA_PRO_00092",
+        "SA_HF": "SA_HF_00092"
+      }
+    },
+    {
+      "id": "OIL_93",
+      "tag": "#SA00093",
+      "productCode": "FRAG_0093",
+      "name": "Lemongrass and Ginger",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA242434",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00093",
+        "SA_1L": "SA_1L_00093",
+        "SA_CDIFF": "SA_CDIFF_00093",
+        "SA_PRO": "SA_PRO_00093",
+        "SA_HF": "SA_HF_00093"
+      }
+    },
+    {
+      "id": "OIL_94",
+      "tag": "#SA00094",
+      "productCode": "FRAG_0094",
+      "name": "Myrrh & Tonka",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Luxaroma",
+      "supplierCode": "LUX1423",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00094",
+        "SA_1L": "SA_1L_00094",
+        "SA_CDIFF": "SA_CDIFF_00094",
+        "SA_PRO": "SA_PRO_00094",
+        "SA_HF": "SA_HF_00094"
+      }
+    },
+    {
+      "id": "OIL_95",
+      "tag": "#SA00095",
+      "productCode": "FRAG_0095",
+      "name": "Mahogany Fig",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Luxaroma",
+      "supplierCode": "LUX1281",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00095",
+        "SA_1L": "SA_1L_00095",
+        "SA_CDIFF": "SA_CDIFF_00095",
+        "SA_PRO": "SA_PRO_00095",
+        "SA_HF": "SA_HF_00095"
+      }
+    },
+    {
+      "id": "OIL_96",
+      "tag": "#SA00096",
+      "productCode": "FRAG_0096",
+      "name": "Mahogany Wood",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Luxaroma",
+      "supplierCode": "LUX0710",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00096",
+        "SA_1L": "SA_1L_00096",
+        "SA_CDIFF": "SA_CDIFF_00096",
+        "SA_PRO": "SA_PRO_00096",
+        "SA_HF": "SA_HF_00096"
+      }
+    },
+    {
+      "id": "OIL_97",
+      "tag": "#SA00097",
+      "productCode": "FRAG_0097",
+      "name": "Milagrito",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Luxaroma",
+      "supplierCode": "LUX0710",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00097",
+        "SA_1L": "SA_1L_00097",
+        "SA_CDIFF": "SA_CDIFF_00097",
+        "SA_PRO": "SA_PRO_00097",
+        "SA_HF": "SA_HF_00097"
+      }
+    },
+    {
+      "id": "OIL_98",
+      "tag": "#SA00098",
+      "productCode": "FRAG_0098",
+      "name": "Matiere Noire",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Guangzhou",
+      "supplierCode": "FH20376949",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00098",
+        "SA_1L": "SA_1L_00098",
+        "SA_CDIFF": "SA_CDIFF_00098",
+        "SA_PRO": "SA_PRO_00098",
+        "SA_HF": "SA_HF_00098"
+      }
+    },
+    {
+      "id": "OIL_99",
+      "tag": "#SA00099",
+      "productCode": "FRAG_0099",
+      "name": "Miami Strong",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA222066",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00099",
+        "SA_1L": "SA_1L_00099",
+        "SA_CDIFF": "SA_CDIFF_00099",
+        "SA_PRO": "SA_PRO_00099",
+        "SA_HF": "SA_HF_00099"
+      }
+    },
+    {
+      "id": "OIL_100",
+      "tag": "#SA00100",
+      "productCode": "FRAG_0100",
+      "name": "Moonligt Patchouli",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Guangzhou",
+      "supplierCode": "20250220",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00100",
+        "SA_1L": "SA_1L_00100",
+        "SA_CDIFF": "SA_CDIFF_00100",
+        "SA_PRO": "SA_PRO_00100",
+        "SA_HF": "SA_HF_00100"
+      }
+    },
+    {
+      "id": "OIL_101",
+      "tag": "#SA00101",
+      "productCode": "FRAG_0101",
+      "name": "Miami Woods",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA242633",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00101",
+        "SA_1L": "SA_1L_00101",
+        "SA_CDIFF": "SA_CDIFF_00101",
+        "SA_PRO": "SA_PRO_00101",
+        "SA_HF": "SA_HF_00101"
+      }
+    },
+    {
+      "id": "OIL_102",
+      "tag": "#SA00102",
+      "productCode": "FRAG_0102",
+      "name": "Noel",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA250025",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00102",
+        "SA_1L": "SA_1L_00102",
+        "SA_CDIFF": "SA_CDIFF_00102",
+        "SA_PRO": "SA_PRO_00102",
+        "SA_HF": "SA_HF_00102"
+      }
+    },
+    {
+      "id": "OIL_103",
+      "tag": "#SA00103",
+      "productCode": "FRAG_0103",
+      "name": "New Hope",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA223464",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00103",
+        "SA_1L": "SA_1L_00103",
+        "SA_CDIFF": "SA_CDIFF_00103",
+        "SA_PRO": "SA_PRO_00103",
+        "SA_HF": "SA_HF_00103"
+      }
+    },
+    {
+      "id": "OIL_104",
+      "tag": "#SA00104",
+      "productCode": "FRAG_0104",
+      "name": "Native B",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA223766",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00104",
+        "SA_1L": "SA_1L_00104",
+        "SA_CDIFF": "SA_CDIFF_00104",
+        "SA_PRO": "SA_PRO_00104",
+        "SA_HF": "SA_HF_00104"
+      }
+    },
+    {
+      "id": "OIL_105",
+      "tag": "#SA00105",
+      "productCode": "FRAG_0105",
+      "name": "Noir ",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA213480",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00105",
+        "SA_1L": "SA_1L_00105",
+        "SA_CDIFF": "SA_CDIFF_00105",
+        "SA_PRO": "SA_PRO_00105",
+        "SA_HF": "SA_HF_00105"
+      }
+    },
+    {
+      "id": "OIL_106",
+      "tag": "#SA00106",
+      "productCode": "FRAG_0106",
+      "name": "New CBD Perth d3",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA251440",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00106",
+        "SA_1L": "SA_1L_00106",
+        "SA_CDIFF": "SA_CDIFF_00106",
+        "SA_PRO": "SA_PRO_00106",
+        "SA_HF": "SA_HF_00106"
+      }
+    },
+    {
+      "id": "OIL_107",
+      "tag": "#SA00107",
+      "productCode": "FRAG_0107",
+      "name": "Orange & Bergamot",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Luxaroma",
+      "supplierCode": "LUX0598",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00107",
+        "SA_1L": "SA_1L_00107",
+        "SA_CDIFF": "SA_CDIFF_00107",
+        "SA_PRO": "SA_PRO_00107",
+        "SA_HF": "SA_HF_00107"
+      }
+    },
+    {
+      "id": "OIL_108",
+      "tag": "#SA00108",
+      "productCode": "FRAG_0108",
+      "name": "Oz Design Signature",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Luxaroma",
+      "supplierCode": "LUX1726",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00108",
+        "SA_1L": "SA_1L_00108",
+        "SA_CDIFF": "SA_CDIFF_00108",
+        "SA_PRO": "SA_PRO_00108",
+        "SA_HF": "SA_HF_00108"
+      }
+    },
+    {
+      "id": "OIL_109",
+      "tag": "#SA00109",
+      "productCode": "FRAG_0109",
+      "name": "Orange Grass",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Smart Fragrances > BELL",
+      "supplierCode": "SFA1578",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00109",
+        "SA_1L": "SA_1L_00109",
+        "SA_CDIFF": "SA_CDIFF_00109",
+        "SA_PRO": "SA_PRO_00109",
+        "SA_HF": "SA_HF_00109"
+      }
+    },
+    {
+      "id": "OIL_110",
+      "tag": "#SA00110",
+      "productCode": "FRAG_0110",
+      "name": "Orchidee Narco",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Luxaroma",
+      "supplierCode": "LUX1129",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00110",
+        "SA_1L": "SA_1L_00110",
+        "SA_CDIFF": "SA_CDIFF_00110",
+        "SA_PRO": "SA_PRO_00110",
+        "SA_HF": "SA_HF_00110"
+      }
+    },
+    {
+      "id": "OIL_111",
+      "tag": "#SA00111",
+      "productCode": "FRAG_0111",
+      "name": "Orange B",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA231256",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00111",
+        "SA_1L": "SA_1L_00111",
+        "SA_CDIFF": "SA_CDIFF_00111",
+        "SA_PRO": "SA_PRO_00111",
+        "SA_HF": "SA_HF_00111"
+      }
+    },
+    {
+      "id": "OIL_112",
+      "tag": "#SA00112",
+      "productCode": "FRAG_0112",
+      "name": "Orange Grass",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Smart Fragrances > BELL",
+      "supplierCode": "SFA1578",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00112",
+        "SA_1L": "SA_1L_00112",
+        "SA_CDIFF": "SA_CDIFF_00112",
+        "SA_PRO": "SA_PRO_00112",
+        "SA_HF": "SA_HF_00112"
+      }
+    },
+    {
+      "id": "OIL_113",
+      "tag": "#SA00113",
+      "productCode": "FRAG_0113",
+      "name": "Oud",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA250823",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00113",
+        "SA_1L": "SA_1L_00113",
+        "SA_CDIFF": "SA_CDIFF_00113",
+        "SA_PRO": "SA_PRO_00113",
+        "SA_HF": "SA_HF_00113"
+      }
+    },
+    {
+      "id": "OIL_114",
+      "tag": "#SA00114",
+      "productCode": "FRAG_0114",
+      "name": "Premiere",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Scent Method",
+      "supplierCode": "SLC2486",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00114",
+        "SA_1L": "SA_1L_00114",
+        "SA_CDIFF": "SA_CDIFF_00114",
+        "SA_PRO": "SA_PRO_00114",
+        "SA_HF": "SA_HF_00114"
+      }
+    },
+    {
+      "id": "OIL_115",
+      "tag": "#SA00115",
+      "productCode": "FRAG_0115",
+      "name": "Park Hyatt Peony - Hyatt Peony",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Luxaroma",
+      "supplierCode": "WO0031095 (29234)",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00115",
+        "SA_1L": "SA_1L_00115",
+        "SA_CDIFF": "SA_CDIFF_00115",
+        "SA_PRO": "SA_PRO_00115",
+        "SA_HF": "SA_HF_00115"
+      }
+    },
+    {
+      "id": "OIL_116",
+      "tag": "#SA00116",
+      "productCode": "FRAG_0116",
+      "name": "Patisserie",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Luxaroma",
+      "supplierCode": "LUX696",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00116",
+        "SA_1L": "SA_1L_00116",
+        "SA_CDIFF": "SA_CDIFF_00116",
+        "SA_PRO": "SA_PRO_00116",
+        "SA_HF": "SA_HF_00116"
+      }
+    },
+    {
+      "id": "OIL_117",
+      "tag": "#SA00117",
+      "productCode": "FRAG_0117",
+      "name": "Peppermint",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Luxaroma",
+      "supplierCode": "LUX0774",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00117",
+        "SA_1L": "SA_1L_00117",
+        "SA_CDIFF": "SA_CDIFF_00117",
+        "SA_PRO": "SA_PRO_00117",
+        "SA_HF": "SA_HF_00117"
+      }
+    },
+    {
+      "id": "OIL_118",
+      "tag": "#SA00118",
+      "productCode": "FRAG_0118",
+      "name": "Pepperwood",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA223424",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00118",
+        "SA_1L": "SA_1L_00118",
+        "SA_CDIFF": "SA_CDIFF_00118",
+        "SA_PRO": "SA_PRO_00118",
+        "SA_HF": "SA_HF_00118"
+      }
+    },
+    {
+      "id": "OIL_119",
+      "tag": "#SA00119",
+      "productCode": "FRAG_0119",
+      "name": "Porsche",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA232165",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00119",
+        "SA_1L": "SA_1L_00119",
+        "SA_CDIFF": "SA_CDIFF_00119",
+        "SA_PRO": "SA_PRO_00119",
+        "SA_HF": "SA_HF_00119"
+      }
+    },
+    {
+      "id": "OIL_120",
+      "tag": "#SA00120",
+      "productCode": "FRAG_0120",
+      "name": "Querces",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Luxaroma",
+      "supplierCode": "LUX0736",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00120",
+        "SA_1L": "SA_1L_00120",
+        "SA_CDIFF": "SA_CDIFF_00120",
+        "SA_PRO": "SA_PRO_00120",
+        "SA_HF": "SA_HF_00120"
+      }
+    },
+    {
+      "id": "OIL_121",
+      "tag": "#SA00121",
+      "productCode": "FRAG_0121",
+      "name": "Rosemary & Cinnamon Blend",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "The Ingredient Warehouse",
+      "supplierCode": "EBSAMRC2A",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00121",
+        "SA_1L": "SA_1L_00121",
+        "SA_CDIFF": "SA_CDIFF_00121",
+        "SA_PRO": "SA_PRO_00121",
+        "SA_HF": "SA_HF_00121"
+      }
+    },
+    {
+      "id": "OIL_122",
+      "tag": "#SA00122",
+      "productCode": "FRAG_0122",
+      "name": "Rosewater",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Scent Method",
+      "supplierCode": "SLC2644",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00122",
+        "SA_1L": "SA_1L_00122",
+        "SA_CDIFF": "SA_CDIFF_00122",
+        "SA_PRO": "SA_PRO_00122",
+        "SA_HF": "SA_HF_00122"
+      }
+    },
+    {
+      "id": "OIL_123",
+      "tag": "#SA00123",
+      "productCode": "FRAG_0123",
+      "name": "Rainstorm",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Luxaroma",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00123",
+        "SA_1L": "SA_1L_00123",
+        "SA_CDIFF": "SA_CDIFF_00123",
+        "SA_PRO": "SA_PRO_00123",
+        "SA_HF": "SA_HF_00123"
+      }
+    },
+    {
+      "id": "OIL_124",
+      "tag": "#SA00124",
+      "productCode": "FRAG_0124",
+      "name": "Resurrection",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA243524",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00124",
+        "SA_1L": "SA_1L_00124",
+        "SA_CDIFF": "SA_CDIFF_00124",
+        "SA_PRO": "SA_PRO_00124",
+        "SA_HF": "SA_HF_00124"
+      }
+    },
+    {
+      "id": "OIL_125",
+      "tag": "#SA00125",
+      "productCode": "FRAG_0125",
+      "name": "Rose Diptyque",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA231309",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00125",
+        "SA_1L": "SA_1L_00125",
+        "SA_CDIFF": "SA_CDIFF_00125",
+        "SA_PRO": "SA_PRO_00125",
+        "SA_HF": "SA_HF_00125"
+      }
+    },
+    {
+      "id": "OIL_126",
+      "tag": "#SA00126",
+      "productCode": "FRAG_0126",
+      "name": "Review",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA241706",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00126",
+        "SA_1L": "SA_1L_00126",
+        "SA_CDIFF": "SA_CDIFF_00126",
+        "SA_PRO": "SA_PRO_00126",
+        "SA_HF": "SA_HF_00126"
+      }
+    },
+    {
+      "id": "OIL_127",
+      "tag": "#SA00127",
+      "productCode": "FRAG_0127",
+      "name": "Rock N' Roll",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Luxaroma",
+      "supplierCode": "LUX0906A",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00127",
+        "SA_1L": "SA_1L_00127",
+        "SA_CDIFF": "SA_CDIFF_00127",
+        "SA_PRO": "SA_PRO_00127",
+        "SA_HF": "SA_HF_00127"
+      }
+    },
+    {
+      "id": "OIL_128",
+      "tag": "#SA00128",
+      "productCode": "FRAG_0128",
+      "name": "Rottnest Island Summertime B",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA241283",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00128",
+        "SA_1L": "SA_1L_00128",
+        "SA_CDIFF": "SA_CDIFF_00128",
+        "SA_PRO": "SA_PRO_00128",
+        "SA_HF": "SA_HF_00128"
+      }
+    },
+    {
+      "id": "OIL_129",
+      "tag": "#SA00129",
+      "productCode": "FRAG_0129",
+      "name": "Summer Vacay",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA241782",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00129",
+        "SA_1L": "SA_1L_00129",
+        "SA_CDIFF": "SA_CDIFF_00129",
+        "SA_PRO": "SA_PRO_00129",
+        "SA_HF": "SA_HF_00129"
+      }
+    },
+    {
+      "id": "OIL_130",
+      "tag": "#SA00130",
+      "productCode": "FRAG_0130",
+      "name": "Saffron",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Smart Fragrances > BELL",
+      "supplierCode": "SFA1652",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00130",
+        "SA_1L": "SA_1L_00130",
+        "SA_CDIFF": "SA_CDIFF_00130",
+        "SA_PRO": "SA_PRO_00130",
+        "SA_HF": "SA_HF_00130"
+      }
+    },
+    {
+      "id": "OIL_131",
+      "tag": "#SA00131",
+      "productCode": "FRAG_0131",
+      "name": "Sweet Vanilla Patissiere",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Luxaroma",
+      "supplierCode": "LUX0696",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00131",
+        "SA_1L": "SA_1L_00131",
+        "SA_CDIFF": "SA_CDIFF_00131",
+        "SA_PRO": "SA_PRO_00131",
+        "SA_HF": "SA_HF_00131"
+      }
+    },
+    {
+      "id": "OIL_132",
+      "tag": "#SA00132",
+      "productCode": "FRAG_0132",
+      "name": "Special Santal",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Scent Method",
+      "supplierCode": "SLC2775",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00132",
+        "SA_1L": "SA_1L_00132",
+        "SA_CDIFF": "SA_CDIFF_00132",
+        "SA_PRO": "SA_PRO_00132",
+        "SA_HF": "SA_HF_00132"
+      }
+    },
+    {
+      "id": "OIL_133",
+      "tag": "#SA00133",
+      "productCode": "FRAG_0133",
+      "name": "Sea Salt",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00133",
+        "SA_1L": "SA_1L_00133",
+        "SA_CDIFF": "SA_CDIFF_00133",
+        "SA_PRO": "SA_PRO_00133",
+        "SA_HF": "SA_HF_00133"
+      }
+    },
+    {
+      "id": "OIL_134",
+      "tag": "#SA00134",
+      "productCode": "FRAG_0134",
+      "name": "SLS Signature",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Smart Fragrances > BELL",
+      "supplierCode": "SFA1621/3",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00134",
+        "SA_1L": "SA_1L_00134",
+        "SA_CDIFF": "SA_CDIFF_00134",
+        "SA_PRO": "SA_PRO_00134",
+        "SA_HF": "SA_HF_00134"
+      }
+    },
+    {
+      "id": "OIL_135",
+      "tag": "#SA00135",
+      "productCode": "FRAG_0135",
+      "name": "Sugar Cookie",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Luxaroma",
+      "supplierCode": "LUX13933",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00135",
+        "SA_1L": "SA_1L_00135",
+        "SA_CDIFF": "SA_CDIFF_00135",
+        "SA_PRO": "SA_PRO_00135",
+        "SA_HF": "SA_HF_00135"
+      }
+    },
+    {
+      "id": "OIL_136",
+      "tag": "#SA00136",
+      "productCode": "FRAG_0136",
+      "name": "Sensual Wood",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Luxaroma",
+      "supplierCode": "Lux864",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00136",
+        "SA_1L": "SA_1L_00136",
+        "SA_CDIFF": "SA_CDIFF_00136",
+        "SA_PRO": "SA_PRO_00136",
+        "SA_HF": "SA_HF_00136"
+      }
+    },
+    {
+      "id": "OIL_137",
+      "tag": "#SA00137",
+      "productCode": "FRAG_0137",
+      "name": "Santal 33 Style A",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA211503",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00137",
+        "SA_1L": "SA_1L_00137",
+        "SA_CDIFF": "SA_CDIFF_00137",
+        "SA_PRO": "SA_PRO_00137",
+        "SA_HF": "SA_HF_00137"
+      }
+    },
+    {
+      "id": "OIL_138",
+      "tag": "#SA00138",
+      "productCode": "FRAG_0138",
+      "name": "Santal 66",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Bell",
+      "supplierCode": "6132781",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00138",
+        "SA_1L": "SA_1L_00138",
+        "SA_CDIFF": "SA_CDIFF_00138",
+        "SA_PRO": "SA_PRO_00138",
+        "SA_HF": "SA_HF_00138"
+      }
+    },
+    {
+      "id": "OIL_139",
+      "tag": "#SA00139",
+      "productCode": "FRAG_0139",
+      "name": "Serpentine Comme Des",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA221947",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00139",
+        "SA_1L": "SA_1L_00139",
+        "SA_CDIFF": "SA_CDIFF_00139",
+        "SA_PRO": "SA_PRO_00139",
+        "SA_HF": "SA_HF_00139"
+      }
+    },
+    {
+      "id": "OIL_140",
+      "tag": "#SA00140",
+      "productCode": "FRAG_0140",
+      "name": "Santal and White Tea",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA241193",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00140",
+        "SA_1L": "SA_1L_00140",
+        "SA_CDIFF": "SA_CDIFF_00140",
+        "SA_PRO": "SA_PRO_00140",
+        "SA_HF": "SA_HF_00140"
+      }
+    },
+    {
+      "id": "OIL_141",
+      "tag": "#SA00141",
+      "productCode": "FRAG_0141",
+      "name": "Sandalwood B",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA231155",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00141",
+        "SA_1L": "SA_1L_00141",
+        "SA_CDIFF": "SA_CDIFF_00141",
+        "SA_PRO": "SA_PRO_00141",
+        "SA_HF": "SA_HF_00141"
+      }
+    },
+    {
+      "id": "OIL_142",
+      "tag": "#SA00142",
+      "productCode": "FRAG_0142",
+      "name": "Santal, Mahogany & Sandalwood",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA241192",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00142",
+        "SA_1L": "SA_1L_00142",
+        "SA_CDIFF": "SA_CDIFF_00142",
+        "SA_PRO": "SA_PRO_00142",
+        "SA_HF": "SA_HF_00142"
+      }
+    },
+    {
+      "id": "OIL_143",
+      "tag": "#SA00143",
+      "productCode": "FRAG_0143",
+      "name": "Santal, Mahogany & Soft Floral",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA252221",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00143",
+        "SA_1L": "SA_1L_00143",
+        "SA_CDIFF": "SA_CDIFF_00143",
+        "SA_PRO": "SA_PRO_00143",
+        "SA_HF": "SA_HF_00143"
+      }
+    },
+    {
+      "id": "OIL_144",
+      "tag": "#SA00144",
+      "productCode": "FRAG_0144",
+      "name": "Sandalwood Fig & Jasmine",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA243579",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00144",
+        "SA_1L": "SA_1L_00144",
+        "SA_CDIFF": "SA_CDIFF_00144",
+        "SA_PRO": "SA_PRO_00144",
+        "SA_HF": "SA_HF_00144"
+      }
+    },
+    {
+      "id": "OIL_145",
+      "tag": "#SA00145",
+      "productCode": "FRAG_0145",
+      "name": "Sandalwood & Hint of Jasmine",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA243577",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00145",
+        "SA_1L": "SA_1L_00145",
+        "SA_CDIFF": "SA_CDIFF_00145",
+        "SA_PRO": "SA_PRO_00145",
+        "SA_HF": "SA_HF_00145"
+      }
+    },
+    {
+      "id": "OIL_146",
+      "tag": "#SA00146",
+      "productCode": "FRAG_0146",
+      "name": "TF Ambitious ",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00146",
+        "SA_1L": "SA_1L_00146",
+        "SA_CDIFF": "SA_CDIFF_00146",
+        "SA_PRO": "SA_PRO_00146",
+        "SA_HF": "SA_HF_00146"
+      }
+    },
+    {
+      "id": "OIL_147",
+      "tag": "#SA00147",
+      "productCode": "FRAG_0147",
+      "name": "The Rouge",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Bell",
+      "supplierCode": "SFA1416",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00147",
+        "SA_1L": "SA_1L_00147",
+        "SA_CDIFF": "SA_CDIFF_00147",
+        "SA_PRO": "SA_PRO_00147",
+        "SA_HF": "SA_HF_00147"
+      }
+    },
+    {
+      "id": "OIL_148",
+      "tag": "#SA00148",
+      "productCode": "FRAG_0148",
+      "name": "Teak & Neroli",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Luxaroma",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00148",
+        "SA_1L": "SA_1L_00148",
+        "SA_CDIFF": "SA_CDIFF_00148",
+        "SA_PRO": "SA_PRO_00148",
+        "SA_HF": "SA_HF_00148"
+      }
+    },
+    {
+      "id": "OIL_149",
+      "tag": "#SA00149",
+      "productCode": "FRAG_0149",
+      "name": "The Blanc",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Luxaroma",
+      "supplierCode": "Lux628",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00149",
+        "SA_1L": "SA_1L_00149",
+        "SA_CDIFF": "SA_CDIFF_00149",
+        "SA_PRO": "SA_PRO_00149",
+        "SA_HF": "SA_HF_00149"
+      }
+    },
+    {
+      "id": "OIL_150",
+      "tag": "#SA00150",
+      "productCode": "FRAG_0150",
+      "name": "Tabac Noir",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Smart Fragrances > BELL",
+      "supplierCode": "SFA1375",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00150",
+        "SA_1L": "SA_1L_00150",
+        "SA_CDIFF": "SA_CDIFF_00150",
+        "SA_PRO": "SA_PRO_00150",
+        "SA_HF": "SA_HF_00150"
+      }
+    },
+    {
+      "id": "OIL_151",
+      "tag": "#SA00151",
+      "productCode": "FRAG_0151",
+      "name": "Tropical Cruise",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Smart Fragrances > BELL",
+      "supplierCode": "SFA1209",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00151",
+        "SA_1L": "SA_1L_00151",
+        "SA_CDIFF": "SA_CDIFF_00151",
+        "SA_PRO": "SA_PRO_00151",
+        "SA_HF": "SA_HF_00151"
+      }
+    },
+    {
+      "id": "OIL_152",
+      "tag": "#SA00152",
+      "productCode": "FRAG_0152",
+      "name": "Tea Time",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Scent Method",
+      "supplierCode": "SLC2631",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00152",
+        "SA_1L": "SA_1L_00152",
+        "SA_CDIFF": "SA_CDIFF_00152",
+        "SA_PRO": "SA_PRO_00152",
+        "SA_HF": "SA_HF_00152"
+      }
+    },
+    {
+      "id": "OIL_153",
+      "tag": "#SA00153",
+      "productCode": "FRAG_0153",
+      "name": "The Star Azure",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA250835",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00153",
+        "SA_1L": "SA_1L_00153",
+        "SA_CDIFF": "SA_CDIFF_00153",
+        "SA_PRO": "SA_PRO_00153",
+        "SA_HF": "SA_HF_00153"
+      }
+    },
+    {
+      "id": "OIL_154",
+      "tag": "#SA00154",
+      "productCode": "FRAG_0154",
+      "name": "Tuberose Vanille",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA241278",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00154",
+        "SA_1L": "SA_1L_00154",
+        "SA_CDIFF": "SA_CDIFF_00154",
+        "SA_PRO": "SA_PRO_00154",
+        "SA_HF": "SA_HF_00154"
+      }
+    },
+    {
+      "id": "OIL_155",
+      "tag": "#SA00155",
+      "productCode": "FRAG_0155",
+      "name": "The Star Lobby",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA250836",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00155",
+        "SA_1L": "SA_1L_00155",
+        "SA_CDIFF": "SA_CDIFF_00155",
+        "SA_PRO": "SA_PRO_00155",
+        "SA_HF": "SA_HF_00155"
+      }
+    },
+    {
+      "id": "OIL_156",
+      "tag": "#SA00156",
+      "productCode": "FRAG_0156",
+      "name": "Terre",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA250461",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00156",
+        "SA_1L": "SA_1L_00156",
+        "SA_CDIFF": "SA_CDIFF_00156",
+        "SA_PRO": "SA_PRO_00156",
+        "SA_HF": "SA_HF_00156"
+      }
+    },
+    {
+      "id": "OIL_157",
+      "tag": "#SA00157",
+      "productCode": "FRAG_0157",
+      "name": "Ultimate Leather",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Smart Fragrances > BELL",
+      "supplierCode": "SFA1227",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00157",
+        "SA_1L": "SA_1L_00157",
+        "SA_CDIFF": "SA_CDIFF_00157",
+        "SA_PRO": "SA_PRO_00157",
+        "SA_HF": "SA_HF_00157"
+      }
+    },
+    {
+      "id": "OIL_158",
+      "tag": "#SA00158",
+      "productCode": "FRAG_0158",
+      "name": "Vetiver, Water Lily + Sandalwood",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA230295",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00158",
+        "SA_1L": "SA_1L_00158",
+        "SA_CDIFF": "SA_CDIFF_00158",
+        "SA_PRO": "SA_PRO_00158",
+        "SA_HF": "SA_HF_00158"
+      }
+    },
+    {
+      "id": "OIL_159",
+      "tag": "#SA00159",
+      "productCode": "FRAG_0159",
+      "name": "Vetiver D'Hiver",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA221547",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00159",
+        "SA_1L": "SA_1L_00159",
+        "SA_CDIFF": "SA_CDIFF_00159",
+        "SA_PRO": "SA_PRO_00159",
+        "SA_HF": "SA_HF_00159"
+      }
+    },
+    {
+      "id": "OIL_160",
+      "tag": "#SA00160",
+      "productCode": "FRAG_0160",
+      "name": "Vanilla Bourbon",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Luxaroma",
+      "supplierCode": "LUX0637",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00160",
+        "SA_1L": "SA_1L_00160",
+        "SA_CDIFF": "SA_CDIFF_00160",
+        "SA_PRO": "SA_PRO_00160",
+        "SA_HF": "SA_HF_00160"
+      }
+    },
+    {
+      "id": "OIL_161",
+      "tag": "#SA00161",
+      "productCode": "FRAG_0161",
+      "name": "White Tea",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Luxaroma",
+      "supplierCode": "LUX0593",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00161",
+        "SA_1L": "SA_1L_00161",
+        "SA_CDIFF": "SA_CDIFF_00161",
+        "SA_PRO": "SA_PRO_00161",
+        "SA_HF": "SA_HF_00161"
+      }
+    },
+    {
+      "id": "OIL_162",
+      "tag": "#SA00162",
+      "productCode": "FRAG_0162",
+      "name": "White Tea & Ginger Flowers",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Scent Method",
+      "supplierCode": "SLC1564",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00162",
+        "SA_1L": "SA_1L_00162",
+        "SA_CDIFF": "SA_CDIFF_00162",
+        "SA_PRO": "SA_PRO_00162",
+        "SA_HF": "SA_HF_00162"
+      }
+    },
+    {
+      "id": "OIL_163",
+      "tag": "#SA00163",
+      "productCode": "FRAG_0163",
+      "name": "Wild Lily & Spring Moss",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Luxaroma",
+      "supplierCode": "LUX1234",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00163",
+        "SA_1L": "SA_1L_00163",
+        "SA_CDIFF": "SA_CDIFF_00163",
+        "SA_PRO": "SA_PRO_00163",
+        "SA_HF": "SA_HF_00163"
+      }
+    },
+    {
+      "id": "OIL_164",
+      "tag": "#SA00164",
+      "productCode": "FRAG_0164",
+      "name": "W Hotel",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Luxaroma",
+      "supplierCode": "LUX29228",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00164",
+        "SA_1L": "SA_1L_00164",
+        "SA_CDIFF": "SA_CDIFF_00164",
+        "SA_PRO": "SA_PRO_00164",
+        "SA_HF": "SA_HF_00164"
+      }
+    },
+    {
+      "id": "OIL_165",
+      "tag": "#SA00165",
+      "productCode": "FRAG_0165",
+      "name": "Waterplants",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Luxaroma",
+      "supplierCode": "LUX0737",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00165",
+        "SA_1L": "SA_1L_00165",
+        "SA_CDIFF": "SA_CDIFF_00165",
+        "SA_PRO": "SA_PRO_00165",
+        "SA_HF": "SA_HF_00165"
+      }
+    },
+    {
+      "id": "OIL_166",
+      "tag": "#SA00166",
+      "productCode": "FRAG_0166",
+      "name": "Waterfall",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Luxaroma",
+      "supplierCode": "LUX0637",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00166",
+        "SA_1L": "SA_1L_00166",
+        "SA_CDIFF": "SA_CDIFF_00166",
+        "SA_PRO": "SA_PRO_00166",
+        "SA_HF": "SA_HF_00166"
+      }
+    },
+    {
+      "id": "OIL_167",
+      "tag": "#SA00167",
+      "productCode": "FRAG_0167",
+      "name": "Whiskey Bar",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA213959",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00167",
+        "SA_1L": "SA_1L_00167",
+        "SA_CDIFF": "SA_CDIFF_00167",
+        "SA_PRO": "SA_PRO_00167",
+        "SA_HF": "SA_HF_00167"
+      }
+    },
+    {
+      "id": "OIL_168",
+      "tag": "#SA00168",
+      "productCode": "FRAG_0168",
+      "name": "White Tea & Bamboo",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA242839",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00168",
+        "SA_1L": "SA_1L_00168",
+        "SA_CDIFF": "SA_CDIFF_00168",
+        "SA_PRO": "SA_PRO_00168",
+        "SA_HF": "SA_HF_00168"
+      }
+    },
+    {
+      "id": "OIL_169",
+      "tag": "#SA00169",
+      "productCode": "FRAG_0169",
+      "name": "Wonderwood",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA222036",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00169",
+        "SA_1L": "SA_1L_00169",
+        "SA_CDIFF": "SA_CDIFF_00169",
+        "SA_PRO": "SA_PRO_00169",
+        "SA_HF": "SA_HF_00169"
+      }
+    },
+    {
+      "id": "OIL_170",
+      "tag": "#SA00170",
+      "productCode": "FRAG_0170",
+      "name": "ZWT",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA223912",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00170",
+        "SA_1L": "SA_1L_00170",
+        "SA_CDIFF": "SA_CDIFF_00170",
+        "SA_PRO": "SA_PRO_00170",
+        "SA_HF": "SA_HF_00170"
+      }
+    },
+    {
+      "id": "OIL_171",
+      "tag": "#SA00171",
+      "productCode": "FRAG_0171",
+      "name": "ISPT Fragance",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA252198",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00171",
+        "SA_1L": "SA_1L_00171",
+        "SA_CDIFF": "SA_CDIFF_00171",
+        "SA_PRO": "SA_PRO_00171",
+        "SA_HF": "SA_HF_00171"
+      }
+    },
+    {
+      "id": "OIL_172",
+      "tag": "#SA00172",
+      "productCode": "FRAG_0172",
+      "name": "Cinnamon Orange",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00172",
+        "SA_1L": "SA_1L_00172",
+        "SA_CDIFF": "SA_CDIFF_00172",
+        "SA_PRO": "SA_PRO_00172",
+        "SA_HF": "SA_HF_00172"
+      }
+    },
+    {
+      "id": "OIL_173",
+      "tag": "#SA00173",
+      "productCode": "FRAG_0173",
+      "name": "Blackcurrant and Plum",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00173",
+        "SA_1L": "SA_1L_00173",
+        "SA_CDIFF": "SA_CDIFF_00173",
+        "SA_PRO": "SA_PRO_00173",
+        "SA_HF": "SA_HF_00173"
+      }
+    },
+    {
+      "id": "OIL_174",
+      "tag": "#SA00174",
+      "productCode": "FRAG_0174",
+      "name": "PND Scent ",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00174",
+        "SA_1L": "SA_1L_00174",
+        "SA_CDIFF": "SA_CDIFF_00174",
+        "SA_PRO": "SA_PRO_00174",
+        "SA_HF": "SA_HF_00174"
+      }
+    },
+    {
+      "id": "OIL_175",
+      "tag": "#SA00175",
+      "productCode": "FRAG_0175",
+      "name": "Bergamot White Tea and Musk",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00175",
+        "SA_1L": "SA_1L_00175",
+        "SA_CDIFF": "SA_CDIFF_00175",
+        "SA_PRO": "SA_PRO_00175",
+        "SA_HF": "SA_HF_00175"
+      }
+    },
+    {
+      "id": "OIL_176",
+      "tag": "#SA00176",
+      "productCode": "FRAG_0176",
+      "name": "Bubble gum",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00176",
+        "SA_1L": "SA_1L_00176",
+        "SA_CDIFF": "SA_CDIFF_00176",
+        "SA_PRO": "SA_PRO_00176",
+        "SA_HF": "SA_HF_00176"
+      }
+    },
+    {
+      "id": "OIL_177",
+      "tag": "#SA00177",
+      "productCode": "FRAG_0177",
+      "name": "Mademoiselle",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Natarom",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00177",
+        "SA_1L": "SA_1L_00177",
+        "SA_CDIFF": "SA_CDIFF_00177",
+        "SA_PRO": "SA_PRO_00177",
+        "SA_HF": "SA_HF_00177"
+      }
+    },
+    {
+      "id": "OIL_178",
+      "tag": "#SA00178",
+      "productCode": "FRAG_0178",
+      "name": "A Day at the Beach",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA241282",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00178",
+        "SA_1L": "SA_1L_00178",
+        "SA_CDIFF": "SA_CDIFF_00178",
+        "SA_PRO": "SA_PRO_00178",
+        "SA_HF": "SA_HF_00178"
+      }
+    },
+    {
+      "id": "OIL_179",
+      "tag": "#SA00179",
+      "productCode": "FRAG_0179",
+      "name": "Poudre de Framboise",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Natarom",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00179",
+        "SA_1L": "SA_1L_00179",
+        "SA_CDIFF": "SA_CDIFF_00179",
+        "SA_PRO": "SA_PRO_00179",
+        "SA_HF": "SA_HF_00179"
+      }
+    },
+    {
+      "id": "OIL_180",
+      "tag": "#SA00180",
+      "productCode": "FRAG_0180",
+      "name": "Autumn Whispers",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA241470",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00180",
+        "SA_1L": "SA_1L_00180",
+        "SA_CDIFF": "SA_CDIFF_00180",
+        "SA_PRO": "SA_PRO_00180",
+        "SA_HF": "SA_HF_00180"
+      }
+    },
+    {
+      "id": "OIL_181",
+      "tag": "#SA00181",
+      "productCode": "FRAG_0181",
+      "name": "Costes",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA241178",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00181",
+        "SA_1L": "SA_1L_00181",
+        "SA_CDIFF": "SA_CDIFF_00181",
+        "SA_PRO": "SA_PRO_00181",
+        "SA_HF": "SA_HF_00181"
+      }
+    },
+    {
+      "id": "OIL_182",
+      "tag": "#SA00182",
+      "productCode": "FRAG_0182",
+      "name": "Golden Aura",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA241472",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00182",
+        "SA_1L": "SA_1L_00182",
+        "SA_CDIFF": "SA_CDIFF_00182",
+        "SA_PRO": "SA_PRO_00182",
+        "SA_HF": "SA_HF_00182"
+      }
+    },
+    {
+      "id": "OIL_183",
+      "tag": "#SA00183",
+      "productCode": "FRAG_0183",
+      "name": "Crimson Bloom",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA241469",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00183",
+        "SA_1L": "SA_1L_00183",
+        "SA_CDIFF": "SA_CDIFF_00183",
+        "SA_PRO": "SA_PRO_00183",
+        "SA_HF": "SA_HF_00183"
+      }
+    },
+    {
+      "id": "OIL_184",
+      "tag": "#SA00184",
+      "productCode": "FRAG_0184",
+      "name": "Lotus Blossom",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA230297",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00184",
+        "SA_1L": "SA_1L_00184",
+        "SA_CDIFF": "SA_CDIFF_00184",
+        "SA_PRO": "SA_PRO_00184",
+        "SA_HF": "SA_HF_00184"
+      }
+    },
+    {
+      "id": "OIL_185",
+      "tag": "#SA00185",
+      "productCode": "FRAG_0185",
+      "name": "Jasmine & Magnolia",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Luxaroma",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00185",
+        "SA_1L": "SA_1L_00185",
+        "SA_CDIFF": "SA_CDIFF_00185",
+        "SA_PRO": "SA_PRO_00185",
+        "SA_HF": "SA_HF_00185"
+      }
+    },
+    {
+      "id": "OIL_186",
+      "tag": "#SA00186",
+      "productCode": "FRAG_0186",
+      "name": "Sweet Neroli & Basil",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "SA",
+      "supplierCode": "LSF1046",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00186",
+        "SA_1L": "SA_1L_00186",
+        "SA_CDIFF": "SA_CDIFF_00186",
+        "SA_PRO": "SA_PRO_00186",
+        "SA_HF": "SA_HF_00186"
+      }
+    },
+    {
+      "id": "OIL_187",
+      "tag": "#SA00187",
+      "productCode": "FRAG_0187",
+      "name": "Fragance Note - Sandalwood",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Luxaroma",
+      "supplierCode": "LUX0197",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00187",
+        "SA_1L": "SA_1L_00187",
+        "SA_CDIFF": "SA_CDIFF_00187",
+        "SA_PRO": "SA_PRO_00187",
+        "SA_HF": "SA_HF_00187"
+      }
+    },
+    {
+      "id": "OIL_188",
+      "tag": "#SA00188",
+      "productCode": "FRAG_0188",
+      "name": "Sandalwood",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Luxaroma",
+      "supplierCode": "Lux0033",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00188",
+        "SA_1L": "SA_1L_00188",
+        "SA_CDIFF": "SA_CDIFF_00188",
+        "SA_PRO": "SA_PRO_00188",
+        "SA_HF": "SA_HF_00188"
+      }
+    },
+    {
+      "id": "OIL_189",
+      "tag": "#SA00189",
+      "productCode": "FRAG_0189",
+      "name": "Lavandin Grosso Oil",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "The Ingredient Warehouse",
+      "supplierCode": "EOLAVADING",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00189",
+        "SA_1L": "SA_1L_00189",
+        "SA_CDIFF": "SA_CDIFF_00189",
+        "SA_PRO": "SA_PRO_00189",
+        "SA_HF": "SA_HF_00189"
+      }
+    },
+    {
+      "id": "OIL_190",
+      "tag": "#SA00190",
+      "productCode": "FRAG_0190",
+      "name": "Lavender [Anotec]",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Anotec",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00190",
+        "SA_1L": "SA_1L_00190",
+        "SA_CDIFF": "SA_CDIFF_00190",
+        "SA_PRO": "SA_PRO_00190",
+        "SA_HF": "SA_HF_00190"
+      }
+    },
+    {
+      "id": "OIL_191",
+      "tag": "#SA00191",
+      "productCode": "FRAG_0191",
+      "name": "Lavender [LUX]",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Luxaroma",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00191",
+        "SA_1L": "SA_1L_00191",
+        "SA_CDIFF": "SA_CDIFF_00191",
+        "SA_PRO": "SA_PRO_00191",
+        "SA_HF": "SA_HF_00191"
+      }
+    },
+    {
+      "id": "OIL_192",
+      "tag": "#SA00192",
+      "productCode": "FRAG_0192",
+      "name": "Sun Bleached Denim",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Candle Supply",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00192",
+        "SA_1L": "SA_1L_00192",
+        "SA_CDIFF": "SA_CDIFF_00192",
+        "SA_PRO": "SA_PRO_00192",
+        "SA_HF": "SA_HF_00192"
+      }
+    },
+    {
+      "id": "OIL_193",
+      "tag": "#SA00193",
+      "productCode": "FRAG_0193",
+      "name": "Mandarine The Vert",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Natarom",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00193",
+        "SA_1L": "SA_1L_00193",
+        "SA_CDIFF": "SA_CDIFF_00193",
+        "SA_PRO": "SA_PRO_00193",
+        "SA_HF": "SA_HF_00193"
+      }
+    },
+    {
+      "id": "OIL_194",
+      "tag": "#SA00194",
+      "productCode": "FRAG_0194",
+      "name": "Rose Geranium Natural",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "New Directions Australia",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00194",
+        "SA_1L": "SA_1L_00194",
+        "SA_CDIFF": "SA_CDIFF_00194",
+        "SA_PRO": "SA_PRO_00194",
+        "SA_HF": "SA_HF_00194"
+      }
+    },
+    {
+      "id": "OIL_195",
+      "tag": "#SA00195",
+      "productCode": "FRAG_0195",
+      "name": "Tea Tree Lemon",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "New Directions Australia",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00195",
+        "SA_1L": "SA_1L_00195",
+        "SA_CDIFF": "SA_CDIFF_00195",
+        "SA_PRO": "SA_PRO_00195",
+        "SA_HF": "SA_HF_00195"
+      }
+    },
+    {
+      "id": "OIL_196",
+      "tag": "#SA00196",
+      "productCode": "FRAG_0196",
+      "name": "Stress Relief Essential Oil",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "New Directions Australia",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00196",
+        "SA_1L": "SA_1L_00196",
+        "SA_CDIFF": "SA_CDIFF_00196",
+        "SA_PRO": "SA_PRO_00196",
+        "SA_HF": "SA_HF_00196"
+      }
+    },
+    {
+      "id": "OIL_197",
+      "tag": "#SA00197",
+      "productCode": "FRAG_0197",
+      "name": "Wood Sage & Sea Salt",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Luxaroma",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00197",
+        "SA_1L": "SA_1L_00197",
+        "SA_CDIFF": "SA_CDIFF_00197",
+        "SA_PRO": "SA_PRO_00197",
+        "SA_HF": "SA_HF_00197"
+      }
+    },
+    {
+      "id": "OIL_198",
+      "tag": "#SA00198",
+      "productCode": "FRAG_0198",
+      "name": "Tiare",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Natarom",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00198",
+        "SA_1L": "SA_1L_00198",
+        "SA_CDIFF": "SA_CDIFF_00198",
+        "SA_PRO": "SA_PRO_00198",
+        "SA_HF": "SA_HF_00198"
+      }
+    },
+    {
+      "id": "OIL_199",
+      "tag": "#SA00199",
+      "productCode": "FRAG_0199",
+      "name": "Hot Chip Flavour",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00199",
+        "SA_1L": "SA_1L_00199",
+        "SA_CDIFF": "SA_CDIFF_00199",
+        "SA_PRO": "SA_PRO_00199",
+        "SA_HF": "SA_HF_00199"
+      }
+    },
+    {
+      "id": "OIL_199",
+      "tag": "#SA00199",
+      "productCode": "FRAG_0199",
+      "name": "Hot Chip Flavour",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00199",
+        "SA_1L": "SA_1L_00199",
+        "SA_CDIFF": "SA_CDIFF_00199",
+        "SA_PRO": "SA_PRO_00199",
+        "SA_HF": "SA_HF_00199"
+      }
+    },
+    {
+      "id": "OIL_200",
+      "tag": "#SA00200",
+      "productCode": "FRAG_0200",
+      "name": "Fig BGI 1038",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Aroma Scenting",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00200",
+        "SA_1L": "SA_1L_00200",
+        "SA_CDIFF": "SA_CDIFF_00200",
+        "SA_PRO": "SA_PRO_00200",
+        "SA_HF": "SA_HF_00200"
+      }
+    },
+    {
+      "id": "OIL_201",
+      "tag": "#SA00201",
+      "productCode": "FRAG_0201",
+      "name": "Fraser Suites",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Aroma Scenting",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00201",
+        "SA_1L": "SA_1L_00201",
+        "SA_CDIFF": "SA_CDIFF_00201",
+        "SA_PRO": "SA_PRO_00201",
+        "SA_HF": "SA_HF_00201"
+      }
+    },
+    {
+      "id": "OIL_202",
+      "tag": "#SA00202",
+      "productCode": "FRAG_0202",
+      "name": "Fraser Place (Frag World)",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Frag World",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00202",
+        "SA_1L": "SA_1L_00202",
+        "SA_CDIFF": "SA_CDIFF_00202",
+        "SA_PRO": "SA_PRO_00202",
+        "SA_HF": "SA_HF_00202"
+      }
+    },
+    {
+      "id": "OIL_203",
+      "tag": "#SA00203",
+      "productCode": "FRAG_0203",
+      "name": "Fraser Place (Aroma S)",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Aroma Scenting",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00203",
+        "SA_1L": "SA_1L_00203",
+        "SA_CDIFF": "SA_CDIFF_00203",
+        "SA_PRO": "SA_PRO_00203",
+        "SA_HF": "SA_HF_00203"
+      }
+    },
+    {
+      "id": "OIL_204",
+      "tag": "#SA00204",
+      "productCode": "FRAG_0204",
+      "name": "French Pear",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Luxaroma",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00204",
+        "SA_1L": "SA_1L_00204",
+        "SA_CDIFF": "SA_CDIFF_00204",
+        "SA_PRO": "SA_PRO_00204",
+        "SA_HF": "SA_HF_00204"
+      }
+    },
+    {
+      "id": "OIL_205",
+      "tag": "#SA00205",
+      "productCode": "FRAG_0205",
+      "name": "Noix De Coco",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Natarom",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00205",
+        "SA_1L": "SA_1L_00205",
+        "SA_CDIFF": "SA_CDIFF_00205",
+        "SA_PRO": "SA_PRO_00205",
+        "SA_HF": "SA_HF_00205"
+      }
+    },
+    {
+      "id": "OIL_206",
+      "tag": "#SA00206",
+      "productCode": "FRAG_0206",
+      "name": "Gardenia (Revised Version)",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "SA",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00206",
+        "SA_1L": "SA_1L_00206",
+        "SA_CDIFF": "SA_CDIFF_00206",
+        "SA_PRO": "SA_PRO_00206",
+        "SA_HF": "SA_HF_00206"
+      }
+    },
+    {
+      "id": "OIL_207",
+      "tag": "#SA00207",
+      "productCode": "FRAG_0207",
+      "name": "Fresh Lavender",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "SA",
+      "supplierCode": "LSF0926",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00207",
+        "SA_1L": "SA_1L_00207",
+        "SA_CDIFF": "SA_CDIFF_00207",
+        "SA_PRO": "SA_PRO_00207",
+        "SA_HF": "SA_HF_00207"
+      }
+    },
+    {
+      "id": "OIL_208",
+      "tag": "#SA00208",
+      "productCode": "FRAG_0208",
+      "name": "Golden King",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "SA",
+      "supplierCode": "LSF0773",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00208",
+        "SA_1L": "SA_1L_00208",
+        "SA_CDIFF": "SA_CDIFF_00208",
+        "SA_PRO": "SA_PRO_00208",
+        "SA_HF": "SA_HF_00208"
+      }
+    },
+    {
+      "id": "OIL_209",
+      "tag": "#SA00209",
+      "productCode": "FRAG_0209",
+      "name": "Simply Vanilla V2",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "SA",
+      "supplierCode": "LSF0795",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00209",
+        "SA_1L": "SA_1L_00209",
+        "SA_CDIFF": "SA_CDIFF_00209",
+        "SA_PRO": "SA_PRO_00209",
+        "SA_HF": "SA_HF_00209"
+      }
+    },
+    {
+      "id": "OIL_210",
+      "tag": "#SA00210",
+      "productCode": "FRAG_0210",
+      "name": "Bouquet Blanck",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Natarom",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00210",
+        "SA_1L": "SA_1L_00210",
+        "SA_CDIFF": "SA_CDIFF_00210",
+        "SA_PRO": "SA_PRO_00210",
+        "SA_HF": "SA_HF_00210"
+      }
+    },
+    {
+      "id": "OIL_211",
+      "tag": "#SA00211",
+      "productCode": "FRAG_0211",
+      "name": "Ghost",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00211",
+        "SA_1L": "SA_1L_00211",
+        "SA_CDIFF": "SA_CDIFF_00211",
+        "SA_PRO": "SA_PRO_00211",
+        "SA_HF": "SA_HF_00211"
+      }
+    },
+    {
+      "id": "OIL_212",
+      "tag": "#SA00212",
+      "productCode": "FRAG_0212",
+      "name": "Citrus Paradisi",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Anotec",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00212",
+        "SA_1L": "SA_1L_00212",
+        "SA_CDIFF": "SA_CDIFF_00212",
+        "SA_PRO": "SA_PRO_00212",
+        "SA_HF": "SA_HF_00212"
+      }
+    },
+    {
+      "id": "OIL_213",
+      "tag": "#SA00213",
+      "productCode": "FRAG_0213",
+      "name": "Cucumber Ginger & Mint",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Luxaroma",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00213",
+        "SA_1L": "SA_1L_00213",
+        "SA_CDIFF": "SA_CDIFF_00213",
+        "SA_PRO": "SA_PRO_00213",
+        "SA_HF": "SA_HF_00213"
+      }
+    },
+    {
+      "id": "OIL_214",
+      "tag": "#SA00214",
+      "productCode": "FRAG_0214",
+      "name": "Ocean Breeze",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Luxaroma",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00201",
+        "SA_1L": "SA_1L_00214",
+        "SA_CDIFF": "SA_CDIFF_00214",
+        "SA_PRO": "SA_PRO_00214",
+        "SA_HF": "SA_HF_00214"
+      }
+    },
+    {
+      "id": "OIL_215",
+      "tag": "#SA00215",
+      "productCode": "FRAG_0215",
+      "name": "Beach Side Christmas",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Luxaroma",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00215",
+        "SA_1L": "SA_1L_00215",
+        "SA_CDIFF": "SA_CDIFF_00215",
+        "SA_PRO": "SA_PRO_00215",
+        "SA_HF": "SA_HF_00215"
+      }
+    },
+    {
+      "id": "OIL_216",
+      "tag": "#SA00216",
+      "productCode": "FRAG_0216",
+      "name": "Cinnamon Stick",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Natural Candle Supply",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00216",
+        "SA_1L": "SA_1L_00216",
+        "SA_CDIFF": "SA_CDIFF_00216",
+        "SA_PRO": "SA_PRO_00216",
+        "SA_HF": "SA_HF_00216"
+      }
+    },
+    {
+      "id": "OIL_217",
+      "tag": "#SA00217",
+      "productCode": "FRAG_0217",
+      "name": "Cinnamon Buns",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Luxaroma",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00217",
+        "SA_1L": "SA_1L_00217",
+        "SA_CDIFF": "SA_CDIFF_00217",
+        "SA_PRO": "SA_PRO_00217",
+        "SA_HF": "SA_HF_00217"
+      }
+    },
+    {
+      "id": "OIL_218",
+      "tag": "#SA00218",
+      "productCode": "FRAG_0218",
+      "name": "Black Musk & Pear",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Luxaroma",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00218",
+        "SA_1L": "SA_1L_00218",
+        "SA_CDIFF": "SA_CDIFF_00218",
+        "SA_PRO": "SA_PRO_00218",
+        "SA_HF": "SA_HF_00218"
+      }
+    },
+    {
+      "id": "OIL_219",
+      "tag": "#SA00219",
+      "productCode": "FRAG_0219",
+      "name": "Mademoiselle de Paris",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Luxaroma",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00219",
+        "SA_1L": "SA_1L_00219",
+        "SA_CDIFF": "SA_CDIFF_00219",
+        "SA_PRO": "SA_PRO_00219",
+        "SA_HF": "SA_HF_00219"
+      }
+    },
+    {
+      "id": "OIL_220",
+      "tag": "#SA00220",
+      "productCode": "FRAG_0220",
+      "name": "50 Shades",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Luxaroma",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00220",
+        "SA_1L": "SA_1L_00220",
+        "SA_CDIFF": "SA_CDIFF_00220",
+        "SA_PRO": "SA_PRO_00220",
+        "SA_HF": "SA_HF_00220"
+      }
+    },
+    {
+      "id": "OIL_221",
+      "tag": "#SA00221",
+      "productCode": "FRAG_0221",
+      "name": "Cedarwood Chinese",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "New Directions Australia",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00221",
+        "SA_1L": "SA_1L_00221",
+        "SA_CDIFF": "SA_CDIFF_00221",
+        "SA_PRO": "SA_PRO_00221",
+        "SA_HF": "SA_HF_00221"
+      }
+    },
+    {
+      "id": "OIL_222",
+      "tag": "#SA00222",
+      "productCode": "FRAG_0222",
+      "name": "Capri",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Aroma Scenting",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00222",
+        "SA_1L": "SA_1L_00222",
+        "SA_CDIFF": "SA_CDIFF_00222",
+        "SA_PRO": "SA_PRO_00222",
+        "SA_HF": "SA_HF_00222"
+      }
+    },
+    {
+      "id": "OIL_223",
+      "tag": "#SA00223",
+      "productCode": "FRAG_0223",
+      "name": "Cypress Pine",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Anotec",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00223",
+        "SA_1L": "SA_1L_00223",
+        "SA_CDIFF": "SA_CDIFF_00223",
+        "SA_PRO": "SA_PRO_00223",
+        "SA_HF": "SA_HF_00223"
+      }
+    },
+    {
+      "id": "OIL_224",
+      "tag": "#SA00224",
+      "productCode": "FRAG_0224",
+      "name": "Creme Brulee",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Luxaroma",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00224",
+        "SA_1L": "SA_1L_00224",
+        "SA_CDIFF": "SA_CDIFF_00224",
+        "SA_PRO": "SA_PRO_00224",
+        "SA_HF": "SA_HF_00224"
+      }
+    },
+    {
+      "id": "OIL_225",
+      "tag": "#SA00225",
+      "productCode": "FRAG_0225",
+      "name": "Coconut Palm & Hibiscus",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Luxaroma",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00225",
+        "SA_1L": "SA_1L_00225",
+        "SA_CDIFF": "SA_CDIFF_00225",
+        "SA_PRO": "SA_PRO_00225",
+        "SA_HF": "SA_HF_00225"
+      }
+    },
+    {
+      "id": "OIL_226",
+      "tag": "#SA00226",
+      "productCode": "FRAG_0226",
+      "name": "Coffe Bean & Coconut",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "The Fragrance Room",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00226",
+        "SA_1L": "SA_1L_00226",
+        "SA_CDIFF": "SA_CDIFF_00226",
+        "SA_PRO": "SA_PRO_00226",
+        "SA_HF": "SA_HF_00226"
+      }
+    },
+    {
+      "id": "OIL_227",
+      "tag": "#SA00227",
+      "productCode": "FRAG_0227",
+      "name": "Coffe (PCD-1310)",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Risdon International",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00227",
+        "SA_1L": "SA_1L_00227",
+        "SA_CDIFF": "SA_CDIFF_00227",
+        "SA_PRO": "SA_PRO_00227",
+        "SA_HF": "SA_HF_00227"
+      }
+    },
+    {
+      "id": "OIL_228",
+      "tag": "#SA00228",
+      "productCode": "FRAG_0228",
+      "name": "Country Road Mandarin Rind & Rosemary Leaf",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "ABP (Australian Botanical Products)",
+      "supplierCode": "FE77914",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00228",
+        "SA_1L": "SA_1L_00228",
+        "SA_CDIFF": "SA_CDIFF_00228",
+        "SA_PRO": "SA_PRO_00228",
+        "SA_HF": "SA_HF_00228"
+      }
+    },
+    {
+      "id": "OIL_229",
+      "tag": "#SA00229",
+      "productCode": "FRAG_0229",
+      "name": "Eucalyptus Blue Gum 80-85",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "New Directions Australia",
+      "supplierCode": "W4400609",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00229",
+        "SA_1L": "SA_1L_00229",
+        "SA_CDIFF": "SA_CDIFF_00229",
+        "SA_PRO": "SA_PRO_00229",
+        "SA_HF": "SA_HF_00229"
+      }
+    },
+    {
+      "id": "OIL_230",
+      "tag": "#SA00230",
+      "productCode": "FRAG_0230",
+      "name": "Grapefruit Pink",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "New Directions Australia",
+      "supplierCode": "R4217201",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00230",
+        "SA_1L": "SA_1L_00230",
+        "SA_CDIFF": "SA_CDIFF_00230",
+        "SA_PRO": "SA_PRO_00230",
+        "SA_HF": "SA_HF_00230"
+      }
+    },
+    {
+      "id": "OIL_231",
+      "tag": "#SA00231",
+      "productCode": "FRAG_0231",
+      "name": "Hyde Signature",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Air Esscentials",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00231",
+        "SA_1L": "SA_1L_00231",
+        "SA_CDIFF": "SA_CDIFF_00231",
+        "SA_PRO": "SA_PRO_00231",
+        "SA_HF": "SA_HF_00231"
+      }
+    },
+    {
+      "id": "OIL_232",
+      "tag": "#SA00232",
+      "productCode": "FRAG_0232",
+      "name": "Guava Cucumber",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Air Esscentials",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00232",
+        "SA_1L": "SA_1L_00232",
+        "SA_CDIFF": "SA_CDIFF_00232",
+        "SA_PRO": "SA_PRO_00232",
+        "SA_HF": "SA_HF_00232"
+      }
+    },
+    {
+      "id": "OIL_233",
+      "tag": "#SA00233",
+      "productCode": "FRAG_0233",
+      "name": "Nature Florale",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Natarom",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00233",
+        "SA_1L": "SA_1L_00233",
+        "SA_CDIFF": "SA_CDIFF_00233",
+        "SA_PRO": "SA_PRO_00233",
+        "SA_HF": "SA_HF_00233"
+      }
+    },
+    {
+      "id": "OIL_234",
+      "tag": "#SA00234",
+      "productCode": "FRAG_0234",
+      "name": "Spearmint",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Natural Candle Supply",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00234",
+        "SA_1L": "SA_1L_00234",
+        "SA_CDIFF": "SA_CDIFF_00234",
+        "SA_PRO": "SA_PRO_00234",
+        "SA_HF": "SA_HF_00234"
+      }
+    },
+    {
+      "id": "OIL_235",
+      "tag": "#SA00235",
+      "productCode": "FRAG_0235",
+      "name": "Nag Champa",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Luxaroma",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00235",
+        "SA_1L": "SA_1L_00235",
+        "SA_CDIFF": "SA_CDIFF_00235",
+        "SA_PRO": "SA_PRO_00235",
+        "SA_HF": "SA_HF_00235"
+      }
+    },
+    {
+      "id": "OIL_236",
+      "tag": "#SA00236",
+      "productCode": "FRAG_0236",
+      "name": "Narcissist",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Luxaroma",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00236",
+        "SA_1L": "SA_1L_00236",
+        "SA_CDIFF": "SA_CDIFF_00236",
+        "SA_PRO": "SA_PRO_00236",
+        "SA_HF": "SA_HF_00236"
+      }
+    },
+    {
+      "id": "OIL_237",
+      "tag": "#SA00237",
+      "productCode": "FRAG_0237",
+      "name": "Scoth Pine",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Luxaroma",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00237",
+        "SA_1L": "SA_1L_00237",
+        "SA_CDIFF": "SA_CDIFF_00237",
+        "SA_PRO": "SA_PRO_00237",
+        "SA_HF": "SA_HF_00237"
+      }
+    },
+    {
+      "id": "OIL_238",
+      "tag": "#SA00238",
+      "productCode": "FRAG_0238",
+      "name": "Sweet Lemongrass",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Luxaroma",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00238",
+        "SA_1L": "SA_1L_00238",
+        "SA_CDIFF": "SA_CDIFF_00238",
+        "SA_PRO": "SA_PRO_00238",
+        "SA_HF": "SA_HF_00238"
+      }
+    },
+    {
+      "id": "OIL_239",
+      "tag": "#SA00239",
+      "productCode": "FRAG_0239",
+      "name": "Surf Side",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Luxaroma",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00239",
+        "SA_1L": "SA_1L_00239",
+        "SA_CDIFF": "SA_CDIFF_00239",
+        "SA_PRO": "SA_PRO_00239",
+        "SA_HF": "SA_HF_00239"
+      }
+    },
+    {
+      "id": "OIL_240",
+      "tag": "#SA00240",
+      "productCode": "FRAG_0240",
+      "name": "Lily Of the Valley + Lotus",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA230296",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00240",
+        "SA_1L": "SA_1L_00240",
+        "SA_CDIFF": "SA_CDIFF_00240",
+        "SA_PRO": "SA_PRO_00240",
+        "SA_HF": "SA_HF_00240"
+      }
+    },
+    {
+      "id": "OIL_241",
+      "tag": "#SA00241",
+      "productCode": "FRAG_0241",
+      "name": "Japanese Cherry Blossom",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Luxaroma",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00241",
+        "SA_1L": "SA_1L_00241",
+        "SA_CDIFF": "SA_CDIFF_00241",
+        "SA_PRO": "SA_PRO_00241",
+        "SA_HF": "SA_HF_00241"
+      }
+    },
+    {
+      "id": "OIL_242",
+      "tag": "#SA00242",
+      "productCode": "FRAG_0242",
+      "name": "Leather & Oud",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Luxaroma",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00242",
+        "SA_1L": "SA_1L_00242",
+        "SA_CDIFF": "SA_CDIFF_00242",
+        "SA_PRO": "SA_PRO_00242",
+        "SA_HF": "SA_HF_00242"
+      }
+    },
+    {
+      "id": "OIL_243",
+      "tag": "#SA00243",
+      "productCode": "FRAG_0243",
+      "name": "Killer Python",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Scent Method",
+      "supplierCode": "BCMO3410",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00243",
+        "SA_1L": "SA_1L_00243",
+        "SA_CDIFF": "SA_CDIFF_00243",
+        "SA_PRO": "SA_PRO_00243",
+        "SA_HF": "SA_HF_00243"
+      }
+    },
+    {
+      "id": "OIL_244",
+      "tag": "#SA00244",
+      "productCode": "FRAG_0244",
+      "name": "Lavender Natural Blend",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "New Directions Australia",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00244",
+        "SA_1L": "SA_1L_00244",
+        "SA_CDIFF": "SA_CDIFF_00244",
+        "SA_PRO": "SA_PRO_00244",
+        "SA_HF": "SA_HF_00244"
+      }
+    },
+    {
+      "id": "OIL_245",
+      "tag": "#SA00245",
+      "productCode": "FRAG_0245",
+      "name": "Lemon Myrtle Natural",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "New Directions Australia",
+      "supplierCode": "W4425912",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00245",
+        "SA_1L": "SA_1L_00245",
+        "SA_CDIFF": "SA_CDIFF_00245",
+        "SA_PRO": "SA_PRO_00245",
+        "SA_HF": "SA_HF_00245"
+      }
+    },
+    {
+      "id": "OIL_246",
+      "tag": "#SA00246",
+      "productCode": "FRAG_0246",
+      "name": "Fleur d'Orange (Orange Blossom)",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Natarom",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00246",
+        "SA_1L": "SA_1L_00246",
+        "SA_CDIFF": "SA_CDIFF_00246",
+        "SA_PRO": "SA_PRO_00246",
+        "SA_HF": "SA_HF_00246"
+      }
+    },
+    {
+      "id": "OIL_247",
+      "tag": "#SA00247",
+      "productCode": "FRAG_0247",
+      "name": "Orange Sweet (Citrus Sinensis)",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "New Directions Australia",
+      "supplierCode": "R4192104",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00247",
+        "SA_1L": "SA_1L_00247",
+        "SA_CDIFF": "SA_CDIFF_00247",
+        "SA_PRO": "SA_PRO_00247",
+        "SA_HF": "SA_HF_00247"
+      }
+    },
+    {
+      "id": "OIL_248",
+      "tag": "#SA00248",
+      "productCode": "FRAG_0248",
+      "name": "Ballerina (Vine Vera)",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "SA",
+      "supplierCode": "LSF0890",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00248",
+        "SA_1L": "SA_1L_00248",
+        "SA_CDIFF": "SA_CDIFF_00248",
+        "SA_PRO": "SA_PRO_00248",
+        "SA_HF": "SA_HF_00248"
+      }
+    },
+    {
+      "id": "OIL_249",
+      "tag": "#SA00249",
+      "productCode": "FRAG_0249",
+      "name": "Invigorate B-Pepper",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "SA",
+      "supplierCode": "LSF0607",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00201",
+        "SA_1L": "SA_1L_00201",
+        "SA_CDIFF": "SA_CDIFF_00201",
+        "SA_PRO": "SA_PRO_00201",
+        "SA_HF": "SA_HF_00201"
+      }
+    },
+    {
+      "id": "OIL_250",
+      "tag": "#SA00250",
+      "productCode": "FRAG_0250",
+      "name": "HC Odourless Baccarat",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Anotec",
+      "supplierCode": "AN1804234A",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00250",
+        "SA_1L": "SA_1L_00250",
+        "SA_CDIFF": "SA_CDIFF_00250",
+        "SA_PRO": "SA_PRO_00250",
+        "SA_HF": "SA_HF_00250"
+      }
+    },
+    {
+      "id": "OIL_251",
+      "tag": "#SA00251",
+      "productCode": "FRAG_0251",
+      "name": "Advanced Group Fragrance",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "FIA",
+      "supplierCode": "FIA223933",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00251",
+        "SA_1L": "SA_1L_00251",
+        "SA_CDIFF": "SA_CDIFF_00251",
+        "SA_PRO": "SA_PRO_00251",
+        "SA_HF": "SA_HF_00251"
+      }
+    },
+    {
+      "id": "OIL_252",
+      "tag": "#SA00252",
+      "productCode": "FRAG_0252",
+      "name": "Buttered Caramel Popcorn",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Candle Supply",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00252",
+        "SA_1L": "SA_1L_00252",
+        "SA_CDIFF": "SA_CDIFF_00252",
+        "SA_PRO": "SA_PRO_00252",
+        "SA_HF": "SA_HF_00252"
+      }
+    },
+    {
+      "id": "OIL_253",
+      "tag": "#SA00253",
+      "productCode": "FRAG_0253",
+      "name": "Cactis Aquatique",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Natarom",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00253",
+        "SA_1L": "SA_1L_00253",
+        "SA_CDIFF": "SA_CDIFF_00253",
+        "SA_PRO": "SA_PRO_00253",
+        "SA_HF": "SA_HF_00253"
+      }
+    },
+    {
+      "id": "OIL_254",
+      "tag": "#SA00254",
+      "productCode": "FRAG_0254",
+      "name": "Resurrection Natural Blend",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "New Directions Australia",
+      "supplierCode": "B4439905",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00254",
+        "SA_1L": "SA_1L_00254",
+        "SA_CDIFF": "SA_CDIFF_00254",
+        "SA_PRO": "SA_PRO_00254",
+        "SA_HF": "SA_HF_00254"
+      }
+    },
+    {
+      "id": "OIL_255",
+      "tag": "#SA00255",
+      "productCode": "FRAG_0255",
+      "name": "Winter Pine",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Air Esscentials",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00255",
+        "SA_1L": "SA_1L_00255",
+        "SA_CDIFF": "SA_CDIFF_00255",
+        "SA_PRO": "SA_PRO_00255",
+        "SA_HF": "SA_HF_00255"
+      }
+    },
+    {
+      "id": "OIL_256",
+      "tag": "#SA00256",
+      "productCode": "FRAG_0256",
+      "name": "Wedding Cake",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Air Esscentials",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00256",
+        "SA_1L": "SA_1L_00256",
+        "SA_CDIFF": "SA_CDIFF_00256",
+        "SA_PRO": "SA_PRO_00256",
+        "SA_HF": "SA_HF_00256"
+      }
+    },
+    {
+      "id": "OIL_257",
+      "tag": "#SA00257",
+      "productCode": "FRAG_0257",
+      "name": "Vanilla Caramel",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Luxaroma",
+      "supplierCode": "WO-000811 - 20188",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00257",
+        "SA_1L": "SA_1L_00257",
+        "SA_CDIFF": "SA_CDIFF_00257",
+        "SA_PRO": "SA_PRO_00257",
+        "SA_HF": "SA_HF_00257"
+      }
+    },
+    {
+      "id": "OIL_258",
+      "tag": "#SA00258",
+      "productCode": "FRAG_0258",
+      "name": "Rosemary Roasted Oinion & Garlic",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00258",
+        "SA_1L": "SA_1L_00258",
+        "SA_CDIFF": "SA_CDIFF_00258",
+        "SA_PRO": "SA_PRO_00258",
+        "SA_HF": "SA_HF_00258"
+      }
+    },
+    {
+      "id": "OIL_259",
+      "tag": "#SA00259",
+      "productCode": "FRAG_0259",
+      "name": "Pepperoni Pizza",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Air Esscentials",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00259",
+        "SA_1L": "SA_1L_00259",
+        "SA_CDIFF": "SA_CDIFF_00259",
+        "SA_PRO": "SA_PRO_00259",
+        "SA_HF": "SA_HF_00259"
+      }
+    },
+    {
+      "id": "OIL_260",
+      "tag": "#SA00260",
+      "productCode": "FRAG_0260",
+      "name": "Jardin de Carthage (Natarom)",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Natarom",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00260",
+        "SA_1L": "SA_1L_00260",
+        "SA_CDIFF": "SA_CDIFF_00260",
+        "SA_PRO": "SA_PRO_00260",
+        "SA_HF": "SA_HF_00260"
+      }
+    },
+    {
+      "id": "OIL_261",
+      "tag": "#SA00261",
+      "productCode": "FRAG_0261",
+      "name": "Lemongrass Cochin Oil",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "New Directions Australia",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00261",
+        "SA_1L": "SA_1L_00261",
+        "SA_CDIFF": "SA_CDIFF_00261",
+        "SA_PRO": "SA_PRO_00261",
+        "SA_HF": "SA_HF_00261"
+      }
+    },
+    {
+      "id": "OIL_262",
+      "tag": "#SA00262",
+      "productCode": "FRAG_0262",
+      "name": "Lime Oil Distilled",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "The Ingredient Warehouse",
+      "supplierCode": "EOLIMD",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00262",
+        "SA_1L": "SA_1L_00262",
+        "SA_CDIFF": "SA_CDIFF_00262",
+        "SA_PRO": "SA_PRO_00262",
+        "SA_HF": "SA_HF_00262"
+      }
+    },
+    {
+      "id": "OIL_263",
+      "tag": "#SA00263",
+      "productCode": "FRAG_0263",
+      "name": "Australia Mandarin, Rosemary & Cinnamon",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "The Ingredient Warehouse",
+      "supplierCode": "EBSAMRC1A",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00263",
+        "SA_1L": "SA_1L_00263",
+        "SA_CDIFF": "SA_CDIFF_00263",
+        "SA_PRO": "SA_PRO_00263",
+        "SA_HF": "SA_HF_00263"
+      }
+    },
+    {
+      "id": "OIL_264",
+      "tag": "#SA00264",
+      "productCode": "FRAG_0264",
+      "name": "Citrusy Country Road",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "ABP (Australian Botanical Products)",
+      "supplierCode": "FM77438",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00264",
+        "SA_1L": "SA_1L_00264",
+        "SA_CDIFF": "SA_CDIFF_00264",
+        "SA_PRO": "SA_PRO_00264",
+        "SA_HF": "SA_HF_00264"
+      }
+    },
+    {
+      "id": "OIL_265",
+      "tag": "#SA00265",
+      "productCode": "FRAG_0265",
+      "name": "Second Verse",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Australia Aromatics",
+      "supplierCode": "AA204319",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00265",
+        "SA_1L": "SA_1L_00265",
+        "SA_CDIFF": "SA_CDIFF_00265",
+        "SA_PRO": "SA_PRO_00265",
+        "SA_HF": "SA_HF_00265"
+      }
+    },
+    {
+      "id": "OIL_266",
+      "tag": "#SA00266",
+      "productCode": "FRAG_0266",
+      "name": "Moroccam Leather Honey",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Australia Aromatics",
+      "supplierCode": "AA171828",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00266",
+        "SA_1L": "SA_1L_00266",
+        "SA_CDIFF": "SA_CDIFF_00266",
+        "SA_PRO": "SA_PRO_00266",
+        "SA_HF": "SA_HF_00266"
+      }
+    },
+    {
+      "id": "OIL_267",
+      "tag": "#SA00267",
+      "productCode": "FRAG_0267",
+      "name": "Buttered Popcorn",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Big Tree Supplies",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00267",
+        "SA_1L": "SA_1L_00267",
+        "SA_CDIFF": "SA_CDIFF_00267",
+        "SA_PRO": "SA_PRO_00267",
+        "SA_HF": "SA_HF_00267"
+      }
+    },
+    {
+      "id": "OIL_268",
+      "tag": "#SA00268",
+      "productCode": "FRAG_0268",
+      "name": "Beef Fragance",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00268",
+        "SA_1L": "SA_1L_00268",
+        "SA_CDIFF": "SA_CDIFF_00268",
+        "SA_PRO": "SA_PRO_00268",
+        "SA_HF": "SA_HF_00268"
+      }
+    },
+    {
+      "id": "OIL_269",
+      "tag": "#SA00269",
+      "productCode": "FRAG_0269",
+      "name": "Bamboo & White Lily",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Luxaroma",
+      "supplierCode": "WO-0008726",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00269",
+        "SA_1L": "SA_1L_00269",
+        "SA_CDIFF": "SA_CDIFF_00269",
+        "SA_PRO": "SA_PRO_00269",
+        "SA_HF": "SA_HF_00269"
+      }
+    },
+    {
+      "id": "OIL_270",
+      "tag": "#SA00270",
+      "productCode": "FRAG_0270",
+      "name": "Bamboo",
+      "category": "OILS",
+      "currentStock": 10000,
+      "minStockLevel": 5000,
+      "unit": "mL",
+      "supplier": "Aroma Scenting",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_CA": "SA_CA_00270",
+        "SA_1L": "SA_1L_00270",
+        "SA_CDIFF": "SA_CDIFF_00270",
+        "SA_PRO": "SA_PRO_00270",
+        "SA_HF": "SA_HF_00270"
+      }
+    },
+    {
+      "id": "MACHINES_SPARES_1",
+      "tag": "#SAMAC00001",
+      "productCode": "SAMAC_00001",
+      "name": "HVAC CATHCHER (CATCH OIL LEAKS)",
+      "category": "MACHINES_SPARES",
+      "currentStock": 0,
+      "minStockLevel": 5,
+      "unit": "units",
+      "supplier": "",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_MAC": "SA_MAC_00001"
+      },
+      "stockBoxes": 0
+    },
+    {
+      "id": "MACHINES_SPARES_2",
+      "tag": "#SAMAC00002",
+      "productCode": "SAMAC_00002",
+      "name": "O - Ring_hvac",
+      "category": "MACHINES_SPARES",
+      "currentStock": 0,
+      "minStockLevel": 5,
+      "unit": "units",
+      "supplier": "",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_MAC": "SA_MAC_00002"
+      },
+      "stockBoxes": 0
+    },
+    {
+      "id": "MACHINES_SPARES_3",
+      "tag": "#SAMAC00003",
+      "productCode": "SAMAC_00003",
+      "name": "O - Ring - 700ml Diffuser Machine",
+      "category": "MACHINES_SPARES",
+      "currentStock": 0,
+      "minStockLevel": 5,
+      "unit": "units",
+      "supplier": "",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_MAC": "SA_MAC_00003"
+      },
+      "stockBoxes": 0
+    },
+    {
+      "id": "MACHINES_SPARES_4",
+      "tag": "#SAMAC00004",
+      "productCode": "SAMAC_00004",
+      "name": "Air Pressure Switch",
+      "category": "MACHINES_SPARES",
+      "currentStock": 0,
+      "minStockLevel": 5,
+      "unit": "units",
+      "supplier": "",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_MAC": "SA_MAC_00004"
+      },
+      "stockBoxes": 0
+    },
+    {
+      "id": "MACHINES_SPARES_5",
+      "tag": "#SAMAC00005",
+      "productCode": "SAMAC_00005",
+      "name": "16mm - HVAC Drum Connector - Silver & White Diffuser",
+      "category": "MACHINES_SPARES",
+      "currentStock": 0,
+      "minStockLevel": 5,
+      "unit": "units",
+      "supplier": "",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_MAC": "SA_MAC_00005"
+      },
+      "stockBoxes": 0
+    },
+    {
+      "id": "MACHINES_SPARES_6",
+      "tag": "#SAMAC00006",
+      "productCode": "SAMAC_00006",
+      "name": "POWER CORD - Portable Bluetooth Diffuser",
+      "category": "MACHINES_SPARES",
+      "currentStock": 0,
+      "minStockLevel": 5,
+      "unit": "units",
+      "supplier": "",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_MAC": "SA_MAC_00006"
+      },
+      "stockBoxes": 0
+    },
+    {
+      "id": "MACHINES_SPARES_7",
+      "tag": "#SAMAC00007",
+      "productCode": "SAMAC_00007",
+      "name": "Fragrance Spigot - 16mm [NEW Spigot for Chinese HVACS]",
+      "category": "MACHINES_SPARES",
+      "currentStock": 0,
+      "minStockLevel": 5,
+      "unit": "units",
+      "supplier": "",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_MAC": "SA_MAC_00007"
+      },
+      "stockBoxes": 0
+    },
+    {
+      "id": "MACHINES_SPARES_8",
+      "tag": "#SAMAC00008",
+      "productCode": "SAMAC_00008",
+      "name": "Fragrance Tube 16mm [1 Meter]",
+      "category": "MACHINES_SPARES",
+      "currentStock": 0,
+      "minStockLevel": 5,
+      "unit": "units",
+      "supplier": "",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_MAC": "SA_MAC_00008"
+      },
+      "stockBoxes": 0
+    },
+    {
+      "id": "MACHINES_SPARES_9",
+      "tag": "#SAMAC00009",
+      "productCode": "SAMAC_00009",
+      "name": "Medium Diffuser Wall Mount - [Black]",
+      "category": "MACHINES_SPARES",
+      "currentStock": 0,
+      "minStockLevel": 5,
+      "unit": "units",
+      "supplier": "",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_MAC": "SA_MAC_00009"
+      },
+      "stockBoxes": 0
+    },
+    {
+      "id": "MACHINES_SPARES_10",
+      "tag": "#SAMAC00010",
+      "productCode": "SAMAC_00010",
+      "name": "Two Way Connector 8mm - 8mm - [Required for French HVAC]",
+      "category": "MACHINES_SPARES",
+      "currentStock": 0,
+      "minStockLevel": 5,
+      "unit": "units",
+      "supplier": "",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_MAC": "SA_MAC_00010"
+      },
+      "stockBoxes": 0
+    },
+    {
+      "id": "MACHINES_SPARES_11",
+      "tag": "#SAMAC00011",
+      "productCode": "SAMAC_00011",
+      "name": "Connector 8mm - 10mm - [Required for 1L HVAC Bottle]",
+      "category": "MACHINES_SPARES",
+      "currentStock": 0,
+      "minStockLevel": 5,
+      "unit": "units",
+      "supplier": "",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_MAC": "SA_MAC_00011"
+      },
+      "stockBoxes": 0
+    },
+    {
+      "id": "MACHINES_SPARES_12",
+      "tag": "#SAMAC00012",
+      "productCode": "SAMAC_00012",
+      "name": "Connector 8mm - 8mm - [Required for French HVAC]",
+      "category": "MACHINES_SPARES",
+      "currentStock": 0,
+      "minStockLevel": 5,
+      "unit": "units",
+      "supplier": "",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_MAC": "SA_MAC_00012"
+      },
+      "stockBoxes": 0
+    },
+    {
+      "id": "MACHINES_SPARES_13",
+      "tag": "#SAMAC00013",
+      "productCode": "SAMAC_00013",
+      "name": "ScentPro Key",
+      "category": "MACHINES_SPARES",
+      "currentStock": 0,
+      "minStockLevel": 5,
+      "unit": "units",
+      "supplier": "",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_MAC": "SA_MAC_00013"
+      },
+      "stockBoxes": 0
+    },
+    {
+      "id": "MACHINES_SPARES_14",
+      "tag": "#SAMAC00014",
+      "productCode": "SAMAC_00014",
+      "name": "ScentPro Manual",
+      "category": "MACHINES_SPARES",
+      "currentStock": 0,
+      "minStockLevel": 5,
+      "unit": "units",
+      "supplier": "",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_MAC": "SA_MAC_00014"
+      },
+      "stockBoxes": 0
+    },
+    {
+      "id": "MACHINES_SPARES_15",
+      "tag": "#SAMAC00015",
+      "productCode": "SAMAC_00015",
+      "name": "Cartridge Connector - 700 Diffuser",
+      "category": "MACHINES_SPARES",
+      "currentStock": 0,
+      "minStockLevel": 5,
+      "unit": "units",
+      "supplier": "",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_MAC": "SA_MAC_00015"
+      },
+      "stockBoxes": 0
+    },
+    {
+      "id": "MACHINES_SPARES_16",
+      "tag": "#SAMAC00016",
+      "productCode": "SAMAC_00016",
+      "name": "1L Pro Nozzle [White]",
+      "category": "MACHINES_SPARES",
+      "currentStock": 0,
+      "minStockLevel": 5,
+      "unit": "units",
+      "supplier": "",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_MAC": "SA_MAC_00016"
+      },
+      "stockBoxes": 0
+    },
+    {
+      "id": "MACHINES_SPARES_17",
+      "tag": "#SAMAC00017",
+      "productCode": "SAMAC_00017",
+      "name": "1L Pro Nozzle [Black]",
+      "category": "MACHINES_SPARES",
+      "currentStock": 0,
+      "minStockLevel": 5,
+      "unit": "units",
+      "supplier": "",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_MAC": "SA_MAC_00017"
+      },
+      "stockBoxes": 0
+    },
+    {
+      "id": "MACHINES_SPARES_18",
+      "tag": "#SAMAC00018",
+      "productCode": "SAMAC_00018",
+      "name": "700 Nozzle [White]",
+      "category": "MACHINES_SPARES",
+      "currentStock": 0,
+      "minStockLevel": 5,
+      "unit": "units",
+      "supplier": "",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_MAC": "SA_MAC_00018"
+      },
+      "stockBoxes": 0
+    },
+    {
+      "id": "MACHINES_SPARES_19",
+      "tag": "#SAMAC00019",
+      "productCode": "SAMAC_00019",
+      "name": "700 Nozzle [Black]",
+      "category": "MACHINES_SPARES",
+      "currentStock": 0,
+      "minStockLevel": 5,
+      "unit": "units",
+      "supplier": "",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_MAC": "SA_MAC_00019"
+      },
+      "stockBoxes": 0
+    },
+    {
+      "id": "RM_1",
+      "tag": "#SA_RM_00001",
+      "productCode": "SA_RM_00001",
+      "name": "Procell D Batteries - Small Box (12 Units)",
+      "category": "RAW_MATERIALS",
+      "currentStock": 0,
+      "stockBoxes": 0,
+      "minStockLevel": 10,
+      "unit": "units",
+      "unitPerBox": 12,
+      "supplier": "",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_RM": "SA_RM_00001"
+      }
+    },
+    {
+      "id": "RM_2",
+      "tag": "#SA_RM_00002",
+      "productCode": "SA_RM_00002",
+      "name": "Procell D Batteries - Large Box (72 Units)",
+      "category": "RAW_MATERIALS",
+      "currentStock": 0,
+      "stockBoxes": 0,
+      "minStockLevel": 10,
+      "unit": "units",
+      "unitPerBox": 72,
+      "supplier": "",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_RM": "SA_RM_00002"
+      }
+    },
+    {
+      "id": "RM_3",
+      "tag": "#SA_RM_00003",
+      "productCode": "SA_RM_00003",
+      "name": "Empty Oil Cartridge (400ml)",
+      "category": "RAW_MATERIALS",
+      "currentStock": 0,
+      "stockBoxes": 0,
+      "minStockLevel": 50,
+      "unit": "units",
+      "unitPerBox": 1,
+      "supplier": "CHINA",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_RM": "SA_RM_00003"
+      }
+    },
+    {
+      "id": "RM_4",
+      "tag": "#SA_RM_00004",
+      "productCode": "SA_RM_00004",
+      "name": "Empty Oil Refill Bottle (700ml)",
+      "category": "RAW_MATERIALS",
+      "currentStock": 0,
+      "stockBoxes": 0,
+      "minStockLevel": 50,
+      "unit": "units",
+      "unitPerBox": 1,
+      "supplier": "CHINA",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_RM": "SA_RM_00004"
+      }
+    },
+    {
+      "id": "RM_5",
+      "tag": "#SA_RM_00005",
+      "productCode": "SA_RM_00005",
+      "name": "Empty Oil Refill Bottle (1000ml)",
+      "category": "RAW_MATERIALS",
+      "currentStock": 0,
+      "stockBoxes": 0,
+      "minStockLevel": 50,
+      "unit": "units",
+      "unitPerBox": 70,
+      "supplier": "CHINA",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_RM": "SA_RM_00005"
+      }
+    },
+    {
+      "id": "RM_6",
+      "tag": "#SA_RM_00006",
+      "productCode": "SA_RM_00006",
+      "name": "Empty PRO Oil Refill (1000ml)",
+      "category": "RAW_MATERIALS",
+      "currentStock": 0,
+      "stockBoxes": 0,
+      "minStockLevel": 50,
+      "unit": "units",
+      "unitPerBox": 108,
+      "supplier": "PGP - PLASDENE",
+      "supplierCode": "B060/1",
+      "shopifySkus": {
+        "SA_RM": "SA_RM_00006"
+      }
+    },
+    {
+      "id": "RM_7",
+      "tag": "#SA_RM_00007",
+      "productCode": "SA_RM_00007",
+      "name": "400 Cartridge Top Lid",
+      "category": "RAW_MATERIALS",
+      "currentStock": 0,
+      "stockBoxes": 0,
+      "minStockLevel": 50,
+      "unit": "units",
+      "unitPerBox": 112,
+      "supplier": "CHINA",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_RM": "SA_RM_00007"
+      }
+    },
+    {
+      "id": "RM_8",
+      "tag": "#SA_RM_00008",
+      "productCode": "SA_RM_00008",
+      "name": "400 Cartridge Internal Tub",
+      "category": "RAW_MATERIALS",
+      "currentStock": 0,
+      "stockBoxes": 0,
+      "minStockLevel": 50,
+      "unit": "units",
+      "unitPerBox": 1,
+      "supplier": "CHINA",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_RM": "SA_RM_00008"
+      }
+    },
+    {
+      "id": "RM_9",
+      "tag": "#SA_RM_00009",
+      "productCode": "SA_RM_00009",
+      "name": "400 Cartridge Top Cap",
+      "category": "RAW_MATERIALS",
+      "currentStock": 0,
+      "stockBoxes": 0,
+      "minStockLevel": 50,
+      "unit": "units",
+      "unitPerBox": 1,
+      "supplier": "CHINA",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_RM": "SA_RM_00009"
+      }
+    },
+    {
+      "id": "RM_10",
+      "tag": "#SA_RM_00010",
+      "productCode": "SA_RM_00010",
+      "name": "400 Cartridge Inside Cap",
+      "category": "RAW_MATERIALS",
+      "currentStock": 0,
+      "stockBoxes": 0,
+      "minStockLevel": 50,
+      "unit": "units",
+      "unitPerBox": 1,
+      "supplier": "CHINA",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_RM": "SA_RM_00010"
+      }
+    },
+    {
+      "id": "RM_11",
+      "tag": "#SA_RM_00011",
+      "productCode": "SA_RM_00011",
+      "name": "Plastic zipper Bag",
+      "category": "RAW_MATERIALS",
+      "currentStock": 0,
+      "stockBoxes": 0,
+      "minStockLevel": 100,
+      "unit": "units",
+      "unitPerBox": 1,
+      "supplier": "",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_RM": "SA_RM_00011"
+      }
+    },
+    {
+      "id": "RM_12",
+      "tag": "#SA_RM_00012",
+      "productCode": "SA_RM_00012",
+      "name": "Cartridge Box (400 and 700ml)",
+      "category": "RAW_MATERIALS",
+      "currentStock": 0,
+      "stockBoxes": 0,
+      "minStockLevel": 50,
+      "unit": "units",
+      "unitPerBox": 1,
+      "supplier": "",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_RM": "SA_RM_00012"
+      }
+    },
+    {
+      "id": "RM_13",
+      "tag": "#SA_RM_00013",
+      "productCode": "SA_RM_00013",
+      "name": "Top Lid for 1L Bottle",
+      "category": "RAW_MATERIALS",
+      "currentStock": 0,
+      "stockBoxes": 0,
+      "minStockLevel": 50,
+      "unit": "units",
+      "unitPerBox": 1,
+      "supplier": "CHINA",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_RM": "SA_RM_00013"
+      }
+    },
+    {
+      "id": "RM_14",
+      "tag": "#SA_RM_00014",
+      "productCode": "SA_RM_00014",
+      "name": "Top Lid for 700ml Bottle",
+      "category": "RAW_MATERIALS",
+      "currentStock": 0,
+      "stockBoxes": 0,
+      "minStockLevel": 50,
+      "unit": "units",
+      "unitPerBox": 1,
+      "supplier": "CHINA",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_RM": "SA_RM_00014"
+      }
+    },
+    {
+      "id": "RM_15",
+      "tag": "#SA_RM_00015",
+      "productCode": "SA_RM_00015",
+      "name": "Top Lid for 1L Bottle (PRO)",
+      "category": "RAW_MATERIALS",
+      "currentStock": 0,
+      "stockBoxes": 0,
+      "minStockLevel": 50,
+      "unit": "units",
+      "unitPerBox": 1,
+      "supplier": "PGP - PLASDENE",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_RM": "SA_RM_00015"
+      }
+    },
+    {
+      "id": "RM_16",
+      "tag": "#SA_RM_00016",
+      "productCode": "SA_RM_00016",
+      "name": "Reed Sticks [Black] for Reed Diffuser (6 Units)",
+      "category": "RAW_MATERIALS",
+      "currentStock": 0,
+      "stockBoxes": 0,
+      "minStockLevel": 50,
+      "unit": "units",
+      "unitPerBox": 6,
+      "supplier": "",
+      "supplierCode": "",
+      "shopifySkus": {
+        "SA_RM": "SA_RM_00016"
+      }
+    }
+  ],
+  "bom": {
+    "SA_CA": [
+      {
+        "seq": 1,
+        "componentCode": "SA_RM_00003",
+        "componentName": "Empty Oil Cartridge (400ml)",
+        "quantity": 1
+      },
+      {
+        "seq": 2,
+        "componentCode": "SA_RM_00007",
+        "componentName": "400 Cartridge Top Lid",
+        "quantity": 1
+      },
+      {
+        "seq": 3,
+        "componentCode": "SA_RM_00008",
+        "componentName": "400 Cartridge Internal Tub",
+        "quantity": 1
+      },
+      {
+        "seq": 4,
+        "componentCode": "SA_RM_00009",
+        "componentName": "400 Cartridge Top Cap",
+        "quantity": 1
+      },
+      {
+        "seq": 5,
+        "componentCode": "SA_RM_00010",
+        "componentName": "400 Cartridge Inside Cap",
+        "quantity": 1
+      },
+      {
+        "seq": 6,
+        "componentCode": "SA_RM_00011",
+        "componentName": "Plastic zipper Bag",
+        "quantity": 1
+      },
+      {
+        "seq": 7,
+        "componentCode": "SA_RM_00012",
+        "componentName": "Cartridge Box (400 and 700ml)",
+        "quantity": 1
+      }
+    ],
+    "SA_HF": [
+      {
+        "seq": 1,
+        "componentCode": "SA_RM_00005",
+        "componentName": "Empty Oil Refill Bottle (1000ml)",
+        "quantity": 1
+      },
+      {
+        "seq": 2,
+        "componentCode": "SA_RM_00013",
+        "componentName": "Top Lid for 1L Bottle",
+        "quantity": 1
+      },
+      {
+        "seq": 3,
+        "componentCode": "SA_RM_00011",
+        "componentName": "Plastic zipper Bag",
+        "quantity": 1
+      }
+    ],
+    "SA_CDIFF": [
+      {
+        "seq": 1,
+        "componentCode": "SA_RM_00004",
+        "componentName": "Empty Oil Refill Bottle (700ml)",
+        "quantity": 1
+      },
+      {
+        "seq": 2,
+        "componentCode": "SA_RM_00014",
+        "componentName": "Top Lid for 700ml Bottle",
+        "quantity": 1
+      },
+      {
+        "seq": 3,
+        "componentCode": "SA_RM_00011",
+        "componentName": "Plastic zipper Bag",
+        "quantity": 1
+      },
+      {
+        "seq": 4,
+        "componentCode": "SA_RM_00012",
+        "componentName": "Cartridge Box (400 and 700ml)",
+        "quantity": 1
+      }
+    ],
+    "SA_1L": [
+      {
+        "seq": 1,
+        "componentCode": "SA_RM_00005",
+        "componentName": "Empty Oil Refill Bottle (1000ml)",
+        "quantity": 1
+      },
+      {
+        "seq": 2,
+        "componentCode": "SA_RM_00013",
+        "componentName": "Top Lid for 1L Bottle",
+        "quantity": 1
+      },
+      {
+        "seq": 3,
+        "componentCode": "SA_RM_00011",
+        "componentName": "Plastic zipper Bag",
+        "quantity": 1
+      }
+    ],
+    "SA_PRO": [
+      {
+        "seq": 1,
+        "componentCode": "SA_RM_00006",
+        "componentName": "Empty PRO Oil Refill (1000ml)",
+        "quantity": 1
+      },
+      {
+        "seq": 2,
+        "componentCode": "SA_RM_00015",
+        "componentName": "Top Lid for 1L Bottle (PRO)",
+        "quantity": 1
+      },
+      {
+        "seq": 3,
+        "componentCode": "SA_RM_00011",
+        "componentName": "Plastic zipper Bag",
+        "quantity": 1
+      }
+    ]
+  },
+  "users": [
+    {
+      "id": "1",
+      "name": "admin",
+      "password": "$2a$10$33foOOk2uOx/jvvNYitQT.Hg1dPXHjE5NiH1Mvxw.5hvAlgizpwvi",
+      "role": "admin"
+    }
+  ],
+  "transactions": [],
+  "shopify_orders": [],
+  "attachments": []
+}
