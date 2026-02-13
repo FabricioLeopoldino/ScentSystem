@@ -11,7 +11,14 @@ import { dirname, join } from 'path';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-
+// Rota de health check simples - usada pelo UptimeRobot para manter o serviço acordado
+app.get('/api/health', (req, res) => {
+  res.status(200).json({ 
+    status: 'ok', 
+    message: 'Serviço ativo', 
+    timestamp: new Date().toISOString() 
+  });
+});
 const app = express();
 app.use(cors());
 app.use(express.json());
