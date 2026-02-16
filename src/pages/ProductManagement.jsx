@@ -1,276 +1,520 @@
-  import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
+import { exportProductsToExcel } from '../utils/excelExport';
+import { exportToShopifyCSV } from '../utils/shopifyExport';
 
-export default function ProductManagement() {
+export default function ProductManagement({ user }) {
   const [products, setProducts] = useState([]);
-  const [selectedProduct, setSelectedProduct] = useState(null);
-  const [showAdjustModal, setShowAdjustModal] = useState(false);
-  const [adjustType, setAdjustType] = useState('add'); // 'add' or 'remove'
-  const [quantity, setQuantity] = useState('');
-  const [notes, setNotes] = useState('');
-  const [loading, setLoading] = useState(false);
-
-  // Fetch products
-  const fetchProducts = async () => {
-    try {
-      const response = await fetch('/api/products');
-      const data = await response.json();
-      setProducts(data);
-    } catch (error) {
-      console.error('Error fetching products:', error);
-      alert('Error loading products');
-    }
-  };
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [categoryFilter, setCategoryFilter] = useState('ALL');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [editingProduct, setEditingProduct] = useState(null);
+  
+  const [formData, setFormData] = useState({
+    name: '',
+    category: 'OILS',
+    productCode: '',
+    tag: '',
+    unit: 'mL',
+    currentStock: 0,
+    minStockLevel: 0,
+    supplier: '',
+    supplierCode: '',
+    unitPerBox: 1,
+    shopifySkus: {}
+  });
 
   useEffect(() => {
     fetchProducts();
   }, []);
 
-  // Open adjust modal
-  const openAdjustModal = (product) => {
-    console.log('📦 Opening adjust modal for:', product);
-    setSelectedProduct(product);
-    setShowAdjustModal(true);
-    setQuantity('');
-    setNotes('');
-    setAdjustType('add');
-  };
+  useEffect(() => {
+    filterProducts();
+  }, [products, categoryFilter, searchTerm]);
 
-  // Close modal
-  const closeModal = () => {
-    console.log('❌ Closing modal');
-    setShowAdjustModal(false);
-    setSelectedProduct(null);
-    setQuantity('');
-    setNotes('');
-  };
-
-  // Confirm adjustment
-  const handleConfirmAdjustment = async () => {
-    if (!selectedProduct || !quantity || parseFloat(quantity) <= 0) {
-      alert('Please enter a valid quantity');
-      return;
-    }
-
-    setLoading(true);
-
+  const fetchProducts = async () => {
     try {
-      console.log('🚀 Sending stock adjustment:', {
-        type: adjustType,
-        productId: selectedProduct.id,
-        quantity: parseFloat(quantity),
-        notes
-      });
-
-      const endpoint = adjustType === 'add' ? '/api/stock/add' : '/api/stock/remove';
-      
-      const response = await fetch(endpoint, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          productId: selectedProduct.id,
-          quantity: parseFloat(quantity),
-          notes: notes || ''
-        })
-      });
-
-      console.log('📡 Response status:', response.status);
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error('❌ Error response:', errorData);
-        throw new Error(errorData.error || 'Failed to adjust stock');
-      }
-
-      const data = await response.json();
-      console.log('✅ Success:', data);
-
-      alert(`Stock ${adjustType === 'add' ? 'added' : 'removed'} successfully!\nNew stock: ${data.newStock}`);
-      
-      // Refresh products
-      await fetchProducts();
-      
-      // Close modal
-      closeModal();
-
+      const res = await fetch('/api/products');
+      const data = await res.json();
+      setProducts(data);
+      setLoading(false);
     } catch (error) {
-      console.error('❌ Error adjusting stock:', error);
-      alert(`Error: ${error.message}`);
-    } finally {
+      console.error('Error fetching products:', error);
       setLoading(false);
     }
   };
 
-  return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-6">Product Management</h1>
+  const filterProducts = () => {
+    let filtered = products;
+    
+    if (categoryFilter !== 'ALL') {
+      filtered = filtered.filter(p => p.category === categoryFilter);
+    }
+    
+    if (searchTerm) {
+      filtered = filtered.filter(p => 
+        p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        p.productCode.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        p.tag.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+    
+    setFilteredProducts(filtered);
+  };
 
-      {/* Products Table */}
-      <div className="bg-white rounded-lg shadow overflow-hidden">
-        <table className="min-w-full">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Product Code</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Category</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Current Stock</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Min Level</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-200">
-            {products.map((product) => (
-              <tr key={product.id}>
-                <td className="px-6 py-4 whitespace-nowrap text-sm">{product.productCode}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm">{product.name}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm">{product.category}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm">
-                  {product.currentStock} {product.unit}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm">
-                  {product.minStockLevel} {product.unit}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm">
-                  <button
-                    onClick={() => openAdjustModal(product)}
-                    className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-                  >
-                    Adjust Stock
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    try {
+      const url = editingProduct 
+        ? `/api/products/${editingProduct.id}`
+        : '/api/products';
+      
+      const method = editingProduct ? 'PUT' : 'POST';
+      
+      const res = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
+      
+      if (res.ok) {
+        alert(editingProduct ? 'Product updated!' : 'Product created!');
+        setShowAddModal(false);
+        setEditingProduct(null);
+        resetForm();
+        fetchProducts();
+      }
+    } catch (error) {
+      alert('Error saving product: ' + error.message);
+    }
+  };
+
+  const handleDelete = async (productId) => {
+    if (!confirm('Are you sure you want to delete this product?')) return;
+    
+    try {
+      const res = await fetch(`/api/products/${productId}`, {
+        method: 'DELETE'
+      });
+      
+      if (res.ok) {
+        alert('Product deleted!');
+        fetchProducts();
+      }
+    } catch (error) {
+      alert('Error deleting product: ' + error.message);
+    }
+  };
+
+  const handleClearIncoming = async (productId, index) => {
+    if (!confirm('Clear this incoming order?')) return;
+    
+    try {
+      const res = await fetch(`/api/products/${productId}/incoming/${index}`, {
+        method: 'DELETE'
+      });
+      
+      if (res.ok) {
+        alert('Incoming order cleared!');
+        fetchProducts();
+      }
+    } catch (error) {
+      alert('Error clearing incoming order: ' + error.message);
+    }
+  };
+
+  const handleEdit = (product) => {
+    setEditingProduct(product);
+    setFormData({
+      name: product.name,
+      category: product.category,
+      productCode: product.productCode,
+      tag: product.tag,
+      unit: product.unit,
+      currentStock: product.currentStock,
+      minStockLevel: product.minStockLevel,
+      supplier: product.supplier || '',
+      supplier_code: product.supplier_code || '',
+      unitPerBox: product.unitPerBox || 1,
+      shopifySkus: product.shopifySkus || {}
+    });
+    setShowAddModal(true);
+  };
+
+  const resetForm = () => {
+    setFormData({
+      name: '',
+      category: 'OILS',
+      productCode: '',
+      tag: '',
+      unit: 'mL',
+      currentStock: 0,
+      minStockLevel: 0,
+      supplier: '',
+      supplier_code: '',
+      unitPerBox: 1,
+      shopifySkus: {}
+    });
+  };
+
+  const getCategoryBadge = (category) => {
+    const colors = {
+      OILS: 'bg-blue-100 text-blue-800',
+      MACHINES_SPARES: 'bg-purple-100 text-purple-800',
+      RAW_MATERIALS: 'bg-orange-100 text-orange-800'
+    };
+    return colors[category] || 'bg-gray-100 text-gray-800';
+  };
+
+  const getCategoryLabel = (category) => {
+    const labels = {
+      OILS: 'Oils',
+      MACHINES_SPARES: 'Machines & Spares',
+      RAW_MATERIALS: 'Raw Materials'
+    };
+    return labels[category] || category;
+  };
+
+  const getStockStatus = (product) => {
+    if (product.currentStock === 0) return { label: 'Out of Stock', color: 'text-red-600' };
+    if (product.currentStock < product.minStockLevel) return { label: 'Low Stock', color: 'text-orange-600' };
+    return { label: 'Healthy', color: 'text-green-600' };
+  };
+
+  if (loading) {
+    return <div className="loading">Loading products...</div>;
+  }
+
+  return (
+    <div className="page">
+      <div className="page-header">
+        <div>
+          <h1>Product Management</h1>
+          <p>Manage all products across categories</p>
+        </div>
+        <div style={{ display: 'flex', gap: '12px' }}>
+          <button 
+            className="btn btn-secondary"
+            onClick={() => exportToShopifyCSV(products)}
+            style={{ background: '#5f3dc4', color: 'white' }}
+          >
+            🛍️ Export for Shopify
+          </button>
+          <button 
+            className="btn btn-secondary"
+            onClick={() => exportProductsToExcel(products)}
+          >
+            📊 Export to Excel
+          </button>
+          {user.role === 'admin' && (
+            <button 
+              className="btn btn-primary"
+              onClick={() => {
+                resetForm();
+                setEditingProduct(null);
+                setShowAddModal(true);
+              }}
+            >
+              + Add Product
+            </button>
+          )}
+        </div>
       </div>
 
-      {/* Adjust Stock Modal */}
-      {showAdjustModal && selectedProduct && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-bold">Adjust Stock: {selectedProduct.name}</h2>
+      {/* Filters */}
+      <div className="card" style={{ marginBottom: '24px' }}>
+        <div style={{ display: 'flex', gap: '16px', alignItems: 'center', flexWrap: 'wrap' }}>
+          <div style={{ flex: '1', minWidth: '200px' }}>
+            <input
+              type="text"
+              className="input"
+              placeholder="Search by name, code, or tag..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+          
+          <div style={{ display: 'flex', gap: '8px' }}>
+            {[
+              { value: 'ALL', label: 'All' },
+              { value: 'OILS', label: 'Oils' },
+              { value: 'MACHINES_SPARES', label: 'Machines & Spares' },
+              { value: 'RAW_MATERIALS', label: 'Raw Materials' }
+            ].map(cat => (
               <button
-                onClick={closeModal}
-                className="text-gray-500 hover:text-gray-700 text-2xl"
+                key={cat.value}
+                className={`btn ${categoryFilter === cat.value ? 'btn-primary' : 'btn-secondary'}`}
+                onClick={() => setCategoryFilter(cat.value)}
+                style={{ fontSize: '13px', padding: '8px 16px' }}
               >
-                ×
+                {cat.label}
               </button>
-            </div>
+            ))}
+          </div>
+        </div>
+      </div>
 
-            {/* Product Info */}
-            <div className="bg-gray-50 p-4 rounded mb-4">
-              <div className="grid grid-cols-2 gap-4 mb-2">
-                <div>
-                  <div className="text-sm text-gray-500">Product Code</div>
-                  <div className="font-medium">{selectedProduct.productCode}</div>
+      {/* Products Table */}
+      <div className="card">
+        <div style={{ overflowX: 'auto' }}>
+          <table className="table">
+            <thead>
+              <tr>
+                <th>Tag</th>
+                <th>Product Code</th>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Stock</th>
+                <th>Min Level</th>
+                <th>Status</th>
+                <th>Incoming Orders</th>
+                <th>Supplier</th>
+                {user.role === 'admin' && <th>Actions</th>}
+              </tr>
+            </thead>
+            <tbody>
+              {filteredProducts.map(product => {
+                const status = getStockStatus(product);
+                return (
+                  <tr key={product.id}>
+                    <td style={{ fontFamily: 'monospace', fontSize: '12px' }}>{product.tag}</td>
+                    <td style={{ fontFamily: 'monospace', fontSize: '12px' }}>{product.productCode}</td>
+                    <td style={{ fontWeight: '600' }}>{product.name}</td>
+                    <td>
+                      <span className={`badge ${getCategoryBadge(product.category)}`}>
+                        {getCategoryLabel(product.category)}
+                      </span>
+                    </td>
+                    <td>
+                      {product.currentStock} {product.unit}
+                      {product.unitPerBox > 1 && (
+                        <span style={{ fontSize: '11px', color: '#64748b', marginLeft: '4px' }}>
+                          ({product.stockBoxes} boxes)
+                        </span>
+                      )}
+                    </td>
+                    <td>{product.minStockLevel} {product.unit}</td>
+                    <td className={status.color} style={{ fontWeight: '600' }}>{status.label}</td>
+                    <td>
+                      {product.incomingOrders && product.incomingOrders.length > 0 ? (
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                          {product.incomingOrders.map((order, idx) => (
+                            <div key={idx} style={{ 
+                              display: 'flex', 
+                              alignItems: 'center', 
+                              gap: '8px',
+                              padding: '4px 8px',
+                              background: '#fef3c7',
+                              borderRadius: '4px',
+                              fontSize: '12px'
+                            }}>
+                              <span style={{ fontWeight: '600', color: '#92400e' }}>
+                                {order.orderNumber}
+                              </span>
+                              <span style={{ color: '#78350f' }}>
+                                ({order.quantity} {product.unit})
+                              </span>
+                              {user.role === 'admin' && (
+                                <button
+                                  onClick={() => handleClearIncoming(product.id, idx)}
+                                  style={{
+                                    background: 'none',
+                                    border: 'none',
+                                    cursor: 'pointer',
+                                    fontSize: '16px',
+                                    marginLeft: 'auto'
+                                  }}
+                                  title="Clear incoming order"
+                                >
+                                  ✕
+                                </button>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <span style={{ color: '#9ca3af', fontSize: '12px' }}>-</span>
+                      )}
+                    </td>
+                    <td style={{ fontSize: '13px', color: '#64748b' }}>
+                      {product.supplier || '-'}
+                    </td>
+                    {user.role === 'admin' && (
+                      <td>
+                        <div style={{ display: 'flex', gap: '8px' }}>
+                          <button 
+                            className="btn btn-secondary"
+                            onClick={() => handleEdit(product)}
+                            style={{ fontSize: '12px', padding: '6px 12px' }}
+                          >
+                            Edit
+                          </button>
+                          <button 
+                            className="btn btn-danger"
+                            onClick={() => handleDelete(product.id)}
+                            style={{ fontSize: '12px', padding: '6px 12px' }}
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </td>
+                    )}
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+        
+        <div style={{ marginTop: '16px', fontSize: '14px', color: '#64748b' }}>
+          Showing {filteredProducts.length} of {products.length} products
+        </div>
+      </div>
+
+      {/* Add/Edit Modal */}
+      {showAddModal && (
+        <div className="modal-overlay" onClick={() => setShowAddModal(false)}>
+          <div className="modal" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2>{editingProduct ? 'Edit Product' : 'Add New Product'}</h2>
+              <button className="modal-close" onClick={() => setShowAddModal(false)}>X</button>
+            </div>
+            
+            <form onSubmit={handleSubmit}>
+              <div className="form-grid">
+                <div className="form-group">
+                  <label>Product Name *</label>
+                  <input
+                    type="text"
+                    className="input"
+                    value={formData.name}
+                    onChange={(e) => setFormData({...formData, name: e.target.value})}
+                    required
+                  />
                 </div>
-                <div>
-                  <div className="text-sm text-gray-500">Category</div>
-                  <div className="font-medium">{selectedProduct.category}</div>
+
+                <div className="form-group">
+                  <label>Category *</label>
+                  <select
+                    className="input"
+                    value={formData.category}
+                    onChange={(e) => {
+                      const category = e.target.value;
+                      setFormData({
+                        ...formData, 
+                        category,
+                        unit: category === 'OILS' ? 'mL' : 'units'
+                      });
+                    }}
+                    required
+                  >
+                    <option value="OILS">Essential Oils</option>
+                    <option value="MACHINES_SPARES">Machines & Spares</option>
+                    <option value="RAW_MATERIALS">Raw Materials</option>
+                  </select>
                 </div>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <div className="text-sm text-gray-500">Current Stock</div>
-                  <div className="font-medium text-blue-600">
-                    {selectedProduct.currentStock} {selectedProduct.unit}
+
+                <div className="form-group">
+                  <label>Product Code</label>
+                  <input
+                    type="text"
+                    className="input"
+                    value={formData.productCode}
+                    onChange={(e) => setFormData({...formData, productCode: e.target.value})}
+                    placeholder="Auto-generated if empty"
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>Tag</label>
+                  <input
+                    type="text"
+                    className="input"
+                    value={formData.tag}
+                    onChange={(e) => setFormData({...formData, tag: e.target.value})}
+                    placeholder="Auto-generated if empty"
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>Current Stock *</label>
+                  <input
+                    type="number"
+                    className="input"
+                    value={formData.currentStock}
+                    onChange={(e) => setFormData({...formData, currentStock: parseInt(e.target.value) || 0})}
+                    required
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>Min Stock Level *</label>
+                  <input
+                    type="number"
+                    className="input"
+                    value={formData.minStockLevel}
+                    onChange={(e) => setFormData({...formData, minStockLevel: parseInt(e.target.value) || 0})}
+                    required
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>Unit</label>
+                  <select
+                    className="input"
+                    value={formData.unit}
+                    onChange={(e) => setFormData({...formData, unit: e.target.value})}
+                  >
+                    <option value="mL">mL (milliliters)</option>
+                    <option value="units">Units</option>
+                    <option value="kg">kg (kilograms)</option>
+                  </select>
+                </div>
+
+                {formData.category !== 'OILS' && (
+                  <div className="form-group">
+                    <label>Units Per Box</label>
+                    <input
+                      type="number"
+                      className="input"
+                      value={formData.unitPerBox}
+                      onChange={(e) => setFormData({...formData, unitPerBox: parseInt(e.target.value) || 1})}
+                    />
                   </div>
+                )}
+
+                <div className="form-group">
+                  <label>Supplier</label>
+                  <input
+                    type="text"
+                    className="input"
+                    value={formData.supplier}
+                    onChange={(e) => setFormData({...formData, supplier: e.target.value})}
+                  />
                 </div>
-                <div>
-                  <div className="text-sm text-gray-500">Min Level</div>
-                  <div className="font-medium">
-                    {selectedProduct.minStockLevel} {selectedProduct.unit}
-                  </div>
+
+                <div className="form-group">
+                  <label>Supplier Code</label>
+                  <input
+                    type="text"
+                    className="input"
+                    value={formData.supplier_code}
+                    onChange={(e) => setFormData({...formData, supplier_code: e.target.value})}
+                  />
                 </div>
               </div>
-            </div>
 
-            {/* Type Selection */}
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Type</label>
-              <div className="grid grid-cols-2 gap-2">
-                <button
-                  onClick={() => {
-                    console.log('Selected: Add Stock');
-                    setAdjustType('add');
-                  }}
-                  className={`px-4 py-2 rounded font-medium ${
-                    adjustType === 'add'
-                      ? 'bg-green-500 text-white'
-                      : 'bg-gray-200 text-gray-700'
-                  }`}
-                >
-                  + Add Stock
+              <div className="modal-footer">
+                <button type="button" className="btn btn-secondary" onClick={() => setShowAddModal(false)}>
+                  Cancel
                 </button>
-                <button
-                  onClick={() => {
-                    console.log('Selected: Remove Stock');
-                    setAdjustType('remove');
-                  }}
-                  className={`px-4 py-2 rounded font-medium ${
-                    adjustType === 'remove'
-                      ? 'bg-red-500 text-white'
-                      : 'bg-gray-200 text-gray-700'
-                  }`}
-                >
-                  − Remove Stock
+                <button type="submit" className="btn btn-primary">
+                  {editingProduct ? 'Update Product' : 'Create Product'}
                 </button>
               </div>
-            </div>
-
-            {/* Quantity Input */}
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Quantity ({selectedProduct.unit})
-              </label>
-              <input
-                type="number"
-                value={quantity}
-                onChange={(e) => setQuantity(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Enter quantity"
-                min="0"
-                step="any"
-              />
-            </div>
-
-            {/* Notes Input */}
-            <div className="mb-6">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Notes (optional)
-              </label>
-              <textarea
-                value={notes}
-                onChange={(e) => setNotes(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Add notes about this adjustment..."
-                rows="3"
-              />
-            </div>
-
-            {/* Action Buttons */}
-            <div className="flex gap-3">
-              <button
-                onClick={closeModal}
-                className="flex-1 px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 font-medium"
-                disabled={loading}
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleConfirmAdjustment}
-                className={`flex-1 px-4 py-2 rounded font-medium text-white ${
-                  loading
-                    ? 'bg-gray-400 cursor-not-allowed'
-                    : 'bg-green-500 hover:bg-green-600'
-                }`}
-                disabled={loading}
-              >
-                {loading ? 'Processing...' : 'Confirm Adjustment'}
-              </button>
-            </div>
+            </form>
           </div>
         </div>
       )}
