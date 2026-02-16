@@ -1,9 +1,10 @@
 // ========================================================================
-// SCENT STOCK MANAGER - FINAL VERSION - SNAKE_CASE SCHEMA
-// Version: 4.2 - 100% COMPATIBLE WITH YOUR DATABASE
+// SCENT STOCK MANAGER - COMPATIBLE WITH EXISTING camelCase SCHEMA
+// Version: 4.1 - ALL MODIFICATIONS + EXISTING SCHEMA COMPATIBLE
 // ========================================================================
-// Uses snake_case columns (product_code, current_stock, etc)
-// All your modifications implemented
+// ✅ Works with YOUR current database schema (camelCase columns)
+// ✅ All your modifications implemented
+// ✅ No database changes needed!
 // ========================================================================
 
 import express from 'express';
@@ -22,76 +23,122 @@ const __dirname = dirname(__filename);
 
 const app = express();
 
-// CORS
-app.use(cors({
-  origin: true,
+// ========================================================================
+// CORS CONFIGURATION
+// ========================================================================
+const corsOptions = {
+  origin: process.env.NODE_ENV === 'production' 
+    ? true // Allow all origins in production
+    : ['http://localhost:5173', 'http://localhost:3000'],
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
-}));
-app.use(express.json({ limit: '50mb' }));
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  maxAge: 600
+};
 
-// Database
+app.use(cors(corsOptions));
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ extended: true, limit: '50mb' }));
+
+// ========================================================================
+// POSTGRESQL CONNECTION
+// ========================================================================
+
+if (!process.env.DATABASE_URL) {
+  console.error('❌ DATABASE_URL not configured!');
+  process.exit(1);
+}
+
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: process.env.NODE_ENV === 'production' 
     ? { rejectUnauthorized: false } 
     : false,
-  max: 20
+  max: 20,
+  min: 2,
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 10000,
 });
 
+// Test connection
 pool.query('SELECT NOW()', (err, res) => {
-  if (err) console.error('❌ DB Error:', err.message);
-  else console.log('✅ DB Connected:', res.rows[0].now);
+  if (err) {
+    console.error('❌ Database connection error:', err.message);
+  } else {
+    console.log('✅ Database connected:', res.rows[0].now);
+  }
 });
 
-// Multer
+// ========================================================================
+// MULTER
+// ========================================================================
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    const dir = join(__dirname, '../uploads');
-    if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
-    cb(null, dir);
+    const uploadDir = join(__dirname, '../uploads');
+    if (!existsSync(uploadDir)) {
+      mkdirSync(uploadDir, { recursive: true });
+    }
+    cb(null, uploadDir);
   },
   filename: (req, file, cb) => {
-    const name = `${Date.now()}-${file.originalname.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
-    cb(null, name);
+    const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1E9)}`;
+    const sanitizedName = file.originalname.replace(/[^a-zA-Z0-9.-]/g, '_');
+    cb(null, `${uniqueSuffix}-${sanitizedName}`);
   }
 });
-const upload = multer({ storage, limits: { fileSize: 50 * 1024 * 1024 } });
+
+const upload = multer({ 
+  storage,
+  limits: { fileSize: 50 * 1024 * 1024, files: 1 }
+});
+
 app.use('/uploads', express.static(join(__dirname, '../uploads')));
 
-// Helpers
-const parseJSON = (val, fallback = {}) => {
-  if (!val) return fallback;
-  if (typeof val === 'object') return val;
-  try {
-    const parsed = JSON.parse(val);
-    return typeof parsed === 'object' ? parsed : fallback;
-  } catch (e) {
-    return fallback;
+// ========================================================================
+// HELPER FUNCTIONS
+// ========================================================================
+
+const parseJSONB = (value, fallback = {}) => {
+  if (!value) return fallback;
+  if (typeof value === 'object' && !Array.isArray(value)) return value;
+  if (typeof value === 'string') {
+    try {
+      const parsed = JSON.parse(value);
+      return typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : fallback;
+    } catch (e) {
+      return fallback;
+    }
   }
+  return fallback;
 };
 
-const generateAutoSkus = (category, num) => {
+// Auto-generate SKUs for OILS
+const generateAutoSkus = (category, baseNumber) => {
   if (category === 'OILS') {
-    const pad = String(num).padStart(5, '0');
+    const paddedNum = String(baseNumber).padStart(5, '0');
     return {
-      SA_CA: `SA_CA_${pad}`,
-      SA_1L: `SA_1L_${pad}`,
-      SA_CDIFF: `SA_CDIFF_${pad}`,
-      SA_PRO: `SA_PRO_${pad}`,
-      SA_HF: `SA_HF_${pad}`
+      SA_CA: `SA_CA_${paddedNum}`,
+      SA_1L: `SA_1L_${paddedNum}`,
+      SA_CDIFF: `SA_CDIFF_${paddedNum}`,
+      SA_PRO: `SA_PRO_${paddedNum}`,
+      SA_HF: `SA_HF_${paddedNum}`
     };
   }
   return {};
 };
 
 // ========================================================================
-// HEALTH
+// HEALTH CHECK
 // ========================================================================
 app.get('/api/health', async (req, res) => {
   try {
-    const r = await pool.query('SELECT NOW() as now');
-    res.json({ status: 'ok', timestamp: r.rows[0].now });
+    const result = await pool.query('SELECT NOW() as now, current_database() as db');
+    res.json({
+      status: 'ok',
+      message: 'Service active',
+      timestamp: result.rows[0].now,
+      database: result.rows[0].db
+    });
   } catch (error) {
     res.status(503).json({ status: 'error', error: error.message });
   }
@@ -103,14 +150,16 @@ app.get('/api/health', async (req, res) => {
 app.post('/api/auth/login', async (req, res) => {
   try {
     const { name, password } = req.body;
-    const r = await pool.query('SELECT * FROM users WHERE name = $1', [name]);
+    const result = await pool.query('SELECT * FROM users WHERE name = $1', [name]);
     
-    if (r.rows.length === 0) {
+    if (result.rows.length === 0) {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
     
-    const user = r.rows[0];
-    if (!bcrypt.compareSync(password, user.password)) {
+    const user = result.rows[0];
+    const isValid = bcrypt.compareSync(password, user.password);
+    
+    if (!isValid) {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
     
@@ -126,8 +175,8 @@ app.post('/api/auth/login', async (req, res) => {
 // ========================================================================
 app.get('/api/users', async (req, res) => {
   try {
-    const r = await pool.query('SELECT id, name, role, created_at FROM users ORDER BY id');
-    res.json(r.rows);
+    const result = await pool.query('SELECT id, name, role, created_at FROM users ORDER BY id');
+    res.json(result.rows);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -137,18 +186,18 @@ app.post('/api/users', async (req, res) => {
   try {
     const { name, password, role } = req.body;
     
-    const exists = await pool.query('SELECT id FROM users WHERE name = $1', [name]);
-    if (exists.rows.length > 0) {
+    const existing = await pool.query('SELECT id FROM users WHERE name = $1', [name]);
+    if (existing.rows.length > 0) {
       return res.status(400).json({ error: 'User already exists' });
     }
     
-    const hash = bcrypt.hashSync(password, 10);
-    const r = await pool.query(
+    const hashedPassword = bcrypt.hashSync(password, 10);
+    const result = await pool.query(
       'INSERT INTO users (name, password, role) VALUES ($1, $2, $3) RETURNING id, name, role, created_at',
-      [name, hash, role || 'user']
+      [name, hashedPassword, role || 'user']
     );
     
-    res.json(r.rows[0]);
+    res.json(result.rows[0]);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -156,14 +205,14 @@ app.post('/api/users', async (req, res) => {
 
 app.delete('/api/users/:id', async (req, res) => {
   try {
-    const id = parseInt(req.params.id);
-    const u = await pool.query('SELECT role FROM users WHERE id = $1', [id]);
+    const userId = parseInt(req.params.id);
+    const user = await pool.query('SELECT role FROM users WHERE id = $1', [userId]);
     
-    if (u.rows.length > 0 && u.rows[0].role === 'admin') {
-      return res.status(403).json({ error: 'Cannot delete admin' });
+    if (user.rows.length > 0 && user.rows[0].role === 'admin') {
+      return res.status(403).json({ error: 'Cannot delete admin user' });
     }
     
-    await pool.query('DELETE FROM users WHERE id = $1', [id]);
+    await pool.query('DELETE FROM users WHERE id = $1', [userId]);
     res.json({ success: true });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -173,15 +222,15 @@ app.delete('/api/users/:id', async (req, res) => {
 app.put('/api/users/:id/password', async (req, res) => {
   try {
     const { password } = req.body;
-    const id = parseInt(req.params.id);
-    const hash = bcrypt.hashSync(password, 10);
+    const userId = parseInt(req.params.id);
+    const hashedPassword = bcrypt.hashSync(password, 10);
     
-    const r = await pool.query(
+    const result = await pool.query(
       'UPDATE users SET password = $1 WHERE id = $2 RETURNING id',
-      [hash, id]
+      [hashedPassword, userId]
     );
     
-    if (r.rows.length === 0) {
+    if (result.rows.length === 0) {
       return res.status(404).json({ error: 'User not found' });
     }
     
@@ -192,7 +241,7 @@ app.put('/api/users/:id/password', async (req, res) => {
 });
 
 // ========================================================================
-// PRODUCTS - AUTO SKU + SEQUENTIAL ORDER
+// PRODUCTS - WITH AUTO SKU MAPPING & SEQUENTIAL ORDERING
 // ========================================================================
 app.get('/api/products', async (req, res) => {
   try {
@@ -208,27 +257,30 @@ app.get('/api/products', async (req, res) => {
     
     if (search) {
       params.push(`%${search}%`);
-      query += ` AND (name ILIKE $${params.length} OR product_code ILIKE $${params.length} OR tag ILIKE $${params.length})`;
+      query += ` AND (name ILIKE $${params.length} OR "productCode" ILIKE $${params.length} OR tag ILIKE $${params.length})`;
     }
     
+    // ✅ Sequential ordering
     query += ' ORDER BY tag';
     
-    const r = await pool.query(query, params);
+    const result = await pool.query(query, params);
     
-    const products = r.rows.map(row => ({
+    // Map to camelCase for frontend
+    const products = result.rows.map(row => ({
       id: row.id,
       tag: row.tag,
-      productCode: row.product_code,
+      productCode: row.productCode,
       name: row.name,
       category: row.category,
       unit: row.unit,
-      currentStock: parseFloat(row.current_stock) || 0,
-      minStockLevel: parseFloat(row.min_stock_level) || 0,
+      currentStock: parseFloat(row.currentStock) || 0,
+      minStockLevel: parseFloat(row.minStockLevel) || 0,
       supplier: row.supplier || '',
-      supplierCode: row.supplier_code || '',
-      unitPerBox: parseInt(row.unit_per_box) || 1,
-      stockBoxes: parseInt(row.stock_boxes) || 0,
-      shopifySkus: parseJSON(row.shopify_skus),
+      supplierCode: row.supplierCode || '',
+      unitPerBox: parseInt(row.unitPerBox) || 1,
+      stockBoxes: parseInt(row.stockBoxes) || 0,
+      shopifySkus: parseJSONB(row.shopifySkus),
+      incomingOrders: parseJSONB(row.incomingOrders, []),
       createdAt: row.created_at,
       updatedAt: row.updated_at
     }));
@@ -242,27 +294,28 @@ app.get('/api/products', async (req, res) => {
 
 app.get('/api/products/:id', async (req, res) => {
   try {
-    const r = await pool.query('SELECT * FROM products WHERE id = $1', [req.params.id]);
+    const result = await pool.query('SELECT * FROM products WHERE id = $1', [req.params.id]);
     
-    if (r.rows.length === 0) {
+    if (result.rows.length === 0) {
       return res.status(404).json({ error: 'Product not found' });
     }
     
-    const row = r.rows[0];
+    const row = result.rows[0];
     res.json({
       id: row.id,
       tag: row.tag,
-      productCode: row.product_code,
+      productCode: row.productCode,
       name: row.name,
       category: row.category,
       unit: row.unit,
-      currentStock: parseFloat(row.current_stock) || 0,
-      minStockLevel: parseFloat(row.min_stock_level) || 0,
+      currentStock: parseFloat(row.currentStock) || 0,
+      minStockLevel: parseFloat(row.minStockLevel) || 0,
       supplier: row.supplier || '',
-      supplierCode: row.supplier_code || '',
-      unitPerBox: parseInt(row.unit_per_box) || 1,
-      stockBoxes: parseInt(row.stock_boxes) || 0,
-      shopifySkus: parseJSON(row.shopify_skus)
+      supplierCode: row.supplierCode || '',
+      unitPerBox: parseInt(row.unitPerBox) || 1,
+      stockBoxes: parseInt(row.stockBoxes) || 0,
+      shopifySkus: parseJSONB(row.shopifySkus),
+      incomingOrders: parseJSONB(row.incomingOrders, [])
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -277,62 +330,65 @@ app.post('/api/products', async (req, res) => {
     } = req.body;
     
     if (!name || !category) {
-      return res.status(400).json({ error: 'Name and category required' });
+      return res.status(400).json({ error: 'Name and category are required' });
     }
     
-    // Get max ID
-    const maxR = await pool.query(
+    // Generate new ID
+    const maxIdResult = await pool.query(
       `SELECT id FROM products WHERE id LIKE $1 ORDER BY id DESC LIMIT 1`,
       [`${category.toUpperCase()}_%`]
     );
     
     let maxNum = 0;
-    if (maxR.rows.length > 0) {
-      const parts = maxR.rows[0].id.split('_');
+    if (maxIdResult.rows.length > 0) {
+      const parts = maxIdResult.rows[0].id.split('_');
       maxNum = parseInt(parts[1]) || 0;
     }
     
     const newNum = maxNum + 1;
     const newId = `${category.toUpperCase()}_${newNum}`;
     const newTag = tag || `#${category.toUpperCase().substring(0, 2)}${String(newNum).padStart(5, '0')}`;
-    const newCode = productCode || `${category.toUpperCase()}_${String(newNum).padStart(5, '0')}`;
-    const boxes = unitPerBox ? Math.floor((currentStock || 0) / unitPerBox) : 0;
+    const newProductCode = productCode || `${category.toUpperCase()}_${String(newNum).padStart(5, '0')}`;
+    const stockBoxes = unitPerBox ? Math.floor((currentStock || 0) / unitPerBox) : 0;
     
-    // Auto-generate SKUs for OILS
-    let finalSkus = shopifySkus || {};
+    // ✅ Auto-generate SKUs for OILS
+    let finalShopifySkus = shopifySkus || {};
     if (category === 'OILS' && (!shopifySkus || Object.keys(shopifySkus).length === 0)) {
-      finalSkus = generateAutoSkus(category, newNum);
-      console.log(`✨ Auto SKUs generated for ${newId}`);
+      finalShopifySkus = generateAutoSkus(category, newNum);
+      console.log(`✨ Auto-generated SKUs for ${newId}`);
     }
     
-    const r = await pool.query(
+    const skusJson = JSON.stringify(finalShopifySkus);
+    
+    const result = await pool.query(
       `INSERT INTO products 
-       (id, tag, product_code, name, category, unit, current_stock, min_stock_level, 
-        shopify_skus, supplier, supplier_code, unit_per_box, stock_boxes) 
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) 
+       (id, tag, "productCode", name, category, unit, "currentStock", "minStockLevel", 
+        "shopifySkus", supplier, "supplierCode", "unitPerBox", "stockBoxes", "incomingOrders") 
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) 
        RETURNING *`,
       [
-        newId, newTag, newCode, name, category, unit || 'units', 
-        currentStock || 0, minStockLevel || 0, JSON.stringify(finalSkus), 
-        supplier || '', supplierCode || '', unitPerBox || 1, boxes
+        newId, newTag, newProductCode, name, category, unit || 'units', 
+        currentStock || 0, minStockLevel || 0, skusJson, 
+        supplier || '', supplierCode || '', unitPerBox || 1, stockBoxes, '[]'
       ]
     );
     
-    const row = r.rows[0];
+    const row = result.rows[0];
     res.json({
       id: row.id,
       tag: row.tag,
-      productCode: row.product_code,
+      productCode: row.productCode,
       name: row.name,
       category: row.category,
       unit: row.unit,
-      currentStock: parseFloat(row.current_stock),
-      minStockLevel: parseFloat(row.min_stock_level),
+      currentStock: parseFloat(row.currentStock),
+      minStockLevel: parseFloat(row.minStockLevel),
       supplier: row.supplier,
-      supplierCode: row.supplier_code,
-      unitPerBox: parseInt(row.unit_per_box),
-      stockBoxes: parseInt(row.stock_boxes),
-      shopifySkus: parseJSON(row.shopify_skus)
+      supplierCode: row.supplierCode,
+      unitPerBox: parseInt(row.unitPerBox),
+      stockBoxes: parseInt(row.stockBoxes),
+      shopifySkus: parseJSONB(row.shopifySkus),
+      incomingOrders: []
     });
   } catch (error) {
     console.error('Create product error:', error);
@@ -342,12 +398,13 @@ app.post('/api/products', async (req, res) => {
 
 app.put('/api/products/:id', async (req, res) => {
   try {
+    const productId = req.params.id;
     const { 
       name, category, productCode, tag, unit, currentStock, 
       minStockLevel, shopifySkus, supplier, supplierCode, unitPerBox 
     } = req.body;
     
-    const boxes = unitPerBox && currentStock 
+    const stockBoxes = unitPerBox && currentStock 
       ? Math.floor(currentStock / unitPerBox) 
       : null;
     
@@ -356,41 +413,47 @@ app.put('/api/products/:id', async (req, res) => {
       skusJson = JSON.stringify(shopifySkus);
     }
     
-    const r = await pool.query(
+    const result = await pool.query(
       `UPDATE products SET 
        name = COALESCE($1, name),
        category = COALESCE($2, category),
-       product_code = COALESCE($3, product_code),
+       "productCode" = COALESCE($3, "productCode"),
        tag = COALESCE($4, tag),
        unit = COALESCE($5, unit),
-       current_stock = COALESCE($6, current_stock),
-       min_stock_level = COALESCE($7, min_stock_level),
-       shopify_skus = COALESCE($8::jsonb, shopify_skus),
+       "currentStock" = COALESCE($6, "currentStock"),
+       "minStockLevel" = COALESCE($7, "minStockLevel"),
+       "shopifySkus" = COALESCE($8, "shopifySkus"),
        supplier = COALESCE($9, supplier),
-       supplier_code = COALESCE($10, supplier_code),
-       unit_per_box = COALESCE($11, unit_per_box),
-       stock_boxes = COALESCE($12, stock_boxes)
+       "supplierCode" = COALESCE($10, "supplierCode"),
+       "unitPerBox" = COALESCE($11, "unitPerBox"),
+       "stockBoxes" = COALESCE($12, "stockBoxes")
        WHERE id = $13
        RETURNING *`,
       [
         name, category, productCode, tag, unit, currentStock, minStockLevel, 
-        skusJson, supplier, supplierCode, unitPerBox, boxes, req.params.id
+        skusJson, supplier, supplierCode, unitPerBox, stockBoxes, productId
       ]
     );
     
-    if (r.rows.length === 0) {
+    if (result.rows.length === 0) {
       return res.status(404).json({ error: 'Product not found' });
     }
     
-    const row = r.rows[0];
+    const row = result.rows[0];
     res.json({
       id: row.id,
       tag: row.tag,
-      productCode: row.product_code,
+      productCode: row.productCode,
       name: row.name,
       category: row.category,
-      currentStock: parseFloat(row.current_stock),
-      shopifySkus: parseJSON(row.shopify_skus)
+      unit: row.unit,
+      currentStock: parseFloat(row.currentStock),
+      minStockLevel: parseFloat(row.minStockLevel),
+      supplier: row.supplier,
+      supplierCode: row.supplierCode,
+      unitPerBox: parseInt(row.unitPerBox),
+      stockBoxes: parseInt(row.stockBoxes),
+      shopifySkus: parseJSONB(row.shopifySkus)
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -399,11 +462,22 @@ app.put('/api/products/:id', async (req, res) => {
 
 app.delete('/api/products/:id', async (req, res) => {
   const client = await pool.connect();
+  
   try {
     await client.query('BEGIN');
-    await client.query('DELETE FROM transactions WHERE product_id = $1', [req.params.id]);
-    const r = await client.query('DELETE FROM products WHERE id = $1 RETURNING id', [req.params.id]);
-    if (r.rows.length === 0) throw new Error('Product not found');
+    
+    const productId = req.params.id;
+    await client.query('DELETE FROM transactions WHERE product_id = $1', [productId]);
+    
+    const result = await client.query(
+      'DELETE FROM products WHERE id = $1 RETURNING id, name',
+      [productId]
+    );
+    
+    if (result.rows.length === 0) {
+      throw new Error('Product not found');
+    }
+    
     await client.query('COMMIT');
     res.json({ success: true });
   } catch (error) {
@@ -415,38 +489,54 @@ app.delete('/api/products/:id', async (req, res) => {
 });
 
 // ========================================================================
-// STOCK
+// STOCK OPERATIONS
 // ========================================================================
 app.post('/api/stock/add', async (req, res) => {
   const client = await pool.connect();
+  
   try {
     await client.query('BEGIN');
     
     const { productId, quantity, notes, shopifyOrderId } = req.body;
+    
     if (!productId || !quantity || quantity <= 0) {
       throw new Error('Invalid input');
     }
     
-    const pr = await client.query('SELECT * FROM products WHERE id = $1 FOR UPDATE', [productId]);
-    if (pr.rows.length === 0) throw new Error('Product not found');
+    const productResult = await client.query(
+      'SELECT * FROM products WHERE id = $1 FOR UPDATE',
+      [productId]
+    );
     
-    const p = pr.rows[0];
-    const newStock = parseFloat(p.current_stock) + parseFloat(quantity);
+    if (productResult.rows.length === 0) {
+      throw new Error('Product not found');
+    }
+    
+    const product = productResult.rows[0];
+    const newStock = parseFloat(product.currentStock) + parseFloat(quantity);
     
     await client.query(
-      'UPDATE products SET current_stock = $1, stock_boxes = $2 WHERE id = $3',
-      [newStock, Math.floor(newStock / p.unit_per_box), productId]
+      'UPDATE products SET "currentStock" = $1, "stockBoxes" = $2 WHERE id = $3',
+      [newStock, Math.floor(newStock / product.unitPerBox), productId]
     );
     
     await client.query(
       `INSERT INTO transactions 
        (product_id, product_name, category, type, quantity, unit, balance_after, notes, shopify_order_id) 
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
-      [productId, p.name, p.category, 'add', quantity, p.unit, newStock, notes || '', shopifyOrderId || null]
+      [productId, product.name, product.category, 'add', quantity, product.unit, newStock, notes || '', shopifyOrderId || null]
     );
     
     await client.query('COMMIT');
-    res.json({ success: true, newStock });
+    
+    res.json({ 
+      success: true, 
+      newStock,
+      product: {
+        ...product,
+        currentStock: newStock
+      }
+    });
   } catch (error) {
     await client.query('ROLLBACK');
     res.status(500).json({ error: error.message });
@@ -457,35 +547,54 @@ app.post('/api/stock/add', async (req, res) => {
 
 app.post('/api/stock/remove', async (req, res) => {
   const client = await pool.connect();
+  
   try {
     await client.query('BEGIN');
     
     const { productId, quantity, notes, shopifyOrderId } = req.body;
+    
     if (!productId || !quantity || quantity <= 0) {
       throw new Error('Invalid input');
     }
     
-    const pr = await client.query('SELECT * FROM products WHERE id = $1 FOR UPDATE', [productId]);
-    if (pr.rows.length === 0) throw new Error('Product not found');
+    const productResult = await client.query(
+      'SELECT * FROM products WHERE id = $1 FOR UPDATE',
+      [productId]
+    );
     
-    const p = pr.rows[0];
-    const newStock = parseFloat(p.current_stock) - parseFloat(quantity);
-    if (newStock < 0) throw new Error('Insufficient stock');
+    if (productResult.rows.length === 0) {
+      throw new Error('Product not found');
+    }
+    
+    const product = productResult.rows[0];
+    const newStock = parseFloat(product.currentStock) - parseFloat(quantity);
+    
+    if (newStock < 0) {
+      throw new Error('Insufficient stock');
+    }
     
     await client.query(
-      'UPDATE products SET current_stock = $1, stock_boxes = $2 WHERE id = $3',
-      [newStock, Math.floor(newStock / p.unit_per_box), productId]
+      'UPDATE products SET "currentStock" = $1, "stockBoxes" = $2 WHERE id = $3',
+      [newStock, Math.floor(newStock / product.unitPerBox), productId]
     );
     
     await client.query(
       `INSERT INTO transactions 
        (product_id, product_name, category, type, quantity, unit, balance_after, notes, shopify_order_id) 
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
-      [productId, p.name, p.category, 'remove', quantity, p.unit, newStock, notes || '', shopifyOrderId || null]
+      [productId, product.name, product.category, 'remove', quantity, product.unit, newStock, notes || '', shopifyOrderId || null]
     );
     
     await client.query('COMMIT');
-    res.json({ success: true, newStock });
+    
+    res.json({ 
+      success: true, 
+      newStock,
+      product: {
+        ...product,
+        currentStock: newStock
+      }
+    });
   } catch (error) {
     await client.query('ROLLBACK');
     res.status(500).json({ error: error.message });
@@ -527,8 +636,8 @@ app.get('/api/transactions', async (req, res) => {
     params.push(parseInt(offset));
     query += ` OFFSET $${params.length}`;
     
-    const r = await pool.query(query, params);
-    res.json(r.rows);
+    const result = await pool.query(query, params);
+    res.json(result.rows);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -539,25 +648,29 @@ app.get('/api/transactions', async (req, res) => {
 // ========================================================================
 app.get('/api/dashboard', async (req, res) => {
   try {
-    const [pCount, trans, lowStock] = await Promise.all([
+    const [productsResult, transactionsResult, lowStockResult] = await Promise.all([
       pool.query('SELECT COUNT(*) as count FROM products'),
       pool.query('SELECT * FROM transactions ORDER BY created_at DESC LIMIT 10'),
-      pool.query('SELECT COUNT(*) as count FROM products WHERE current_stock < min_stock_level')
+      pool.query(`
+        SELECT COUNT(*) as count 
+        FROM products 
+        WHERE "currentStock" < "minStockLevel"
+      `)
     ]);
     
-    const oilVol = await pool.query(`
-      SELECT COALESCE(SUM(current_stock), 0) as total 
+    const oilsVolume = await pool.query(`
+      SELECT COALESCE(SUM("currentStock"), 0) as total 
       FROM products 
       WHERE category = 'OILS'
     `);
     
     res.json({
-      totalProducts: parseInt(pCount.rows[0].count),
-      lowStockCount: parseInt(lowStock.rows[0].count),
+      totalProducts: parseInt(productsResult.rows[0].count),
+      lowStockCount: parseInt(lowStockResult.rows[0].count),
       totalStockValue: {
-        oils: parseFloat(oilVol.rows[0].total)
+        oils: Math.round(parseFloat(oilsVolume.rows[0].total) * 100) / 100
       },
-      recentTransactions: trans.rows
+      recentTransactions: transactionsResult.rows
     });
   } catch (error) {
     console.error('Dashboard error:', error);
@@ -582,12 +695,15 @@ app.get('/api/bom', async (req, res) => {
     
     query += ' ORDER BY variant, seq';
     
-    const r = await pool.query(query, params);
+    const result = await pool.query(query, params);
     
-    const grouped = {};
-    r.rows.forEach(row => {
-      if (!grouped[row.variant]) grouped[row.variant] = [];
-      grouped[row.variant].push({
+    // Group by variant
+    const bomGrouped = {};
+    result.rows.forEach(row => {
+      if (!bomGrouped[row.variant]) {
+        bomGrouped[row.variant] = [];
+      }
+      bomGrouped[row.variant].push({
         seq: row.seq,
         componentCode: row.component_code,
         componentName: row.component_name,
@@ -595,7 +711,7 @@ app.get('/api/bom', async (req, res) => {
       });
     });
     
-    res.json(grouped);
+    res.json(bomGrouped);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -605,28 +721,32 @@ app.post('/api/bom', async (req, res) => {
   try {
     const { variant, componentCode, componentName, quantity } = req.body;
     
-    const exists = await pool.query(
+    const existing = await pool.query(
       'SELECT * FROM bom WHERE variant = $1 AND component_code = $2',
       [variant, componentCode]
     );
     
-    if (exists.rows.length > 0) {
-      return res.status(400).json({ error: 'Component already exists' });
+    if (existing.rows.length > 0) {
+      return res.status(400).json({ error: 'Component already exists in this BOM' });
     }
     
-    const seqR = await pool.query(
+    const seqResult = await pool.query(
       'SELECT COALESCE(MAX(seq), 0) + 1 as next_seq FROM bom WHERE variant = $1',
       [variant]
     );
     
     await pool.query(
-      'INSERT INTO bom (variant, seq, component_code, component_name, quantity) VALUES ($1, $2, $3, $4, $5)',
-      [variant, seqR.rows[0].next_seq, componentCode, componentName, quantity]
+      `INSERT INTO bom (variant, seq, component_code, component_name, quantity) 
+       VALUES ($1, $2, $3, $4, $5)`,
+      [variant, seqResult.rows[0].next_seq, componentCode, componentName, quantity]
     );
     
-    const r = await pool.query('SELECT * FROM bom WHERE variant = $1 ORDER BY seq', [variant]);
+    const result = await pool.query(
+      'SELECT * FROM bom WHERE variant = $1 ORDER BY seq',
+      [variant]
+    );
     
-    const components = r.rows.map(row => ({
+    const components = result.rows.map(row => ({
       seq: row.seq,
       componentCode: row.component_code,
       componentName: row.component_name,
@@ -644,7 +764,7 @@ app.put('/api/bom/:variant/component/:componentCode', async (req, res) => {
     const { variant, componentCode } = req.params;
     const { componentName, quantity } = req.body;
     
-    const r = await pool.query(
+    const result = await pool.query(
       `UPDATE bom SET 
        component_name = COALESCE($1, component_name),
        quantity = COALESCE($2, quantity)
@@ -653,13 +773,16 @@ app.put('/api/bom/:variant/component/:componentCode', async (req, res) => {
       [componentName, quantity, variant, componentCode]
     );
     
-    if (r.rows.length === 0) {
+    if (result.rows.length === 0) {
       return res.status(404).json({ error: 'Component not found' });
     }
     
-    const all = await pool.query('SELECT * FROM bom WHERE variant = $1 ORDER BY seq', [variant]);
+    const allComponents = await pool.query(
+      'SELECT * FROM bom WHERE variant = $1 ORDER BY seq',
+      [variant]
+    );
     
-    const components = all.rows.map(row => ({
+    const components = allComponents.rows.map(row => ({
       seq: row.seq,
       componentCode: row.component_code,
       componentName: row.component_name,
@@ -674,36 +797,48 @@ app.put('/api/bom/:variant/component/:componentCode', async (req, res) => {
 
 app.delete('/api/bom/:variant/component/:componentCode', async (req, res) => {
   const client = await pool.connect();
+  
   try {
     await client.query('BEGIN');
     
     const { variant, componentCode } = req.params;
     
-    const delR = await client.query(
+    const deleteResult = await client.query(
       'DELETE FROM bom WHERE variant = $1 AND component_code = $2 RETURNING id',
       [variant, componentCode]
     );
     
-    if (delR.rows.length === 0) throw new Error('Component not found');
+    if (deleteResult.rows.length === 0) {
+      throw new Error('Component not found');
+    }
     
-    const comps = await client.query('SELECT * FROM bom WHERE variant = $1 ORDER BY seq', [variant]);
+    const components = await client.query(
+      'SELECT * FROM bom WHERE variant = $1 ORDER BY seq',
+      [variant]
+    );
     
-    for (let i = 0; i < comps.rows.length; i++) {
-      await client.query('UPDATE bom SET seq = $1 WHERE id = $2', [i + 1, comps.rows[i].id]);
+    for (let i = 0; i < components.rows.length; i++) {
+      await client.query(
+        'UPDATE bom SET seq = $1 WHERE id = $2',
+        [i + 1, components.rows[i].id]
+      );
     }
     
     await client.query('COMMIT');
     
-    const r = await pool.query('SELECT * FROM bom WHERE variant = $1 ORDER BY seq', [variant]);
+    const result = await pool.query(
+      'SELECT * FROM bom WHERE variant = $1 ORDER BY seq',
+      [variant]
+    );
     
-    const components = r.rows.map(row => ({
+    const updatedComponents = result.rows.map(row => ({
       seq: row.seq,
       componentCode: row.component_code,
       componentName: row.component_name,
       quantity: parseFloat(row.quantity)
     }));
     
-    res.json({ success: true, bom: components });
+    res.json({ success: true, bom: updatedComponents });
   } catch (error) {
     await client.query('ROLLBACK');
     res.status(500).json({ error: error.message });
@@ -734,8 +869,8 @@ app.get('/api/attachments', async (req, res) => {
     
     query += ' ORDER BY upload_date DESC';
     
-    const r = await pool.query(query, params);
-    res.json(r.rows);
+    const result = await pool.query(query, params);
+    res.json(result.rows);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -749,7 +884,7 @@ app.post('/api/attachments/upload', upload.single('file'), async (req, res) => {
     
     const { associatedOilId, associatedOilName, uploadedBy, notes } = req.body;
     
-    const r = await pool.query(
+    const result = await pool.query(
       `INSERT INTO attachments 
        (file_name, stored_file_name, file_type, file_size, file_path, 
         associated_oil_id, associated_oil_name, uploaded_by, notes) 
@@ -762,13 +897,13 @@ app.post('/api/attachments/upload', upload.single('file'), async (req, res) => {
         req.file.size,
         `/uploads/${req.file.filename}`,
         associatedOilId || 'GENERAL',
-        associatedOilName || 'General',
+        associatedOilName || 'General Documents',
         uploadedBy || 'admin',
         notes || ''
       ]
     );
     
-    res.json(r.rows[0]);
+    res.json(result.rows[0]);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -776,16 +911,16 @@ app.post('/api/attachments/upload', upload.single('file'), async (req, res) => {
 
 app.delete('/api/attachments/:id', async (req, res) => {
   try {
-    const r = await pool.query(
+    const result = await pool.query(
       'DELETE FROM attachments WHERE id = $1 RETURNING stored_file_name',
       [parseInt(req.params.id)]
     );
     
-    if (r.rows.length === 0) {
+    if (result.rows.length === 0) {
       return res.status(404).json({ error: 'Attachment not found' });
     }
     
-    const filePath = join(__dirname, '../uploads', r.rows[0].stored_file_name);
+    const filePath = join(__dirname, '../uploads', result.rows[0].stored_file_name);
     if (existsSync(filePath)) {
       await fs.unlink(filePath);
     }
@@ -801,14 +936,17 @@ app.delete('/api/attachments/:id', async (req, res) => {
 // ========================================================================
 app.get('/api/export/products', async (req, res) => {
   try {
-    const r = await pool.query('SELECT * FROM products ORDER BY tag');
-    const products = r.rows.map(row => ({
+    const result = await pool.query('SELECT * FROM products ORDER BY tag');
+    const products = result.rows.map(row => ({
       id: row.id,
       tag: row.tag,
-      productCode: row.product_code,
+      productCode: row.productCode,
       name: row.name,
-      currentStock: parseFloat(row.current_stock),
-      shopifySkus: parseJSON(row.shopify_skus)
+      category: row.category,
+      currentStock: parseFloat(row.currentStock),
+      minStockLevel: parseFloat(row.minStockLevel),
+      supplier: row.supplier,
+      shopifySkus: parseJSONB(row.shopifySkus)
     }));
     res.json(products);
   } catch (error) {
@@ -818,32 +956,99 @@ app.get('/api/export/products', async (req, res) => {
 
 app.get('/api/export/transactions', async (req, res) => {
   try {
-    const r = await pool.query('SELECT * FROM transactions ORDER BY created_at DESC');
-    res.json(r.rows);
+    const result = await pool.query('SELECT * FROM transactions ORDER BY created_at DESC');
+    res.json(result.rows);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
 // ========================================================================
-// SHOPIFY WEBHOOK
+// SHOPIFY WEBHOOK - INCOMING ORDERS
 // ========================================================================
 app.post('/api/webhook/shopify', express.json(), async (req, res) => {
   try {
-    console.log('📬 Shopify webhook');
+    console.log('📬 Shopify webhook received');
+    
+    const { line_items, name: orderNumber } = req.body;
+    
+    if (!line_items || !Array.isArray(line_items)) {
+      return res.status(400).json({ error: 'Invalid webhook data' });
+    }
+    
+    for (const item of line_items) {
+      const { sku, quantity } = item;
+      
+      if (!sku) continue;
+      
+      const productResult = await pool.query(`
+        SELECT * FROM products 
+        WHERE "shopifySkus"::text ILIKE $1
+        LIMIT 1
+      `, [`%${sku}%`]);
+      
+      if (productResult.rows.length > 0) {
+        const product = productResult.rows[0];
+        const incomingOrders = parseJSONB(product.incomingOrders, []);
+        
+        incomingOrders.push({
+          orderNumber,
+          sku,
+          quantity,
+          receivedAt: new Date().toISOString()
+        });
+        
+        await pool.query(
+          'UPDATE products SET "incomingOrders" = $1 WHERE id = $2',
+          [JSON.stringify(incomingOrders), product.id]
+        );
+        
+        console.log(`✅ Incoming order added: ${product.id} - ${orderNumber}`);
+      }
+    }
+    
     res.status(200).json({ received: true });
+  } catch (error) {
+    console.error('Webhook error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.delete('/api/products/:id/incoming/:index', async (req, res) => {
+  try {
+    const { id, index } = req.params;
+    
+    const productResult = await pool.query(
+      'SELECT "incomingOrders" FROM products WHERE id = $1',
+      [id]
+    );
+    
+    if (productResult.rows.length === 0) {
+      return res.status(404).json({ error: 'Product not found' });
+    }
+    
+    const incomingOrders = parseJSONB(productResult.rows[0].incomingOrders, []);
+    incomingOrders.splice(parseInt(index), 1);
+    
+    await pool.query(
+      'UPDATE products SET "incomingOrders" = $1 WHERE id = $2',
+      [JSON.stringify(incomingOrders), id]
+    );
+    
+    res.json({ success: true });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
 // ========================================================================
-// FRONTEND
+// FRONTEND SERVING
 // ========================================================================
 const distPath = join(__dirname, '../dist');
 if (existsSync(distPath)) {
   app.use(express.static(distPath));
-  console.log('📦 Frontend from dist/');
+  console.log('📦 Serving frontend from dist/');
+  
   app.get('*', (req, res) => {
     if (!req.path.startsWith('/api') && !req.path.startsWith('/uploads')) {
       res.sendFile(join(distPath, 'index.html'));
@@ -856,16 +1061,35 @@ if (!existsSync(uploadsDir)) {
   mkdirSync(uploadsDir, { recursive: true });
 }
 
+// ========================================================================
+// ERROR HANDLING
+// ========================================================================
 app.use((err, req, res, next) => {
   console.error('Error:', err);
-  res.status(500).json({ error: err.message });
+  res.status(500).json({ error: 'Internal server error', message: err.message });
 });
 
+// ========================================================================
+// START SERVER
+// ========================================================================
 const PORT = process.env.PORT || 3000;
+
 app.listen(PORT, '0.0.0.0', () => {
   console.log('');
-  console.log('🚀 SCENT SYSTEM v4.2 READY');
-  console.log(`Port: ${PORT}`);
-  console.log('✅ All fixes applied');
+  console.log('═══════════════════════════════════════════════════');
+  console.log('🚀 SCENT STOCK MANAGER - v4.1');
+  console.log('═══════════════════════════════════════════════════');
+  console.log(`🌐 Port:        ${PORT}`);
+  console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log('');
+  console.log('✅ All fixes applied:');
+  console.log('  ✓ Compatible with existing camelCase schema');
+  console.log('  ✓ Auto SKU mapping for OILS');
+  console.log('  ✓ Sequential ordering fixed');
+  console.log('  ✓ Category filters fixed');
+  console.log('  ✓ BOM returns grouped object');
+  console.log('  ✓ Incoming orders from Shopify');
+  console.log('');
+  console.log('🎯 Server ready!');
   console.log('');
 });
