@@ -1,5 +1,5 @@
 import pkg from 'pg';
-import { Pool } from 'pg';
+const { Pool } = pkg;
 import fs from 'fs/promises';
 import bcrypt from 'bcryptjs';
 import { fileURLToPath } from 'url';
@@ -7,9 +7,6 @@ import { dirname, join } from 'path';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-
-import 'dotenv/config';
-console.log('DATABASE_URL carregada:', process.env.DATABASE_URL || 'NÃO ENCONTRADA!');
 
 // Configuração do PostgreSQL
 const pool = new Pool({
