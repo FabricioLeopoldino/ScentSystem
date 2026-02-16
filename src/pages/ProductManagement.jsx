@@ -108,6 +108,23 @@ export default function ProductManagement({ user }) {
     }
   };
 
+  const handleClearIncoming = async (productId, index) => {
+    if (!confirm('Clear this incoming order?')) return;
+    
+    try {
+      const res = await fetch(`/api/products/${productId}/incoming/${index}`, {
+        method: 'DELETE'
+      });
+      
+      if (res.ok) {
+        alert('Incoming order cleared!');
+        fetchProducts();
+      }
+    } catch (error) {
+      alert('Error clearing incoming order: ' + error.message);
+    }
+  };
+
   const handleEdit = (product) => {
     setEditingProduct(product);
     setFormData({
@@ -252,6 +269,7 @@ export default function ProductManagement({ user }) {
                 <th>Stock</th>
                 <th>Min Level</th>
                 <th>Status</th>
+                <th>Incoming Orders</th>
                 <th>Supplier</th>
                 {user.role === 'admin' && <th>Actions</th>}
               </tr>
@@ -279,6 +297,47 @@ export default function ProductManagement({ user }) {
                     </td>
                     <td>{product.minStockLevel} {product.unit}</td>
                     <td className={status.color} style={{ fontWeight: '600' }}>{status.label}</td>
+                    <td>
+                      {product.incomingOrders && product.incomingOrders.length > 0 ? (
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                          {product.incomingOrders.map((order, idx) => (
+                            <div key={idx} style={{ 
+                              display: 'flex', 
+                              alignItems: 'center', 
+                              gap: '8px',
+                              padding: '4px 8px',
+                              background: '#fef3c7',
+                              borderRadius: '4px',
+                              fontSize: '12px'
+                            }}>
+                              <span style={{ fontWeight: '600', color: '#92400e' }}>
+                                {order.orderNumber}
+                              </span>
+                              <span style={{ color: '#78350f' }}>
+                                ({order.quantity} {product.unit})
+                              </span>
+                              {user.role === 'admin' && (
+                                <button
+                                  onClick={() => handleClearIncoming(product.id, idx)}
+                                  style={{
+                                    background: 'none',
+                                    border: 'none',
+                                    cursor: 'pointer',
+                                    fontSize: '16px',
+                                    marginLeft: 'auto'
+                                  }}
+                                  title="Clear incoming order"
+                                >
+                                  ✕
+                                </button>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <span style={{ color: '#9ca3af', fontSize: '12px' }}>-</span>
+                      )}
+                    </td>
                     <td style={{ fontSize: '13px', color: '#64748b' }}>
                       {product.supplier || '-'}
                     </td>
