@@ -276,11 +276,11 @@ app.get('/api/products', async (req, res) => {
       currentStock: parseFloat(row.currentStock) || 0,
       minStockLevel: parseFloat(row.minStockLevel) || 0,
       supplier: row.supplier || '',
-      supplierCode: row.supplierCode || '',
+      supplier_code: row.supplier_code || '',
       unitPerBox: parseInt(row.unitPerBox) || 1,
       stockBoxes: parseInt(row.stockBoxes) || 0,
       shopifySkus: parseJSONB(row.shopifySkus),
-      incomingOrders: parseJSONB(row.incomingOrders, []),
+      incoming_orders: parseJSONB(row.incoming_orders, []),
       createdAt: row.created_at,
       updatedAt: row.updated_at
     }));
@@ -311,11 +311,11 @@ app.get('/api/products/:id', async (req, res) => {
       currentStock: parseFloat(row.currentStock) || 0,
       minStockLevel: parseFloat(row.minStockLevel) || 0,
       supplier: row.supplier || '',
-      supplierCode: row.supplierCode || '',
+      supplier_code: row.supplier_code || '',
       unitPerBox: parseInt(row.unitPerBox) || 1,
       stockBoxes: parseInt(row.stockBoxes) || 0,
       shopifySkus: parseJSONB(row.shopifySkus),
-      incomingOrders: parseJSONB(row.incomingOrders, [])
+      incoming_orders: parseJSONB(row.incoming_orders, [])
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -326,7 +326,7 @@ app.post('/api/products', async (req, res) => {
   try {
     const { 
       name, category, productCode, tag, unit, currentStock, 
-      minStockLevel, shopifySkus, supplier, supplierCode, unitPerBox 
+      minStockLevel, shopifySkus, supplier, supplier_code, unitPerBox 
     } = req.body;
     
     if (!name || !category) {
@@ -363,13 +363,13 @@ app.post('/api/products', async (req, res) => {
     const result = await pool.query(
       `INSERT INTO products 
        (id, tag, "productCode", name, category, unit, "currentStock", "minStockLevel", 
-        "shopifySkus", supplier, "supplierCode", "unitPerBox", "stockBoxes", "incomingOrders") 
+        "shopifySkus", supplier, "supplier_code", "unitPerBox", "stockBoxes", "incoming_orders") 
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) 
        RETURNING *`,
       [
         newId, newTag, newProductCode, name, category, unit || 'units', 
         currentStock || 0, minStockLevel || 0, skusJson, 
-        supplier || '', supplierCode || '', unitPerBox || 1, stockBoxes, '[]'
+        supplier || '', supplier_code || '', unitPerBox || 1, stockBoxes, '[]'
       ]
     );
     
@@ -384,11 +384,11 @@ app.post('/api/products', async (req, res) => {
       currentStock: parseFloat(row.currentStock),
       minStockLevel: parseFloat(row.minStockLevel),
       supplier: row.supplier,
-      supplierCode: row.supplierCode,
+      supplier_code: row.supplier_code,
       unitPerBox: parseInt(row.unitPerBox),
       stockBoxes: parseInt(row.stockBoxes),
       shopifySkus: parseJSONB(row.shopifySkus),
-      incomingOrders: []
+      incoming_orders: []
     });
   } catch (error) {
     console.error('Create product error:', error);
@@ -401,7 +401,7 @@ app.put('/api/products/:id', async (req, res) => {
     const productId = req.params.id;
     const { 
       name, category, productCode, tag, unit, currentStock, 
-      minStockLevel, shopifySkus, supplier, supplierCode, unitPerBox 
+      minStockLevel, shopifySkus, supplier, supplier_code, unitPerBox 
     } = req.body;
     
     const stockBoxes = unitPerBox && currentStock 
@@ -424,14 +424,14 @@ app.put('/api/products/:id', async (req, res) => {
        "minStockLevel" = COALESCE($7, "minStockLevel"),
        "shopifySkus" = COALESCE($8, "shopifySkus"),
        supplier = COALESCE($9, supplier),
-       "supplierCode" = COALESCE($10, "supplierCode"),
+       "supplier_code" = COALESCE($10, "supplier_code"),
        "unitPerBox" = COALESCE($11, "unitPerBox"),
        "stockBoxes" = COALESCE($12, "stockBoxes")
        WHERE id = $13
        RETURNING *`,
       [
         name, category, productCode, tag, unit, currentStock, minStockLevel, 
-        skusJson, supplier, supplierCode, unitPerBox, stockBoxes, productId
+        skusJson, supplier, supplier_code, unitPerBox, stockBoxes, productId
       ]
     );
     
@@ -450,7 +450,7 @@ app.put('/api/products/:id', async (req, res) => {
       currentStock: parseFloat(row.currentStock),
       minStockLevel: parseFloat(row.minStockLevel),
       supplier: row.supplier,
-      supplierCode: row.supplierCode,
+      supplier_code: row.supplier_code,
       unitPerBox: parseInt(row.unitPerBox),
       stockBoxes: parseInt(row.stockBoxes),
       shopifySkus: parseJSONB(row.shopifySkus)
