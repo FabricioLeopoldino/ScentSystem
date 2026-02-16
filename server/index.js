@@ -257,7 +257,7 @@ app.get('/api/products', async (req, res) => {
     
     if (search) {
       params.push(`%${search}%`);
-      query += ` AND (name ILIKE $${params.length} OR "productCode" ILIKE $${params.length} OR tag ILIKE $${params.length})`;
+      query += ` AND (name ILIKE $${params.length} OR product_code ILIKE $${params.length} OR tag ILIKE $${params.length})`;
     }
     
     // ✅ Sequential ordering
@@ -269,17 +269,17 @@ app.get('/api/products', async (req, res) => {
     const products = result.rows.map(row => ({
       id: row.id,
       tag: row.tag,
-      productCode: row.productCode,
+      productCode: row.product_code,
       name: row.name,
       category: row.category,
       unit: row.unit,
-      currentStock: parseFloat(row.currentStock) || 0,
-      minStockLevel: parseFloat(row.minStockLevel) || 0,
+      currentStock: parseFloat(row.current_stock) || 0,
+      minStockLevel: parseFloat(row.min_stock_level) || 0,
       supplier: row.supplier || '',
       supplier_code: row.supplier_code || '',
-      unitPerBox: parseInt(row.unitPerBox) || 1,
-      stockBoxes: parseInt(row.stockBoxes) || 0,
-      shopifySkus: parseJSONB(row.shopifySkus),
+      unitPerBox: parseInt(row.unit_per_box) || 1,
+      stockBoxes: parseInt(row.stock_boxes) || 0,
+      shopifySkus: parseJSONB(row.shopify_skus),
       incoming_orders: parseJSONB(row.incoming_orders, []),
       createdAt: row.created_at,
       updatedAt: row.updated_at
@@ -304,17 +304,17 @@ app.get('/api/products/:id', async (req, res) => {
     res.json({
       id: row.id,
       tag: row.tag,
-      productCode: row.productCode,
+      productCode: row.product_code,
       name: row.name,
       category: row.category,
       unit: row.unit,
-      currentStock: parseFloat(row.currentStock) || 0,
-      minStockLevel: parseFloat(row.minStockLevel) || 0,
+      currentStock: parseFloat(row.current_stock) || 0,
+      minStockLevel: parseFloat(row.min_stock_level) || 0,
       supplier: row.supplier || '',
       supplier_code: row.supplier_code || '',
-      unitPerBox: parseInt(row.unitPerBox) || 1,
-      stockBoxes: parseInt(row.stockBoxes) || 0,
-      shopifySkus: parseJSONB(row.shopifySkus),
+      unitPerBox: parseInt(row.unit_per_box) || 1,
+      stockBoxes: parseInt(row.stock_boxes) || 0,
+      shopifySkus: parseJSONB(row.shopify_skus),
       incoming_orders: parseJSONB(row.incoming_orders, [])
     });
   } catch (error) {
@@ -362,8 +362,8 @@ app.post('/api/products', async (req, res) => {
     
     const result = await pool.query(
       `INSERT INTO products 
-       (id, tag, "productCode", name, category, unit, "currentStock", "minStockLevel", 
-        "shopifySkus", supplier, "supplier_code", "unitPerBox", "stockBoxes", "incoming_orders") 
+       (id, tag, product_code, name, category, unit, current_stock, min_stock_level, 
+        shopify_skus, supplier, supplier_code, unit_per_box, stock_boxes, incoming_orders) 
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) 
        RETURNING *`,
       [
@@ -377,17 +377,17 @@ app.post('/api/products', async (req, res) => {
     res.json({
       id: row.id,
       tag: row.tag,
-      productCode: row.productCode,
+      productCode: row.product_code,
       name: row.name,
       category: row.category,
       unit: row.unit,
-      currentStock: parseFloat(row.currentStock),
-      minStockLevel: parseFloat(row.minStockLevel),
+      currentStock: parseFloat(row.current_stock),
+      minStockLevel: parseFloat(row.min_stock_level),
       supplier: row.supplier,
       supplier_code: row.supplier_code,
-      unitPerBox: parseInt(row.unitPerBox),
-      stockBoxes: parseInt(row.stockBoxes),
-      shopifySkus: parseJSONB(row.shopifySkus),
+      unitPerBox: parseInt(row.unit_per_box),
+      stockBoxes: parseInt(row.stock_boxes),
+      shopifySkus: parseJSONB(row.shopify_skus),
       incoming_orders: []
     });
   } catch (error) {
@@ -417,16 +417,16 @@ app.put('/api/products/:id', async (req, res) => {
       `UPDATE products SET 
        name = COALESCE($1, name),
        category = COALESCE($2, category),
-       "productCode" = COALESCE($3, "productCode"),
+       product_code = COALESCE($3, product_code),
        tag = COALESCE($4, tag),
        unit = COALESCE($5, unit),
-       "currentStock" = COALESCE($6, "currentStock"),
-       "minStockLevel" = COALESCE($7, "minStockLevel"),
-       "shopifySkus" = COALESCE($8, "shopifySkus"),
+       current_stock = COALESCE($6, current_stock),
+       min_stock_level = COALESCE($7, min_stock_level),
+       shopify_skus = COALESCE($8, shopify_skus),
        supplier = COALESCE($9, supplier),
-       "supplier_code" = COALESCE($10, "supplier_code"),
-       "unitPerBox" = COALESCE($11, "unitPerBox"),
-       "stockBoxes" = COALESCE($12, "stockBoxes")
+       supplier_code = COALESCE($10, supplier_code),
+       unit_per_box = COALESCE($11, unit_per_box),
+       stock_boxes = COALESCE($12, stock_boxes)
        WHERE id = $13
        RETURNING *`,
       [
@@ -443,17 +443,17 @@ app.put('/api/products/:id', async (req, res) => {
     res.json({
       id: row.id,
       tag: row.tag,
-      productCode: row.productCode,
+      productCode: row.product_code,
       name: row.name,
       category: row.category,
       unit: row.unit,
-      currentStock: parseFloat(row.currentStock),
-      minStockLevel: parseFloat(row.minStockLevel),
+      currentStock: parseFloat(row.current_stock),
+      minStockLevel: parseFloat(row.min_stock_level),
       supplier: row.supplier,
       supplier_code: row.supplier_code,
-      unitPerBox: parseInt(row.unitPerBox),
-      stockBoxes: parseInt(row.stockBoxes),
-      shopifySkus: parseJSONB(row.shopifySkus)
+      unitPerBox: parseInt(row.unit_per_box),
+      stockBoxes: parseInt(row.stock_boxes),
+      shopifySkus: parseJSONB(row.shopify_skus)
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -516,7 +516,7 @@ app.post('/api/stock/add', async (req, res) => {
     const newStock = parseFloat(product.currentStock) + parseFloat(quantity);
     
     await client.query(
-      'UPDATE products SET "currentStock" = $1, "stockBoxes" = $2 WHERE id = $3',
+      'UPDATE products SET current_stock = $1, stock_boxes = $2 WHERE id = $3',
       [newStock, Math.floor(newStock / product.unitPerBox), productId]
     );
     
@@ -574,7 +574,7 @@ app.post('/api/stock/remove', async (req, res) => {
     }
     
     await client.query(
-      'UPDATE products SET "currentStock" = $1, "stockBoxes" = $2 WHERE id = $3',
+      'UPDATE products SET current_stock = $1, stock_boxes = $2 WHERE id = $3',
       [newStock, Math.floor(newStock / product.unitPerBox), productId]
     );
     
@@ -654,12 +654,12 @@ app.get('/api/dashboard', async (req, res) => {
       pool.query(`
         SELECT COUNT(*) as count 
         FROM products 
-        WHERE "currentStock" < "minStockLevel"
+        WHERE current_stock < min_stock_level
       `)
     ]);
     
     const oilsVolume = await pool.query(`
-      SELECT COALESCE(SUM("currentStock"), 0) as total 
+      SELECT COALESCE(SUM(current_stock), 0) as total 
       FROM products 
       WHERE category = 'OILS'
     `);
@@ -940,13 +940,13 @@ app.get('/api/export/products', async (req, res) => {
     const products = result.rows.map(row => ({
       id: row.id,
       tag: row.tag,
-      productCode: row.productCode,
+      productCode: row.product_code,
       name: row.name,
       category: row.category,
-      currentStock: parseFloat(row.currentStock),
-      minStockLevel: parseFloat(row.minStockLevel),
+      currentStock: parseFloat(row.current_stock),
+      minStockLevel: parseFloat(row.min_stock_level),
       supplier: row.supplier,
-      shopifySkus: parseJSONB(row.shopifySkus)
+      shopifySkus: parseJSONB(row.shopify_skus)
     }));
     res.json(products);
   } catch (error) {
@@ -983,7 +983,7 @@ app.post('/api/webhook/shopify', express.json(), async (req, res) => {
       
       const productResult = await pool.query(`
         SELECT * FROM products 
-        WHERE "shopifySkus"::text ILIKE $1
+        WHERE shopify_skus::text ILIKE $1
         LIMIT 1
       `, [`%${sku}%`]);
       
@@ -999,7 +999,7 @@ app.post('/api/webhook/shopify', express.json(), async (req, res) => {
         });
         
         await pool.query(
-          'UPDATE products SET "incomingOrders" = $1 WHERE id = $2',
+          'UPDATE products SET incoming_orders = $1 WHERE id = $2',
           [JSON.stringify(incomingOrders), product.id]
         );
         
@@ -1019,7 +1019,7 @@ app.delete('/api/products/:id/incoming/:index', async (req, res) => {
     const { id, index } = req.params;
     
     const productResult = await pool.query(
-      'SELECT "incomingOrders" FROM products WHERE id = $1',
+      'SELECT incoming_orders FROM products WHERE id = $1',
       [id]
     );
     
@@ -1031,7 +1031,7 @@ app.delete('/api/products/:id/incoming/:index', async (req, res) => {
     incomingOrders.splice(parseInt(index), 1);
     
     await pool.query(
-      'UPDATE products SET "incomingOrders" = $1 WHERE id = $2',
+      'UPDATE products SET incoming_orders = $1 WHERE id = $2',
       [JSON.stringify(incomingOrders), id]
     );
     
