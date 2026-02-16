@@ -1,10 +1,10 @@
 // ========================================================================
-// SCENT STOCK MANAGER - FINAL WORKING VERSION
-// Version: 4.2 - SNAKE_CASE SCHEMA (CORRETO!)
+// SCENT STOCK MANAGER - COMPATIBLE WITH EXISTING camelCase SCHEMA
+// Version: 4.1 - ALL MODIFICATIONS + EXISTING SCHEMA COMPATIBLE
 // ========================================================================
-// ✅ Uses snake_case columns (product_code, current_stock, supplier_code)
-// ✅ All modifications working
-// ✅ 100% compatible with your database
+// ✅ Works with YOUR current database schema (camelCase columns)
+// ✅ All your modifications implemented
+// ✅ No database changes needed!
 // ========================================================================
 
 import express from 'express';
@@ -23,16 +23,27 @@ const __dirname = dirname(__filename);
 
 const app = express();
 
-// CORS
-app.use(cors({
-  origin: true,
+// ========================================================================
+// CORS CONFIGURATION
+// ========================================================================
+const corsOptions = {
+  origin: process.env.NODE_ENV === 'production' 
+    ? true // Allow all origins in production
+    : ['http://localhost:5173', 'http://localhost:3000'],
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
-}));
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  maxAge: 600
+};
+
+app.use(cors(corsOptions));
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
-// Database
+// ========================================================================
+// POSTGRESQL CONNECTION
+// ========================================================================
+
 if (!process.env.DATABASE_URL) {
   console.error('❌ DATABASE_URL not configured!');
   process.exit(1);
@@ -49,15 +60,18 @@ const pool = new Pool({
   connectionTimeoutMillis: 10000,
 });
 
+// Test connection
 pool.query('SELECT NOW()', (err, res) => {
   if (err) {
-    console.error('❌ Database error:', err.message);
+    console.error('❌ Database connection error:', err.message);
   } else {
     console.log('✅ Database connected:', res.rows[0].now);
   }
 });
 
-// Multer
+// ========================================================================
+// MULTER
+// ========================================================================
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const uploadDir = join(__dirname, '../uploads');
@@ -80,7 +94,10 @@ const upload = multer({
 
 app.use('/uploads', express.static(join(__dirname, '../uploads')));
 
-// Helpers
+// ========================================================================
+// HELPER FUNCTIONS
+// ========================================================================
+
 const parseJSONB = (value, fallback = {}) => {
   if (!value) return fallback;
   if (typeof value === 'object' && !Array.isArray(value)) return value;
@@ -95,6 +112,7 @@ const parseJSONB = (value, fallback = {}) => {
   return fallback;
 };
 
+// Auto-generate SKUs for OILS
 const generateAutoSkus = (category, baseNumber) => {
   if (category === 'OILS') {
     const paddedNum = String(baseNumber).padStart(5, '0');
@@ -148,7 +166,6 @@ app.post('/api/auth/login', async (req, res) => {
     const { password: _, ...userWithoutPassword } = user;
     res.json({ user: userWithoutPassword });
   } catch (error) {
-    console.error('Login error:', error);
     res.status(500).json({ error: error.message });
   }
 });
@@ -224,7 +241,7 @@ app.put('/api/users/:id/password', async (req, res) => {
 });
 
 // ========================================================================
-// PRODUCTS - AUTO SKU + SEQUENTIAL ORDER
+// PRODUCTS - WITH AUTO SKU MAPPING & SEQUENTIAL ORDERING
 // ========================================================================
 app.get('/api/products', async (req, res) => {
   try {
@@ -240,27 +257,30 @@ app.get('/api/products', async (req, res) => {
     
     if (search) {
       params.push(`%${search}%`);
-      query += ` AND (name ILIKE $${params.length} OR product_code ILIKE $${params.length} OR tag ILIKE $${params.length})`;
+      query += ` AND (name ILIKE $${params.length} OR "productCode" ILIKE $${params.length} OR tag ILIKE $${params.length})`;
     }
     
+    // ✅ Sequential ordering
     query += ' ORDER BY tag';
     
     const result = await pool.query(query, params);
     
+    // Map to camelCase for frontend
     const products = result.rows.map(row => ({
       id: row.id,
       tag: row.tag,
-      productCode: row.product_code,
+      productCode: row.productCode,
       name: row.name,
       category: row.category,
       unit: row.unit,
-      currentStock: parseFloat(row.current_stock) || 0,
-      minStockLevel: parseFloat(row.min_stock_level) || 0,
+      currentStock: parseFloat(row.currentStock) || 0,
+      minStockLevel: parseFloat(row.minStockLevel) || 0,
       supplier: row.supplier || '',
-      supplierCode: row.supplier_code || '',
-      unitPerBox: parseInt(row.unit_per_box) || 1,
-      stockBoxes: parseInt(row.stock_boxes) || 0,
-      shopifySkus: parseJSONB(row.shopify_skus),
+      supplierCode: row.supplierCode || '',
+      unitPerBox: parseInt(row.unitPerBox) || 1,
+      stockBoxes: parseInt(row.stockBoxes) || 0,
+      shopifySkus: parseJSONB(row.shopifySkus),
+      incomingOrders: parseJSONB(row.incomingOrders, []),
       createdAt: row.created_at,
       updatedAt: row.updated_at
     }));
@@ -284,17 +304,18 @@ app.get('/api/products/:id', async (req, res) => {
     res.json({
       id: row.id,
       tag: row.tag,
-      productCode: row.product_code,
+      productCode: row.productCode,
       name: row.name,
       category: row.category,
       unit: row.unit,
-      currentStock: parseFloat(row.current_stock) || 0,
-      minStockLevel: parseFloat(row.min_stock_level) || 0,
+      currentStock: parseFloat(row.currentStock) || 0,
+      minStockLevel: parseFloat(row.minStockLevel) || 0,
       supplier: row.supplier || '',
-      supplierCode: row.supplier_code || '',
-      unitPerBox: parseInt(row.unit_per_box) || 1,
-      stockBoxes: parseInt(row.stock_boxes) || 0,
-      shopifySkus: parseJSONB(row.shopify_skus)
+      supplierCode: row.supplierCode || '',
+      unitPerBox: parseInt(row.unitPerBox) || 1,
+      stockBoxes: parseInt(row.stockBoxes) || 0,
+      shopifySkus: parseJSONB(row.shopifySkus),
+      incomingOrders: parseJSONB(row.incomingOrders, [])
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -330,7 +351,7 @@ app.post('/api/products', async (req, res) => {
     const newProductCode = productCode || `${category.toUpperCase()}_${String(newNum).padStart(5, '0')}`;
     const stockBoxes = unitPerBox ? Math.floor((currentStock || 0) / unitPerBox) : 0;
     
-    // Auto-generate SKUs for OILS
+    // ✅ Auto-generate SKUs for OILS
     let finalShopifySkus = shopifySkus || {};
     if (category === 'OILS' && (!shopifySkus || Object.keys(shopifySkus).length === 0)) {
       finalShopifySkus = generateAutoSkus(category, newNum);
@@ -341,34 +362,33 @@ app.post('/api/products', async (req, res) => {
     
     const result = await pool.query(
       `INSERT INTO products 
-       (id, tag, product_code, name, category, unit, current_stock, min_stock_level, 
-        shopify_skus, supplier, supplier_code, unit_per_box, stock_boxes) 
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) 
+       (id, tag, "productCode", name, category, unit, "currentStock", "minStockLevel", 
+        "shopifySkus", supplier, "supplierCode", "unitPerBox", "stockBoxes", "incomingOrders") 
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) 
        RETURNING *`,
       [
         newId, newTag, newProductCode, name, category, unit || 'units', 
         currentStock || 0, minStockLevel || 0, skusJson, 
-        supplier || '', supplierCode || '', unitPerBox || 1, stockBoxes
+        supplier || '', supplierCode || '', unitPerBox || 1, stockBoxes, '[]'
       ]
     );
-    
-    console.log(`✅ Product created: ${newId} - ${name}`);
     
     const row = result.rows[0];
     res.json({
       id: row.id,
       tag: row.tag,
-      productCode: row.product_code,
+      productCode: row.productCode,
       name: row.name,
       category: row.category,
       unit: row.unit,
-      currentStock: parseFloat(row.current_stock),
-      minStockLevel: parseFloat(row.min_stock_level),
+      currentStock: parseFloat(row.currentStock),
+      minStockLevel: parseFloat(row.minStockLevel),
       supplier: row.supplier,
-      supplierCode: row.supplier_code,
-      unitPerBox: parseInt(row.unit_per_box),
-      stockBoxes: parseInt(row.stock_boxes),
-      shopifySkus: parseJSONB(row.shopify_skus)
+      supplierCode: row.supplierCode,
+      unitPerBox: parseInt(row.unitPerBox),
+      stockBoxes: parseInt(row.stockBoxes),
+      shopifySkus: parseJSONB(row.shopifySkus),
+      incomingOrders: []
     });
   } catch (error) {
     console.error('Create product error:', error);
@@ -397,16 +417,16 @@ app.put('/api/products/:id', async (req, res) => {
       `UPDATE products SET 
        name = COALESCE($1, name),
        category = COALESCE($2, category),
-       product_code = COALESCE($3, product_code),
+       "productCode" = COALESCE($3, "productCode"),
        tag = COALESCE($4, tag),
        unit = COALESCE($5, unit),
-       current_stock = COALESCE($6, current_stock),
-       min_stock_level = COALESCE($7, min_stock_level),
-       shopify_skus = COALESCE($8::jsonb, shopify_skus),
+       "currentStock" = COALESCE($6, "currentStock"),
+       "minStockLevel" = COALESCE($7, "minStockLevel"),
+       "shopifySkus" = COALESCE($8, "shopifySkus"),
        supplier = COALESCE($9, supplier),
-       supplier_code = COALESCE($10, supplier_code),
-       unit_per_box = COALESCE($11, unit_per_box),
-       stock_boxes = COALESCE($12, stock_boxes)
+       "supplierCode" = COALESCE($10, "supplierCode"),
+       "unitPerBox" = COALESCE($11, "unitPerBox"),
+       "stockBoxes" = COALESCE($12, "stockBoxes")
        WHERE id = $13
        RETURNING *`,
       [
@@ -419,26 +439,23 @@ app.put('/api/products/:id', async (req, res) => {
       return res.status(404).json({ error: 'Product not found' });
     }
     
-    console.log(`✏️  Product updated: ${productId}`);
-    
     const row = result.rows[0];
     res.json({
       id: row.id,
       tag: row.tag,
-      productCode: row.product_code,
+      productCode: row.productCode,
       name: row.name,
       category: row.category,
       unit: row.unit,
-      currentStock: parseFloat(row.current_stock),
-      minStockLevel: parseFloat(row.min_stock_level),
+      currentStock: parseFloat(row.currentStock),
+      minStockLevel: parseFloat(row.minStockLevel),
       supplier: row.supplier,
-      supplierCode: row.supplier_code,
-      unitPerBox: parseInt(row.unit_per_box),
-      stockBoxes: parseInt(row.stock_boxes),
-      shopifySkus: parseJSONB(row.shopify_skus)
+      supplierCode: row.supplierCode,
+      unitPerBox: parseInt(row.unitPerBox),
+      stockBoxes: parseInt(row.stockBoxes),
+      shopifySkus: parseJSONB(row.shopifySkus)
     });
   } catch (error) {
-    console.error('Update product error:', error);
     res.status(500).json({ error: error.message });
   }
 });
@@ -462,13 +479,9 @@ app.delete('/api/products/:id', async (req, res) => {
     }
     
     await client.query('COMMIT');
-    
-    console.log(`🗑️  Product deleted: ${productId}`);
-    
     res.json({ success: true });
   } catch (error) {
     await client.query('ROLLBACK');
-    console.error('Delete product error:', error);
     res.status(500).json({ error: error.message });
   } finally {
     client.release();
@@ -486,8 +499,6 @@ app.post('/api/stock/add', async (req, res) => {
     
     const { productId, quantity, notes, shopifyOrderId } = req.body;
     
-    console.log('📦 Add stock request:', { productId, quantity, notes });
-    
     if (!productId || !quantity || quantity <= 0) {
       throw new Error('Invalid input');
     }
@@ -502,13 +513,11 @@ app.post('/api/stock/add', async (req, res) => {
     }
     
     const product = productResult.rows[0];
-    const newStock = parseFloat(product.current_stock) + parseFloat(quantity);
-    
-    console.log(`📈 Updating stock: ${product.current_stock} + ${quantity} = ${newStock}`);
+    const newStock = parseFloat(product.currentStock) + parseFloat(quantity);
     
     await client.query(
-      'UPDATE products SET current_stock = $1, stock_boxes = $2 WHERE id = $3',
-      [newStock, Math.floor(newStock / product.unit_per_box), productId]
+      'UPDATE products SET "currentStock" = $1, "stockBoxes" = $2 WHERE id = $3',
+      [newStock, Math.floor(newStock / product.unitPerBox), productId]
     );
     
     await client.query(
@@ -520,20 +529,16 @@ app.post('/api/stock/add', async (req, res) => {
     
     await client.query('COMMIT');
     
-    console.log(`✅ Stock added successfully: ${productId} (+${quantity})`);
-    
     res.json({ 
       success: true, 
       newStock,
       product: {
-        id: product.id,
-        name: product.name,
+        ...product,
         currentStock: newStock
       }
     });
   } catch (error) {
     await client.query('ROLLBACK');
-    console.error('❌ Add stock error:', error);
     res.status(500).json({ error: error.message });
   } finally {
     client.release();
@@ -548,8 +553,6 @@ app.post('/api/stock/remove', async (req, res) => {
     
     const { productId, quantity, notes, shopifyOrderId } = req.body;
     
-    console.log('📦 Remove stock request:', { productId, quantity, notes });
-    
     if (!productId || !quantity || quantity <= 0) {
       throw new Error('Invalid input');
     }
@@ -564,17 +567,15 @@ app.post('/api/stock/remove', async (req, res) => {
     }
     
     const product = productResult.rows[0];
-    const newStock = parseFloat(product.current_stock) - parseFloat(quantity);
+    const newStock = parseFloat(product.currentStock) - parseFloat(quantity);
     
     if (newStock < 0) {
       throw new Error('Insufficient stock');
     }
     
-    console.log(`📉 Updating stock: ${product.current_stock} - ${quantity} = ${newStock}`);
-    
     await client.query(
-      'UPDATE products SET current_stock = $1, stock_boxes = $2 WHERE id = $3',
-      [newStock, Math.floor(newStock / product.unit_per_box), productId]
+      'UPDATE products SET "currentStock" = $1, "stockBoxes" = $2 WHERE id = $3',
+      [newStock, Math.floor(newStock / product.unitPerBox), productId]
     );
     
     await client.query(
@@ -586,20 +587,16 @@ app.post('/api/stock/remove', async (req, res) => {
     
     await client.query('COMMIT');
     
-    console.log(`✅ Stock removed successfully: ${productId} (-${quantity})`);
-    
     res.json({ 
       success: true, 
       newStock,
       product: {
-        id: product.id,
-        name: product.name,
+        ...product,
         currentStock: newStock
       }
     });
   } catch (error) {
     await client.query('ROLLBACK');
-    console.error('❌ Remove stock error:', error);
     res.status(500).json({ error: error.message });
   } finally {
     client.release();
@@ -657,12 +654,12 @@ app.get('/api/dashboard', async (req, res) => {
       pool.query(`
         SELECT COUNT(*) as count 
         FROM products 
-        WHERE current_stock < min_stock_level
+        WHERE "currentStock" < "minStockLevel"
       `)
     ]);
     
     const oilsVolume = await pool.query(`
-      SELECT COALESCE(SUM(current_stock), 0) as total 
+      SELECT COALESCE(SUM("currentStock"), 0) as total 
       FROM products 
       WHERE category = 'OILS'
     `);
@@ -700,6 +697,7 @@ app.get('/api/bom', async (req, res) => {
     
     const result = await pool.query(query, params);
     
+    // Group by variant
     const bomGrouped = {};
     result.rows.forEach(row => {
       if (!bomGrouped[row.variant]) {
@@ -729,7 +727,7 @@ app.post('/api/bom', async (req, res) => {
     );
     
     if (existing.rows.length > 0) {
-      return res.status(400).json({ error: 'Component already exists' });
+      return res.status(400).json({ error: 'Component already exists in this BOM' });
     }
     
     const seqResult = await pool.query(
@@ -942,13 +940,13 @@ app.get('/api/export/products', async (req, res) => {
     const products = result.rows.map(row => ({
       id: row.id,
       tag: row.tag,
-      productCode: row.product_code,
+      productCode: row.productCode,
       name: row.name,
       category: row.category,
-      currentStock: parseFloat(row.current_stock),
-      minStockLevel: parseFloat(row.min_stock_level),
+      currentStock: parseFloat(row.currentStock),
+      minStockLevel: parseFloat(row.minStockLevel),
       supplier: row.supplier,
-      shopifySkus: parseJSONB(row.shopify_skus)
+      shopifySkus: parseJSONB(row.shopifySkus)
     }));
     res.json(products);
   } catch (error) {
@@ -966,11 +964,49 @@ app.get('/api/export/transactions', async (req, res) => {
 });
 
 // ========================================================================
-// SHOPIFY WEBHOOK
+// SHOPIFY WEBHOOK - INCOMING ORDERS
 // ========================================================================
 app.post('/api/webhook/shopify', express.json(), async (req, res) => {
   try {
     console.log('📬 Shopify webhook received');
+    
+    const { line_items, name: orderNumber } = req.body;
+    
+    if (!line_items || !Array.isArray(line_items)) {
+      return res.status(400).json({ error: 'Invalid webhook data' });
+    }
+    
+    for (const item of line_items) {
+      const { sku, quantity } = item;
+      
+      if (!sku) continue;
+      
+      const productResult = await pool.query(`
+        SELECT * FROM products 
+        WHERE "shopifySkus"::text ILIKE $1
+        LIMIT 1
+      `, [`%${sku}%`]);
+      
+      if (productResult.rows.length > 0) {
+        const product = productResult.rows[0];
+        const incomingOrders = parseJSONB(product.incomingOrders, []);
+        
+        incomingOrders.push({
+          orderNumber,
+          sku,
+          quantity,
+          receivedAt: new Date().toISOString()
+        });
+        
+        await pool.query(
+          'UPDATE products SET "incomingOrders" = $1 WHERE id = $2',
+          [JSON.stringify(incomingOrders), product.id]
+        );
+        
+        console.log(`✅ Incoming order added: ${product.id} - ${orderNumber}`);
+      }
+    }
+    
     res.status(200).json({ received: true });
   } catch (error) {
     console.error('Webhook error:', error);
@@ -978,8 +1014,35 @@ app.post('/api/webhook/shopify', express.json(), async (req, res) => {
   }
 });
 
+app.delete('/api/products/:id/incoming/:index', async (req, res) => {
+  try {
+    const { id, index } = req.params;
+    
+    const productResult = await pool.query(
+      'SELECT "incomingOrders" FROM products WHERE id = $1',
+      [id]
+    );
+    
+    if (productResult.rows.length === 0) {
+      return res.status(404).json({ error: 'Product not found' });
+    }
+    
+    const incomingOrders = parseJSONB(productResult.rows[0].incomingOrders, []);
+    incomingOrders.splice(parseInt(index), 1);
+    
+    await pool.query(
+      'UPDATE products SET "incomingOrders" = $1 WHERE id = $2',
+      [JSON.stringify(incomingOrders), id]
+    );
+    
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // ========================================================================
-// FRONTEND
+// FRONTEND SERVING
 // ========================================================================
 const distPath = join(__dirname, '../dist');
 if (existsSync(distPath)) {
@@ -1002,7 +1065,7 @@ if (!existsSync(uploadsDir)) {
 // ERROR HANDLING
 // ========================================================================
 app.use((err, req, res, next) => {
-  console.error('❌ Error:', err);
+  console.error('Error:', err);
   res.status(500).json({ error: 'Internal server error', message: err.message });
 });
 
@@ -1014,18 +1077,18 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, '0.0.0.0', () => {
   console.log('');
   console.log('═══════════════════════════════════════════════════');
-  console.log('🚀 SCENT STOCK MANAGER - v4.2 FINAL');
+  console.log('🚀 SCENT STOCK MANAGER - v4.1');
   console.log('═══════════════════════════════════════════════════');
   console.log(`🌐 Port:        ${PORT}`);
   console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
   console.log('');
   console.log('✅ All fixes applied:');
-  console.log('  ✓ Uses snake_case columns (product_code, current_stock, etc)');
+  console.log('  ✓ Compatible with existing camelCase schema');
   console.log('  ✓ Auto SKU mapping for OILS');
   console.log('  ✓ Sequential ordering fixed');
-  console.log('  ✓ Add/Remove stock with detailed logs');
   console.log('  ✓ Category filters fixed');
   console.log('  ✓ BOM returns grouped object');
+  console.log('  ✓ Incoming orders from Shopify');
   console.log('');
   console.log('🎯 Server ready!');
   console.log('');
