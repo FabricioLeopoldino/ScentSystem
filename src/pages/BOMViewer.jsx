@@ -10,8 +10,8 @@ export default function BOMViewer({ user }) {
   const [showEditModal, setShowEditModal] = useState(false);
   const [editingComponent, setEditingComponent] = useState(null);
   const [formData, setFormData] = useState({
-    componentCode: '',
-    componentName: '',
+    component_code: '',
+    component_name: '',
     quantity: 1
   });
 
@@ -76,46 +76,65 @@ export default function BOMViewer({ user }) {
     return colors[variant] || '#667eea';
   };
 
-const handleAddComponent = async () => {
-  try {
-    const response = await fetch(`/api/bom/${selectedVariant}/component/${componentCode}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        variant: selectedVariant,
-        componentCode,
-        componentName,
-        quantity: Number(quantity),
-      }),
-    });
-      
-   if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(errorText);
-    }
-
-    const data = await response.json();
-
-    // Atualiza a lista do BOM
-    setBom(prev => ({
-      ...prev,
-      [selectedVariant]: data.bom
-    }));
-
-  } catch (error) {
-    console.error("Add component error:", error);
-    alert("Error adding component");
-  }
-};
-
+  const handleAddComponent = async (e) => {
+    e.preventDefault();
     
-  const handleDeleteComponent = async (componentCode) => {
+    try {
+      const res = await fetch(`/api/bom/${selectedVariant}/component`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
+      
+      if (res.ok) {
+        const data = await res.json();
+        setBom(prev => ({ ...prev, [selectedVariant]: data.bom }));
+        setShowAddModal(false);
+        resetForm();
+        alert('Component added successfully!');
+      } else {
+        const error = await res.json();
+        alert(error.error || 'Error adding component');
+      }
+    } catch (error) {
+      alert('Error adding component: ' + error.message);
+    }
+  };
+
+  const handleEditComponent = async (e) => {
+    e.preventDefault();
+    
+    try {
+      const res = await fetch(`/api/bom/${selectedVariant}/component/${editingComponent.component_code}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          componentName: formData.component_name,
+          quantity: formData.quantity
+        })
+      });
+      
+      if (res.ok) {
+        const data = await res.json();
+        setBom(prev => ({ ...prev, [selectedVariant]: data.bom }));
+        setShowEditModal(false);
+        setEditingComponent(null);
+        resetForm();
+        alert('Component updated successfully!');
+      } else {
+        const error = await res.json();
+        alert(error.error || 'Error updating component');
+      }
+    } catch (error) {
+      alert('Error updating component: ' + error.message);
+    }
+  };
+
+  const handleDeleteComponent = async (component_code) => {
     if (!confirm('Are you sure you want to remove this component from the BOM?')) return;
     
     try {
-      const res = await fetch(`/api/bom/${selectedVariant}/component/${componentCode}`, {
+      const res = await fetch(`/api/bom/${selectedVariant}/component/${component_code}`, {
         method: 'DELETE'
       });
       
@@ -135,8 +154,8 @@ const handleAddComponent = async () => {
   const openEditModal = (component) => {
     setEditingComponent(component);
     setFormData({
-      componentCode: component.componentCode,
-      componentName: component.componentName,
+      component_code: component.component_code,
+      component_name: component.component_name,
       quantity: component.quantity
     });
     setShowEditModal(true);
@@ -144,19 +163,19 @@ const handleAddComponent = async () => {
 
   const resetForm = () => {
     setFormData({
-      componentCode: '',
-      componentName: '',
+      component_code: '',
+      component_name: '',
       quantity: 1
     });
   };
 
   const handleRawMaterialSelect = (e) => {
     const code = e.target.value;
-    const rm = rawMaterials.find(r => r.productCode === code);
+    const rm = rawMaterials.find(r => r.product_code === code);
     if (rm) {
       setFormData({
-        componentCode: rm.productCode,
-        componentName: rm.name,
+        component_code: rm.productCode,
+        component_name: rm.name,
         quantity: 1
       });
     }
@@ -272,20 +291,20 @@ const handleAddComponent = async () => {
               </thead>
               <tbody>
                 {currentBOM.map((item, index) => {
-                  const product = getProductByCode(item.componentCode);
+                  const product = getProductByCode(item.component_code);
                   const currentStock = product ? product.currentStock : 0;
                   const minStock = product ? product.minStockLevel : 0;
                   const isLow = currentStock <= minStock;
 
                   return (
-                    <tr key={item.componentCode || index}>
+                    <tr key={item.component_code || index}>
                       <td style={{ fontWeight: '600', color: '#64748b' }}>{item.seq || index + 1}</td>
                       <td>
                         <span style={{ fontFamily: 'monospace', fontSize: '13px', fontWeight: '600', color: '#2563eb' }}>
-                          {item.componentCode}
+                          {item.component_code}
                         </span>
                       </td>
-                      <td style={{ fontWeight: '600' }}>{item.componentName}</td>
+                      <td style={{ fontWeight: '600' }}>{item.component_name}</td>
                       <td>
                         <span style={{ 
                           background: '#f1f5f9', 
@@ -392,7 +411,7 @@ const handleAddComponent = async () => {
                 <select
                   className="input"
                   onChange={handleRawMaterialSelect}
-                  value={formData.componentCode}
+                  value={formData.component_code}
                 >
                   <option value="">-- Select a Raw Material --</option>
                   {rawMaterials.map(rm => (
@@ -408,8 +427,8 @@ const handleAddComponent = async () => {
                 <input
                   type="text"
                   className="input"
-                  value={formData.componentCode}
-                  onChange={(e) => setFormData({...formData, componentCode: e.target.value})}
+                  value={formData.component_code}
+                  onChange={(e) => setFormData({...formData, component_code: e.target.value})}
                   placeholder="e.g., SA_RM_00003"
                   required
                 />
@@ -420,8 +439,8 @@ const handleAddComponent = async () => {
                 <input
                   type="text"
                   className="input"
-                  value={formData.componentName}
-                  onChange={(e) => setFormData({...formData, componentName: e.target.value})}
+                  value={formData.component_name}
+                  onChange={(e) => setFormData({...formData, component_name: e.target.value})}
                   placeholder="e.g., Empty Oil Cartridge (400ml)"
                   required
                 />
@@ -467,7 +486,7 @@ const handleAddComponent = async () => {
                 <input
                   type="text"
                   className="input"
-                  value={formData.componentCode}
+                  value={formData.component_code}
                   disabled
                   style={{ background: '#f1f5f9' }}
                 />
@@ -478,8 +497,8 @@ const handleAddComponent = async () => {
                 <input
                   type="text"
                   className="input"
-                  value={formData.componentName}
-                  onChange={(e) => setFormData({...formData, componentName: e.target.value})}
+                  value={formData.component_name}
+                  onChange={(e) => setFormData({...formData, component_name: e.target.value})}
                   required
                 />
               </div>
