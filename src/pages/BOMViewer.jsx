@@ -76,15 +76,40 @@ export default function BOMViewer({ user }) {
     return colors[variant] || '#667eea';
   };
 
-  const handleAddComponent = async (e) => {
-    e.preventDefault();
-    
-    try {
-      const res = await fetch(`/api/bom/${selectedVariant}/component`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
-      });
+const handleAddComponent = async () => {
+  try {
+    const response = await fetch("/api/bom", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        variant: selectedVariant,
+        componentCode,
+        componentName,
+        quantity: Number(quantity),
+      }),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(errorText);
+    }
+
+    const data = await response.json();
+
+    // Atualiza a lista do BOM
+    setBom(prev => ({
+      ...prev,
+      [selectedVariant]: data.bom
+    }));
+
+  } catch (error) {
+    console.error("Add component error:", error);
+    alert("Error adding component");
+  }
+};
+
       
       if (res.ok) {
         const data = await res.json();
