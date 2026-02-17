@@ -10,8 +10,8 @@ export default function BOMViewer({ user }) {
   const [showEditModal, setShowEditModal] = useState(false);
   const [editingComponent, setEditingComponent] = useState(null);
   const [formData, setFormData] = useState({
-    component_code: '',
-    component_name: '',
+    componentCode: '',
+    componentName: '',
     quantity: 1
   });
 
@@ -105,11 +105,11 @@ export default function BOMViewer({ user }) {
     e.preventDefault();
     
     try {
-      const res = await fetch(`/api/bom/${selectedVariant}/component/${editingComponent.component_code}`, {
+      const res = await fetch(`/api/bom/${selectedVariant}/component/${editingComponent.componentCode}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          componentName: formData.component_name,
+          componentName: formData.componentName,
           quantity: formData.quantity
         })
       });
@@ -130,11 +130,11 @@ export default function BOMViewer({ user }) {
     }
   };
 
-  const handleDeleteComponent = async (component_code) => {
+  const handleDeleteComponent = async (componentCode) => {
     if (!confirm('Are you sure you want to remove this component from the BOM?')) return;
     
     try {
-      const res = await fetch(`/api/bom/${selectedVariant}/component/${component_code}`, {
+      const res = await fetch(`/api/bom/${selectedVariant}/component/${componentCode}`, {
         method: 'DELETE'
       });
       
@@ -154,8 +154,8 @@ export default function BOMViewer({ user }) {
   const openEditModal = (component) => {
     setEditingComponent(component);
     setFormData({
-      component_code: component.component_code,
-      component_name: component.component_name,
+      componentCode: component.componentCode,
+      componentName: component.componentName,
       quantity: component.quantity
     });
     setShowEditModal(true);
@@ -163,19 +163,19 @@ export default function BOMViewer({ user }) {
 
   const resetForm = () => {
     setFormData({
-      component_code: '',
-      component_name: '',
+      componentCode: '',
+      componentName: '',
       quantity: 1
     });
   };
 
   const handleRawMaterialSelect = (e) => {
     const code = e.target.value;
-    const rm = rawMaterials.find(r => r.product_code === code);
+    const rm = rawMaterials.find(r => r.productCode === code);
     if (rm) {
       setFormData({
-        component_code: rm.productCode,
-        component_name: rm.name,
+        componentCode: rm.productCode,
+        componentName: rm.name,
         quantity: 1
       });
     }
@@ -291,20 +291,20 @@ export default function BOMViewer({ user }) {
               </thead>
               <tbody>
                 {currentBOM.map((item, index) => {
-                  const product = getProductByCode(item.component_code);
+                  const product = getProductByCode(item.componentCode);
                   const currentStock = product ? product.currentStock : 0;
                   const minStock = product ? product.minStockLevel : 0;
                   const isLow = currentStock <= minStock;
 
                   return (
-                    <tr key={item.component_code || index}>
+                    <tr key={item.componentCode || index}>
                       <td style={{ fontWeight: '600', color: '#64748b' }}>{item.seq || index + 1}</td>
                       <td>
                         <span style={{ fontFamily: 'monospace', fontSize: '13px', fontWeight: '600', color: '#2563eb' }}>
-                          {item.component_code}
+                          {item.componentCode}
                         </span>
                       </td>
-                      <td style={{ fontWeight: '600' }}>{item.component_name}</td>
+                      <td style={{ fontWeight: '600' }}>{item.componentName}</td>
                       <td>
                         <span style={{ 
                           background: '#f1f5f9', 
@@ -411,7 +411,7 @@ export default function BOMViewer({ user }) {
                 <select
                   className="input"
                   onChange={handleRawMaterialSelect}
-                  value={formData.component_code}
+                  value={formData.componentCode}
                 >
                   <option value="">-- Select a Raw Material --</option>
                   {rawMaterials.map(rm => (
@@ -427,8 +427,8 @@ export default function BOMViewer({ user }) {
                 <input
                   type="text"
                   className="input"
-                  value={formData.component_code}
-                  onChange={(e) => setFormData({...formData, component_code: e.target.value})}
+                  value={formData.componentCode}
+                  onChange={(e) => setFormData({...formData, componentCode: e.target.value})}
                   placeholder="e.g., SA_RM_00003"
                   required
                 />
@@ -439,8 +439,8 @@ export default function BOMViewer({ user }) {
                 <input
                   type="text"
                   className="input"
-                  value={formData.component_name}
-                  onChange={(e) => setFormData({...formData, component_name: e.target.value})}
+                  value={formData.componentName}
+                  onChange={(e) => setFormData({...formData, componentName: e.target.value})}
                   placeholder="e.g., Empty Oil Cartridge (400ml)"
                   required
                 />
@@ -486,7 +486,7 @@ export default function BOMViewer({ user }) {
                 <input
                   type="text"
                   className="input"
-                  value={formData.component_code}
+                  value={formData.componentCode}
                   disabled
                   style={{ background: '#f1f5f9' }}
                 />
@@ -497,8 +497,8 @@ export default function BOMViewer({ user }) {
                 <input
                   type="text"
                   className="input"
-                  value={formData.component_name}
-                  onChange={(e) => setFormData({...formData, component_name: e.target.value})}
+                  value={formData.componentName}
+                  onChange={(e) => setFormData({...formData, componentName: e.target.value})}
                   required
                 />
               </div>
