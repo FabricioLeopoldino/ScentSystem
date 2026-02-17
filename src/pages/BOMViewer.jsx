@@ -76,31 +76,6 @@ export default function BOMViewer({ user }) {
     return colors[variant] || '#667eea';
   };
 
-  const handleAddComponent = async (e) => {
-    e.preventDefault();
-    
-    try {
-      const res = await fetch(`/api/bom/${selectedVariant}/component`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
-      });
-      
-      if (res.ok) {
-        const data = await res.json();
-        setBom(prev => ({ ...prev, [selectedVariant]: data.bom }));
-        setShowAddModal(false);
-        resetForm();
-        alert('Component added successfully!');
-      } else {
-        const error = await res.json();
-        alert(error.error || 'Error adding component');
-      }
-    } catch (error) {
-      alert('Error adding component: ' + error.message);
-    }
-  };
-
 const handleAddComponent = async () => {
   try {
     const response = await fetch("/api/bom", {
