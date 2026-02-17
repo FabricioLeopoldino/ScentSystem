@@ -78,7 +78,7 @@ export default function BOMViewer({ user }) {
 
 const handleAddComponent = async () => {
   try {
-    const response = await fetch("/api/bom", {
+    const response = await fetch(`/api/bom/${selectedVariant}/component/${componentCode}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
