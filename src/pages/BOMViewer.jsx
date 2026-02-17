@@ -96,13 +96,6 @@ const handleAddComponent = async () => {
       throw new Error(errorText);
     }
 
-    const data = await response.json();
-
-    // Atualiza a lista do BOM
-    setBom(prev => ({
-      ...prev,
-      [selectedVariant]: data.bom
-    }));
 
   } catch (error) {
     console.error("Add component error:", error);
