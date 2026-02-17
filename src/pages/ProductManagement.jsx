@@ -20,7 +20,7 @@ export default function ProductManagement({ user }) {
     currentStock: 0,
     minStockLevel: 0,
     supplier: '',
-    supplierCode: '',
+    supplier_code: '',
     unitPerBox: 1,
     shopifySkus: {}
   });
