@@ -1,6 +1,6 @@
 // ========================================================================
 // SCENT STOCK MANAGER - COMPATIBLE WITH EXISTING camelCase SCHEMA
-// Version: 4.1 - ALL MODIFICATIONS + EXISTING SCHEMA COMPATIBLE
+// Version: 4.1 + AJUSTE MANUAL UNIFICADO
 // ========================================================================
 // ✅ Works with YOUR current database schema (camelCase columns)
 // ✅ All your modifications implemented
@@ -363,7 +363,7 @@ app.post('/api/products', async (req, res) => {
     const result = await pool.query(
       `INSERT INTO products 
        (id, tag, "productCode", name, category, unit, "currentStock", "minStockLevel", 
-        "shopifySkus", supplier, "supplier_code", "unitPerBox", "stockBoxes", "incoming_orders") 
+       "shopifySkus", supplier, "supplier_code", "unitPerBox", "stockBoxes", "incoming_orders") 
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) 
        RETURNING *`,
       [
@@ -489,7 +489,7 @@ app.delete('/api/products/:id', async (req, res) => {
 });
 
 // ========================================================================
-// STOCK OPERATIONS
+// STOCK OPERATIONS - ADD / REMOVE / ADJUST
 // ========================================================================
 app.post('/api/stock/add', async (req, res) => {
   const client = await pool.connect();
@@ -539,7 +539,7 @@ app.post('/api/stock/add', async (req, res) => {
     });
   } catch (error) {
     await client.query('ROLLBACK');
-    res.status(500).json({ error: error.message });
+    res.status(400).json({ error: error.message });
   } finally {
     client.release();
   }
@@ -597,7 +597,82 @@ app.post('/api/stock/remove', async (req, res) => {
     });
   } catch (error) {
     await client.query('ROLLBACK');
-    res.status(500).json({ error: error.message });
+    res.status(400).json({ error: error.message });
+  } finally {
+    client.release();
+  }
+});
+
+// NOVA ROTA UNIFICADA /api/stock/adjust (compatível com seu frontend atual)
+app.post('/api/stock/adjust', async (req, res) => {
+  const client = await pool.connect();
+  
+  try {
+    await client.query('BEGIN');
+    
+    const { productId, quantity, type, notes } = req.body;
+    
+    if (!productId || !quantity || quantity <= 0) {
+      throw new Error('Quantidade inválida ou campos obrigatórios faltando');
+    }
+    
+    if (!['add', 'remove'].includes(type)) {
+      throw new Error('Type deve ser "add" ou "remove"');
+    }
+    
+    const productResult = await client.query(
+      'SELECT * FROM products WHERE id = $1 FOR UPDATE',
+      [productId]
+    );
+    
+    if (productResult.rows.length === 0) {
+      throw new Error('Produto não encontrado');
+    }
+    
+    const product = productResult.rows[0];
+    const adjustment = type === 'add' ? parseFloat(quantity) : -parseFloat(quantity);
+    const newStock = parseFloat(product.currentStock) + adjustment;
+    
+    if (newStock < 0) {
+      throw new Error('Estoque insuficiente para remoção');
+    }
+    
+    await client.query(
+      'UPDATE products SET "currentStock" = $1, "stockBoxes" = $2 WHERE id = $3',
+      [newStock, Math.floor(newStock / product.unitPerBox), productId]
+    );
+    
+    await client.query(
+      `INSERT INTO transactions 
+       (product_id, product_name, category, type, quantity, unit, balance_after, notes) 
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+      [
+        productId,
+        product.name,
+        product.category,
+        type,
+        quantity,  // sempre positivo no log
+        product.unit,
+        newStock,
+        notes || 'Ajuste manual via interface'
+      ]
+    );
+    
+    await client.query('COMMIT');
+    
+    res.json({
+      success: true,
+      newStock,
+      message: `Estoque ${type === 'add' ? 'adicionado' : 'removido'} com sucesso`,
+      product: {
+        ...product,
+        currentStock: newStock
+      }
+    });
+  } catch (error) {
+    await client.query('ROLLBACK');
+    console.error('Erro no ajuste de estoque:', error);
+    res.status(400).json({ error: error.message });
   } finally {
     client.release();
   }
@@ -887,7 +962,7 @@ app.post('/api/attachments/upload', upload.single('file'), async (req, res) => {
     const result = await pool.query(
       `INSERT INTO attachments 
        (file_name, stored_file_name, file_type, file_size, file_path, 
-        associated_oil_id, associated_oil_name, uploaded_by, notes) 
+       associated_oil_id, associated_oil_name, uploaded_by, notes) 
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) 
        RETURNING *`,
       [
@@ -989,7 +1064,7 @@ app.post('/api/webhook/shopify', express.json(), async (req, res) => {
       
       if (productResult.rows.length > 0) {
         const product = productResult.rows[0];
-        const incomingOrders = parseJSONB(product.incomingOrders, []);
+        const incomingOrders = parseJSONB(product.incoming_orders, []);
         
         incomingOrders.push({
           orderNumber,
@@ -999,7 +1074,7 @@ app.post('/api/webhook/shopify', express.json(), async (req, res) => {
         });
         
         await pool.query(
-          'UPDATE products SET "incomingOrders" = $1 WHERE id = $2',
+          'UPDATE products SET "incoming_orders" = $1 WHERE id = $2',
           [JSON.stringify(incomingOrders), product.id]
         );
         
@@ -1019,7 +1094,7 @@ app.delete('/api/products/:id/incoming/:index', async (req, res) => {
     const { id, index } = req.params;
     
     const productResult = await pool.query(
-      'SELECT "incomingOrders" FROM products WHERE id = $1',
+      'SELECT "incoming_orders" FROM products WHERE id = $1',
       [id]
     );
     
@@ -1027,11 +1102,11 @@ app.delete('/api/products/:id/incoming/:index', async (req, res) => {
       return res.status(404).json({ error: 'Product not found' });
     }
     
-    const incomingOrders = parseJSONB(productResult.rows[0].incomingOrders, []);
+    const incomingOrders = parseJSONB(productResult.rows[0].incoming_orders, []);
     incomingOrders.splice(parseInt(index), 1);
     
     await pool.query(
-      'UPDATE products SET "incomingOrders" = $1 WHERE id = $2',
+      'UPDATE products SET "incoming_orders" = $1 WHERE id = $2',
       [JSON.stringify(incomingOrders), id]
     );
     
@@ -1077,18 +1152,19 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, '0.0.0.0', () => {
   console.log('');
   console.log('═══════════════════════════════════════════════════');
-  console.log('🚀 SCENT STOCK MANAGER - v4.1');
+  console.log('🚀 SCENT STOCK MANAGER - v4.1 + AJUSTE UNIFICADO');
   console.log('═══════════════════════════════════════════════════');
-  console.log(`🌐 Port:        ${PORT}`);
+  console.log(`🌐 Port: ${PORT}`);
   console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
   console.log('');
   console.log('✅ All fixes applied:');
-  console.log('  ✓ Compatible with existing camelCase schema');
-  console.log('  ✓ Auto SKU mapping for OILS');
-  console.log('  ✓ Sequential ordering fixed');
-  console.log('  ✓ Category filters fixed');
-  console.log('  ✓ BOM returns grouped object');
-  console.log('  ✓ Incoming orders from Shopify');
+  console.log(' ✓ Compatible with existing camelCase schema');
+  console.log(' ✓ Auto SKU mapping for OILS');
+  console.log(' ✓ Sequential ordering fixed');
+  console.log(' ✓ Category filters fixed');
+  console.log(' ✓ BOM returns grouped object');
+  console.log(' ✓ Incoming orders from Shopify');
+  console.log(' ✓ Nova rota /api/stock/adjust implementada');
   console.log('');
   console.log('🎯 Server ready!');
   console.log('');
