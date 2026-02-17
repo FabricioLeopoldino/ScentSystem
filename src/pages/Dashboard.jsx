@@ -40,6 +40,13 @@ export default function Dashboard() {
     return { label: 'Healthy', class: 'green', badge: 'badge-success' };
   };
 
+  // 🔧 CORREÇÃO: Calcular volume real de óleo
+  const calculateTotalOilVolume = () => {
+    return products
+      .filter(p => p.category === 'OILS')
+      .reduce((total, product) => total + (product.currentStock || 0), 0);
+  };
+
   if (loading) {
     return (
       <div className="container" style={{ paddingTop: '40px' }}>
@@ -54,6 +61,7 @@ export default function Dashboard() {
   const oilsData = products.filter(p => p.category === 'OILS');
   const machinesData = products.filter(p => p.category === 'MACHINES_SPARES');
   const rawMaterialsData = products.filter(p => p.category === 'RAW_MATERIALS');
+  const totalOilVolume = calculateTotalOilVolume();
 
   return (
     <div className="container" style={{ paddingTop: '40px' }}>
@@ -96,7 +104,7 @@ export default function Dashboard() {
         </div>
 
         <div className="stat-card">
-          <div className="stat-value green">{data?.totalStockValue?.oils || 0}L</div>
+          <div className="stat-value green">{totalOilVolume}L</div>
           <div className="stat-label">Total Oil Volume</div>
         </div>
       </div>
