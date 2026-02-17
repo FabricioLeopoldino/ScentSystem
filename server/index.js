@@ -1069,49 +1069,6 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'Internal server error', message: err.message });
 });
 
-// -----------------------------------------
-// Antes (que dá 404):
-fetch("/api/stock/adjust", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({
-    productId: s.id,
-    quantity: parseInt(c),
-    type: o,           // provavelmente 'add' ou 'remove'
-    notes: d
-  })
-})
-
-// Depois – use /api/stock/add ou /api/stock/remove dependendo do type
-const endpoint = o === 'add' ? '/api/stock/add' : '/api/stock/remove';
-
-fetch(endpoint, {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({
-    productId: s.id,
-    quantity: parseInt(c),
-    notes: d,
-    // shopifyOrderId: opcional, pode omitir se não for de pedido Shopify
-  })
-})
-.then(response => {
-  if (!response.ok) throw new Error('Falha no ajuste');
-  return response.json();
-})
-.then(data => {
-  // Atualiza lista de produtos/transações
-  x(); // sua função de refresh, provavelmente
-  alert("Estoque ajustado com sucesso!");
-  // limpa formulário
-})
-.catch(err => {
-  console.error(err);
-  alert("Erro ao ajustar estoque: " + err.message);
-});
-
-//-----------------------------
-
 // ========================================================================
 // START SERVER
 // ========================================================================
