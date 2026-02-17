@@ -101,35 +101,41 @@ export default function BOMViewer({ user }) {
     }
   };
 
-  const handleEditComponent = async (e) => {
-    e.preventDefault();
-    
-    try {
-      const res = await fetch(`/api/bom/${selectedVariant}/component/${editingComponent.componentCode}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          componentName: formData.componentName,
-          quantity: formData.quantity
-        })
-      });
+const handleAddComponent = async () => {
+  try {
+    const response = await fetch("/api/bom", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        variant: selectedVariant,
+        componentCode,
+        componentName,
+        quantity: Number(quantity),
+      }),
+    });
       
-      if (res.ok) {
-        const data = await res.json();
-        setBom(prev => ({ ...prev, [selectedVariant]: data.bom }));
-        setShowEditModal(false);
-        setEditingComponent(null);
-        resetForm();
-        alert('Component updated successfully!');
-      } else {
-        const error = await res.json();
-        alert(error.error || 'Error updating component');
-      }
-    } catch (error) {
-      alert('Error updating component: ' + error.message);
+   if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(errorText);
     }
-  };
 
+    const data = await response.json();
+
+    // Atualiza a lista do BOM
+    setBom(prev => ({
+      ...prev,
+      [selectedVariant]: data.bom
+    }));
+
+  } catch (error) {
+    console.error("Add component error:", error);
+    alert("Error adding component");
+  }
+};
+
+    
   const handleDeleteComponent = async (componentCode) => {
     if (!confirm('Are you sure you want to remove this component from the BOM?')) return;
     
