@@ -1066,53 +1066,143 @@ app.get('/api/export/transactions', async (req, res) => {
 });
 
 // ========================================================================
-// SHOPIFY WEBHOOK - INCOMING ORDERS
+// SHOPIFY WEBHOOK - SMART ORDER HANDLER (Creation + Fulfillment)
 // ========================================================================
 app.post('/api/webhook/shopify', express.json(), async (req, res) => {
+  const client = await pool.connect();
+  
   try {
     console.log('📬 Shopify webhook received');
+    const webhookTopic = req.headers['x-shopify-topic'];
+    console.log('📦 Webhook type:', webhookTopic || 'unknown');
     
-    const { line_items, name: orderNumber } = req.body;
+    const { line_items, name: orderNumber, id: orderId } = req.body;
     
     if (!line_items || !Array.isArray(line_items)) {
       return res.status(400).json({ error: 'Invalid webhook data' });
     }
     
-    for (const item of line_items) {
-      const { sku, quantity } = item;
+    // ========================================================================
+    // OPTION 1: ORDER FULFILLMENT - Auto debit stock
+    // ========================================================================
+    if (webhookTopic === 'orders/fulfilled' || webhookTopic === 'fulfillments/create') {
+      console.log('🚚 Order Fulfillment - Auto debiting stock...');
       
-      if (!sku) continue;
+      await client.query('BEGIN');
       
-      const productResult = await pool.query(`
-        SELECT * FROM products 
-        WHERE "shopifySkus"::text ILIKE $1
-        LIMIT 1
-      `, [`%${sku}%`]);
-      
-      if (productResult.rows.length > 0) {
-        const product = productResult.rows[0];
-        const incomingOrders = parseJSONB(product.incomingOrders, []);
+      for (const item of line_items) {
+        const { sku, quantity } = item;
         
-        incomingOrders.push({
-          orderNumber,
-          sku,
-          quantity,
-          receivedAt: new Date().toISOString()
-        });
+        if (!sku || !quantity) continue;
         
-        await pool.query(
-          'UPDATE products SET "incomingOrders" = $1 WHERE id = $2',
-          [JSON.stringify(incomingOrders), product.id]
-        );
+        // Find product by SKU
+        const productResult = await client.query(`
+          SELECT * FROM products 
+          WHERE "shopifySkus"::text ILIKE $1
+          LIMIT 1
+        `, [`%${sku}%`]);
         
-        console.log(`✅ Incoming order added: ${product.id} - ${orderNumber}`);
+        if (productResult.rows.length > 0) {
+          const product = productResult.rows[0];
+          const currentStock = parseFloat(product.currentStock) || 0;
+          const quantityToRemove = parseFloat(quantity);
+          const newStock = Math.max(0, currentStock - quantityToRemove);
+          
+          // Update stock
+          await client.query(
+            'UPDATE products SET "currentStock" = $1, "stockBoxes" = $2 WHERE id = $3',
+            [newStock, Math.floor(newStock / (product.unitPerBox || 1)), product.id]
+          );
+          
+          // Create transaction
+          await client.query(
+            `INSERT INTO transactions 
+             (product_id, product_code, product_name, category, type, quantity, unit, balance_after, notes, shopify_order_id) 
+             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
+            [
+              product.id,
+              product.productCode || product.tag,
+              product.name,
+              product.category,
+              'remove',
+              quantityToRemove,
+              product.unit || 'units',
+              newStock,
+              `Shopify Order ${orderNumber} - Fulfilled`,
+              orderNumber
+            ]
+          );
+          
+          console.log(`✅ Stock debited: ${product.name} -${quantityToRemove} (New: ${newStock})`);
+        } else {
+          console.log(`⚠️ SKU not found: ${sku}`);
+        }
       }
+      
+      await client.query('COMMIT');
+      console.log('✅ Order fulfillment processed successfully');
+      
+      return res.status(200).json({ 
+        success: true, 
+        message: 'Stock debited',
+        order: orderNumber 
+      });
     }
     
-    res.status(200).json({ received: true });
+    // ========================================================================
+    // OPTION 2: ORDER CREATION - Add to incoming orders
+    // ========================================================================
+    if (webhookTopic === 'orders/create' || !webhookTopic) {
+      console.log('📝 Order Creation - Adding to incoming orders...');
+      
+      for (const item of line_items) {
+        const { sku, quantity } = item;
+        
+        if (!sku) continue;
+        
+        const productResult = await pool.query(`
+          SELECT * FROM products 
+          WHERE "shopifySkus"::text ILIKE $1
+          LIMIT 1
+        `, [`%${sku}%`]);
+        
+        if (productResult.rows.length > 0) {
+          const product = productResult.rows[0];
+          const incomingOrders = parseJSONB(product.incoming_orders, []);
+          
+          incomingOrders.push({
+            orderNumber,
+            sku,
+            quantity,
+            receivedAt: new Date().toISOString()
+          });
+          
+          await pool.query(
+            'UPDATE products SET incoming_orders = $1 WHERE id = $2',
+            [JSON.stringify(incomingOrders), product.id]
+          );
+          
+          console.log(`📋 Incoming order added: ${product.name} - Order ${orderNumber}`);
+        }
+      }
+      
+      return res.status(200).json({ 
+        success: true, 
+        message: 'Incoming order added',
+        order: orderNumber 
+      });
+    }
+    
+    // Unknown webhook type
+    console.log('⚠️ Unknown webhook type:', webhookTopic);
+    res.status(200).json({ received: true, message: 'Webhook received but not processed' });
+    
   } catch (error) {
-    console.error('Webhook error:', error);
+    if (client) await client.query('ROLLBACK');
+    console.error('❌ Webhook error:', error);
     res.status(500).json({ error: error.message });
+  } finally {
+    if (client) client.release();
   }
 });
 
@@ -1121,7 +1211,7 @@ app.delete('/api/products/:id/incoming/:index', async (req, res) => {
     const { id, index } = req.params;
     
     const productResult = await pool.query(
-      'SELECT "incomingOrders" FROM products WHERE id = $1',
+      'SELECT incoming_orders FROM products WHERE id = $1',
       [id]
     );
     
@@ -1129,11 +1219,11 @@ app.delete('/api/products/:id/incoming/:index', async (req, res) => {
       return res.status(404).json({ error: 'Product not found' });
     }
     
-    const incomingOrders = parseJSONB(productResult.rows[0].incomingOrders, []);
+    const incomingOrders = parseJSONB(productResult.rows[0].incoming_orders, []);
     incomingOrders.splice(parseInt(index), 1);
     
     await pool.query(
-      'UPDATE products SET "incomingOrders" = $1 WHERE id = $2',
+      'UPDATE products SET incoming_orders = $1 WHERE id = $2',
       [JSON.stringify(incomingOrders), id]
     );
     
