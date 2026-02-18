@@ -1,3 +1,12 @@
+// ========================================================================
+// SCENT STOCK MANAGER - COMPATIBLE WITH EXISTING camelCase SCHEMA
+// Version: 4.1 - ALL MODIFICATIONS + EXISTING SCHEMA COMPATIBLE
+// ========================================================================
+// ✅ Works with YOUR current database schema (camelCase columns)
+// ✅ All your modifications implemented
+// ✅ No database changes needed!
+// ========================================================================
+
 import express from 'express';
 import cors from 'cors';
 import pkg from 'pg';
@@ -529,9 +538,9 @@ app.post('/api/stock/add', async (req, res) => {
     
     await client.query(
       `INSERT INTO transactions 
-       (product_id, product_name, category, type, quantity, unit, balance_after, notes, shopify_order_id) 
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
-      [productId, product.name, product.category, 'add', quantity, product.unit, newStock, notes || '', shopifyOrderId || null]
+       (product_id, product_code, product_name, category, type, quantity, unit, balance_after, notes, shopify_order_id) 
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
+      [productId, product.productCode || product.tag, product.name, product.category, 'add', quantity, product.unit, newStock, notes || '', shopifyOrderId || null]
     );
     
     await client.query('COMMIT');
@@ -587,9 +596,9 @@ app.post('/api/stock/remove', async (req, res) => {
     
     await client.query(
       `INSERT INTO transactions 
-       (product_id, product_name, category, type, quantity, unit, balance_after, notes, shopify_order_id) 
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
-      [productId, product.name, product.category, 'remove', quantity, product.unit, newStock, notes || '', shopifyOrderId || null]
+       (product_id, product_code, product_name, category, type, quantity, unit, balance_after, notes, shopify_order_id) 
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
+      [productId, product.productCode || product.tag, product.name, product.category, 'remove', quantity, product.unit, newStock, notes || '', shopifyOrderId || null]
     );
     
     await client.query('COMMIT');
@@ -662,10 +671,11 @@ app.post('/api/stock/adjust', async (req, res) => {
     // Create transaction record
     await client.query(
       `INSERT INTO transactions 
-       (product_id, product_name, category, type, quantity, unit, balance_after, notes) 
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+       (product_id, product_code, product_name, category, type, quantity, unit, balance_after, notes) 
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
       [
-        productId, 
+        productId,
+        product.productCode || product.tag, // Add product code
         product.name, 
         product.category, 
         type, 
