@@ -61,7 +61,7 @@ function App() {
 
               <li><Link href="/bom">BOM</Link></li>
               <li><Link href="/sku-mapping">SKU Mapping</Link></li>
-              <li><Link href="/attachments">Attachments</Link></li>
+              {/* <li><Link href="/attachments">Attachments</Link></li> */}
               <li><Link href="/history">History</Link></li>
               {user.role === 'admin' && (
                 <li><Link href="/users">Users</Link></li>
