@@ -273,9 +273,9 @@ export default function Dashboard() {
                 {data.recentTransactions.map(tx => (
                   <tr key={tx.id}>
                     <td style={{ fontSize: '12px', color: '#64748b' }}>
-                      {new Date(tx.createdAt).toLocaleDateString()}
+                      {new Date(tx.created_at).toLocaleDateString()}
                     </td>
-                    <td style={{ fontWeight: '600' }}>{tx.productName}</td>
+                    <td style={{ fontWeight: '600' }}>{tx.product_name || '-'}</td>
                     <td>
                       <span className="badge" style={{ fontSize: '11px' }}>
                         {tx.category === 'MACHINES_SPARES' ? 'Machines & Spares' : tx.category === 'RAW_MATERIALS' ? 'Raw Materials' : 'Oils'}

@@ -144,12 +144,12 @@ export default function TransactionHistory() {
                   {filteredTransactions.map(t => (
                     <tr key={t.id}>
                       <td style={{ fontSize: '12px', color: '#64748b' }}>
-                        {new Date(t.createdAt).toLocaleString('en-US')}
+                        {new Date(t.created_at).toLocaleString('en-US')}
                       </td>
                       <td style={{ fontFamily: 'monospace', fontSize: '12px' }}>
-                        {t.productCode}
+                        {t.product_code || '-'}
                       </td>
-                      <td style={{ fontWeight: '600' }}>{t.productName}</td>
+                      <td style={{ fontWeight: '600' }}>{t.product_name || '-'}</td>
                       <td>
                         <span className="badge" style={{ fontSize: '11px' }}>
                           {getCategoryLabel(t.category)}
@@ -164,7 +164,7 @@ export default function TransactionHistory() {
                         {t.quantity} {t.unit}
                       </td>
                       <td style={{ fontWeight: '600' }}>
-                        {t.balanceAfter} {t.unit}
+                        {t.balance_after ? `${t.balance_after} ${t.unit}` : `${t.unit}`}
                       </td>
                       <td style={{ maxWidth: '250px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontSize: '13px', color: '#64748b' }}>
                         {t.notes || '-'}
