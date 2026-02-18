@@ -31,14 +31,14 @@ export default function StockManagement() {
     e.preventDefault();
     
     try {
-      const res = await fetch('/api/products', {
+      const res = await fetch('/api/stock/adjust', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           productId: selectedProduct.id,
           quantity: parseInt(quantity),
           type,
-          notes
+          note: notes
         })
       });
 
@@ -48,6 +48,9 @@ export default function StockManagement() {
         setQuantity('');
         setNotes('');
         alert('Stock adjusted successfully!');
+      } else {
+        const error = await res.json();
+        alert(error.error || 'Failed to adjust stock');
       }
     } catch (error) {
       console.error('Error:', error);

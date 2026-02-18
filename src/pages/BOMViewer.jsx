@@ -80,10 +80,15 @@ export default function BOMViewer({ user }) {
     e.preventDefault();
     
     try {
-      const res = await fetch(`/api/bom/${selectedVariant}/component`, {
+      const res = await fetch('/api/bom', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
+        body: JSON.stringify({
+          variant: selectedVariant,
+          componentCode: formData.componentCode,
+          componentName: formData.componentName,
+          quantity: formData.quantity
+        })
       });
       
       if (res.ok) {

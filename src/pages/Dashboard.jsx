@@ -47,6 +47,16 @@ export default function Dashboard() {
       .reduce((total, product) => total + (product.currentStock || 0), 0);
   };
 
+  // 🔧 Formatar números grandes com separador de milhares
+  const formatNumber = (num) => {
+    return new Intl.NumberFormat('en-US').format(Math.round(num));
+  };
+
+  // 🔧 Contar produtos por categoria
+  const countByCategory = (category) => {
+    return products.filter(p => p.category === category).length;
+  };
+
   if (loading) {
     return (
       <div className="container" style={{ paddingTop: '40px' }}>
@@ -104,7 +114,7 @@ export default function Dashboard() {
         </div>
 
         <div className="stat-card">
-          <div className="stat-value green">{totalOilVolume}L</div>
+          <div className="stat-value green">{formatNumber(totalOilVolume)}L</div>
           <div className="stat-label">Total Oil Volume</div>
         </div>
       </div>
@@ -116,7 +126,7 @@ export default function Dashboard() {
             Essential Oils
           </h3>
           <div style={{ fontSize: '32px', fontWeight: '900', color: '#3b82f6', marginBottom: '8px' }}>
-            {data?.byCategory?.OILS || 0}
+            {countByCategory('OILS')}
           </div>
           <div style={{ fontSize: '13px', color: '#64748b' }}>
             {oilsData.filter(p => p.currentStock < p.minStockLevel).length} low stock
@@ -128,7 +138,7 @@ export default function Dashboard() {
             Machines & Spares
           </h3>
           <div style={{ fontSize: '32px', fontWeight: '900', color: '#8b5cf6', marginBottom: '8px' }}>
-            {data?.byCategory?.MACHINES_SPARES || 0}
+            {countByCategory('MACHINES_SPARES')}
           </div>
           <div style={{ fontSize: '13px', color: '#64748b' }}>
             {machinesData.filter(p => p.currentStock < p.minStockLevel).length} low stock
@@ -140,7 +150,7 @@ export default function Dashboard() {
             Raw Materials
           </h3>
           <div style={{ fontSize: '32px', fontWeight: '900', color: '#f59e0b', marginBottom: '8px' }}>
-            {data?.byCategory?.RAW_MATERIALS || 0}
+            {countByCategory('RAW_MATERIALS')}
           </div>
           <div style={{ fontSize: '13px', color: '#64748b' }}>
             {rawMaterialsData.filter(p => p.currentStock < p.minStockLevel).length} low stock
