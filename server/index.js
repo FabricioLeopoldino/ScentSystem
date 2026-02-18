@@ -1,12 +1,3 @@
-// ========================================================================
-// SCENT STOCK MANAGER - COMPATIBLE WITH EXISTING camelCase SCHEMA
-// Version: 4.1 - ALL MODIFICATIONS + EXISTING SCHEMA COMPATIBLE
-// ========================================================================
-// ✅ Works with YOUR current database schema (camelCase columns)
-// ✅ All your modifications implemented
-// ✅ No database changes needed!
-// ========================================================================
-
 import express from 'express';
 import cors from 'cors';
 import pkg from 'pg';
@@ -56,8 +47,24 @@ const pool = new Pool({
     : false,
   max: 20,
   min: 2,
-  idleTimeoutMillis: 30000,
+  idleTimeoutMillis: 20000, // Close idle connections after 20s
   connectionTimeoutMillis: 10000,
+  allowExitOnIdle: false, // Don't exit on idle connections
+});
+
+// CRITICAL: Handle pool errors to prevent server crashes
+pool.on('error', (err, client) => {
+  console.error('⚠️ Unexpected database pool error:', err);
+  console.error('Client:', client ? 'Active' : 'Unknown');
+  // Don't exit - let the pool handle reconnection
+});
+
+// CRITICAL: Handle connection errors
+pool.on('connect', (client) => {
+  client.on('error', (err) => {
+    console.error('⚠️ Database client error:', err.message);
+    // Connection will be removed from pool automatically
+  });
 });
 
 // Test connection
