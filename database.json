@@ -5862,7 +5862,7 @@
     {
       "id": "1",
       "name": "admin",
-      "password": "$2a$10$33foOOk2uOx/jvvNYitQT.Hg1dPXHjE5NiH1Mvxw.5hvAlgizpwvi",
+      "password": "password_secret_naotente_obrigado_amem",
       "role": "admin"
     }
   ],
