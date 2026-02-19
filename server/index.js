@@ -1,5 +1,5 @@
 //sKp187Mv7kDkpWVtW0pHl1d6Au4sGivkf0LNjU6Po5acu24UiazZC9QWmTDTlTzeOjxkuECAfjBt_ICxeOXiVGPstfvJwjPCawrVnkPU-L7uMkg2gtO3p2n0uXCsgzxPC5Le-Lnuat7WPuLwLPDbkEVM9Wqjv4jG4vCCDl-L99dc2Kpod-ZCKx7ojgoVv0oLNFKkk_NLHoOzhDce4cMifpD-T2-GoBheJ92gg8_1G1IbcOeOCsPKHl8TSNw01yqWB2qD57mezJsXhf8JEHB4aAvEgDu9mAWYKX0QtFZnW_b49VUT6rhJR6N1nfQx1-38DCwwDTIfn3lB8Pz198YXS8F-TswZDuedDdxt_l7OU7RXVSy9E4YLgx_vZ_oDUPy_vl7Vo23gCl8BQqK27_LX1AEKVXKhvycbAPN1zaBgmc8fix7cm9StncAWKHxYuR78PHdUp0SlmoaycjAOYRFxrh7jdu91y-k7UthfH_GybP0
-//Fabricio Leopoldino 19/02/2026 
+//Fabricio Leopoldino 19/02/2026
 import express from 'express';
 import cors from 'cors';
 import pkg from 'pg';
@@ -102,6 +102,102 @@ const upload = multer({
 });
 
 app.use('/uploads', express.static(join(__dirname, '../uploads')));
+
+// ========================================================================
+// HELPER: Create product in Shopify automatically
+//
+//
+// SHOPIFY ADMIN > SETTINGS > APPS AND SALES CHANNELS > DEVELOP APPS > CREATE AN APP 3 
+//NOME: SCENTSYSTEM SYNC
+//CONF: ADMIN API
+// -WRITE_PRODUCTS -READ_PRODUCTS
+//INSTALL APPS
+//SAVE: ADMIN API ACESS TOKEN 
+//SAVE: STORE NAME
+//
+//---- RENDER 
+// SYSTEM > ENVIRONMENT > ADD ENVIRONMENT
+//SOPIFY_SYNC_ENABLE = TRUE
+//SHOPIFY_STORE_NAME = LOJA (SEM .MYSHOPIFY.COM)
+//SHOPIFY_API_KEY = API_KEY = ADMIN-API-ACESS-TOKEN
+//
+//EXEMP: 
+//
+//SHOPIFY_SYNC_ENABLE = TRUE
+//SHOPIFY_STORE_NAME = FABRICIO-LEOPOLDINO
+//SHOPIFY_API_KEY = shpat_abc123... SHOPIFY_API_PASSWORD=shpat_xyz789...
+//
+// ========================================================================
+async function createProductInShopify(product) {
+  if (!process.env.SHOPIFY_STORE_NAME || !process.env.SHOPIFY_API_KEY || !process.env.SHOPIFY_API_PASSWORD) {
+    throw new Error('Shopify credentials not configured');
+  }
+  
+  const shopifySkus = parseJSONB(product.shopifySkus);
+  
+  // Create variants for each SKU type 
+  //PRICE VARIANT SKU <> preco with GST 
+  const variants = [];
+  const variantDetails = {
+    'SA_CA': { title: '400ml Cartridge', price: '165.00', weight: 400 },
+    'SA_HF': { title: '500ml Half Liter', price: '150.00', weight: 500 },
+    'SA_CDIFF': { title: '700ml Bottle Diffuser', price: '275.00', weight: 700 },
+    'SA_1L': { title: '1L Bottle', price: '218.90', weight: 1000 },
+    'SA_PRO': { title: '1L Pro Bottle', price: '275.00', weight: 1000 }
+  };
+  
+  Object.entries(shopifySkus).forEach(([type, sku]) => {
+    const details = variantDetails[type];
+    if (details) {
+      variants.push({
+        option1: details.title,
+        sku: sku,
+        price: details.price,
+        weight: details.weight,
+        weight_unit: 'g',
+        inventory_management: null, // Don't track inventory in Shopify (we track locally)
+        inventory_policy: 'continue' // Allow sales even if out of stock
+      });
+    }
+  });
+  
+  const shopifyProduct = {
+    product: {
+      title: product.name,
+      body_html: `<p>${product.name}</p><p>Product Code: ${product.productCode}</p>`,
+      vendor: product.supplier || 'Scent Australia',
+      product_type: 'Fragrance Oil',
+      tags: [product.category, product.tag].filter(Boolean).join(', '),
+      options: [
+        {
+          name: 'Size',
+          values: variants.map(v => v.option1)
+        }
+      ],
+      variants: variants
+    }
+  };
+  
+  const url = `https://${process.env.SHOPIFY_STORE_NAME}.myshopify.com/admin/api/2024-01/products.json`;
+  const auth = Buffer.from(`${process.env.SHOPIFY_API_KEY}:${process.env.SHOPIFY_API_PASSWORD}`).toString('base64');
+  
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Basic ${auth}`
+    },
+    body: JSON.stringify(shopifyProduct)
+  });
+  
+  if (!response.ok) {
+    const error = await response.text();
+    throw new Error(`Shopify API error: ${error}`);
+  }
+  
+  const data = await response.json();
+  return data.product;
+}
 
 // ========================================================================
 // HELPER FUNCTIONS
@@ -360,11 +456,22 @@ app.post('/api/products', async (req, res) => {
     const newProductCode = productCode || `${category.toUpperCase()}_${String(newNum).padStart(5, '0')}`;
     const stockBoxes = unitPerBox ? Math.floor((currentStock || 0) / unitPerBox) : 0;
     
-    // ✅ Auto-generate SKUs for OILS
+    // ✅ Extract number from TAG for SKU generation
+    let skuNumber = newNum; // Default: use ID number
+    if (tag) {
+      // If tag provided, extract number from it
+      // Tag format: #SA00275 or #SA275 → extract 275
+      const tagMatch = tag.match(/\d+/);
+      if (tagMatch) {
+        skuNumber = parseInt(tagMatch[0]);
+      }
+    }
+    
+    // ✅ Auto-generate SKUs for OILS using TAG number
     let finalShopifySkus = shopifySkus || {};
     if (category === 'OILS' && (!shopifySkus || Object.keys(shopifySkus).length === 0)) {
-      finalShopifySkus = generateAutoSkus(category, newNum);
-      console.log(`✨ Auto-generated SKUs for ${newId}`);
+      finalShopifySkus = generateAutoSkus(category, skuNumber);
+      console.log(`✨ Auto-generated SKUs for ${newId} using number ${skuNumber} from tag ${tag || newTag}`);
     }
     
     const skusJson = JSON.stringify(finalShopifySkus);
@@ -383,6 +490,41 @@ app.post('/api/products', async (req, res) => {
     );
     
     const row = result.rows[0];
+    
+    // ========================================================================
+    // OPTIONAL: Auto-create products in Shopify
+    //
+    //
+    // SHOPIFY ADMIN > SETTINGS > APPS AND SALES CHANNELS > DEVELOP APPS > CREATE AN APP 3 
+    //NOME: SCENTSYSTEM SYNC
+    //CONF: ADMIN API
+    // -WRITE_PRODUCTS -READ_PRODUCTS
+    //INSTALL APPS
+    //SAVE: ADMIN API ACESS TOKEN 
+    //SAVE: STORE NAME
+    //
+    //---- RENDER 
+    // SYSTEM > ENVIRONMENT > ADD ENVIRONMENT
+    //SOPIFY_SYNC_ENABLE = TRUE
+    //SHOPIFY_STORE_NAME = LOJA (SEM .MYSHOPIFY.COM)
+    //SHOPIFY_API_KEY = API_KEY = ADMIN-API-ACESS-TOKEN
+    //
+    //EXEMP: 
+    //
+    //SHOPIFY_SYNC_ENABLE = TRUE
+    //SHOPIFY_STORE_NAME = FABRICIO-LEOPOLDINO
+    //SHOPIFY_API_KEY = shpat_abc123... SHOPIFY_API_PASSWORD=shpat_xyz789...
+    // ========================================================================
+    if (category === 'OILS' && process.env.SHOPIFY_SYNC_ENABLED === 'true') {
+      try {
+        await createProductInShopify(row);
+        console.log(`✅ Product synced to Shopify: ${row.name}`);
+      } catch (shopifyError) {
+        console.error('⚠️ Shopify sync failed:', shopifyError.message);
+        // Continue anyway - product created locally
+      }
+    }
+    
     res.json({
       id: row.id,
       tag: row.tag,
@@ -613,7 +755,7 @@ app.post('/api/stock/remove', async (req, res) => {
 });
 
 // ========================================================================
-// STOCK ADJUST - Manual stock adjustments (add or remove)
+// STOCK ADJUST - Manual stock adjustments (add or remove) JUST ADMIN 
 // ========================================================================
 app.post('/api/stock/adjust', async (req, res) => {
   const client = await pool.connect();
@@ -774,7 +916,7 @@ app.get('/api/dashboard', async (req, res) => {
 });
 
 // ========================================================================
-// BOM
+// BOM 
 // ========================================================================
 app.get('/api/bom', async (req, res) => {
   try {
@@ -943,7 +1085,7 @@ app.delete('/api/bom/:variant/component/:componentCode', async (req, res) => {
 });
 
 // ========================================================================
-// ATTACHMENTS
+// ATTACHMENTS < DESABILITADO TEMPORARIAMENTE ! 
 // ========================================================================
 app.get('/api/attachments', async (req, res) => {
   try {
@@ -1059,7 +1201,8 @@ app.get('/api/export/transactions', async (req, res) => {
 });
 
 // ========================================================================
-// HELPER: Get volume from SKU type
+// HELPER: Get volume from SKU type [VOLUME FROM SKU] < NOW 5 DIF. SKUS #SA_CA \ #SA_1L \ #SA_HF \ #SA_PRO \ #SA_CDIFF
+//                VOLUME LOGIC: SKUS #SA_CA [400ML] \ #SA_1L \ #SA_HF \ #SA_PRO \ #SA_CDIFF
 // ========================================================================
 const getVolumeFromSKU = (sku) => {
   const skuUpper = sku.toUpperCase();
@@ -1075,7 +1218,7 @@ const getVolumeFromSKU = (sku) => {
 };
 
 // ========================================================================
-// HELPER: Get variant from SKU
+// HELPER: Get variant from SKU [Variant From SKU] < NOW 5 DIF. SKUS #SA_CA \ #SA_1L \ #SA_HF \ #SA_PRO \ #SA_CDIFF
 // ========================================================================
 const getVariantFromSKU = (sku) => {
   const skuUpper = sku.toUpperCase();
@@ -1334,7 +1477,7 @@ app.delete('/api/products/:id/incoming/:index', async (req, res) => {
 });
 
 // ========================================================================
-// FRONTEND SERVING
+// FRONTEND SERVING 
 // ========================================================================
 const distPath = join(__dirname, '../dist');
 if (existsSync(distPath)) {
@@ -1369,19 +1512,12 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, '0.0.0.0', () => {
   console.log('');
   console.log('═══════════════════════════════════════════════════');
-  console.log('🚀 SCENT STOCK MANAGER - v4.1');
+  console.log('Scent Australia Stock Manager - 2026 [Version 1]');
   console.log('═══════════════════════════════════════════════════');
   console.log(`🌐 Port:        ${PORT}`);
   console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
   console.log('');
-  console.log('✅ All fixes applied:');
-  console.log('  ✓ Compatible with existing camelCase schema');
-  console.log('  ✓ Auto SKU mapping for OILS');
-  console.log('  ✓ Sequential ordering fixed');
-  console.log('  ✓ Category filters fixed');
-  console.log('  ✓ BOM returns grouped object');
-  console.log('  ✓ Incoming orders from Shopify');
   console.log('');
-  console.log('🎯 Server ready!');
-  console.log('');
+  console.log('Powered by: https://www.linkedin.com/in/fabricioleopoldino/');
+  console.log('Server Ready!!!!!');
 });
