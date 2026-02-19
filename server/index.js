@@ -1,12 +1,5 @@
-// ========================================================================
-// SCENT STOCK MANAGER - COMPATIBLE WITH EXISTING camelCase SCHEMA
-// Version: 4.1 - ALL MODIFICATIONS + EXISTING SCHEMA COMPATIBLE
-// ========================================================================
-// ✅ Works with YOUR current database schema (camelCase columns)
-// ✅ All your modifications implemented
-// ✅ No database changes needed!
-// ========================================================================
-
+//sKp187Mv7kDkpWVtW0pHl1d6Au4sGivkf0LNjU6Po5acu24UiazZC9QWmTDTlTzeOjxkuECAfjBt_ICxeOXiVGPstfvJwjPCawrVnkPU-L7uMkg2gtO3p2n0uXCsgzxPC5Le-Lnuat7WPuLwLPDbkEVM9Wqjv4jG4vCCDl-L99dc2Kpod-ZCKx7ojgoVv0oLNFKkk_NLHoOzhDce4cMifpD-T2-GoBheJ92gg8_1G1IbcOeOCsPKHl8TSNw01yqWB2qD57mezJsXhf8JEHB4aAvEgDu9mAWYKX0QtFZnW_b49VUT6rhJR6N1nfQx1-38DCwwDTIfn3lB8Pz198YXS8F-TswZDuedDdxt_l7OU7RXVSy9E4YLgx_vZ_oDUPy_vl7Vo23gCl8BQqK27_LX1AEKVXKhvycbAPN1zaBgmc8fix7cm9StncAWKHxYuR78PHdUp0SlmoaycjAOYRFxrh7jdu91y-k7UthfH_GybP0
+//Fabricio Leopoldino 19/02/2026 
 import express from 'express';
 import cors from 'cors';
 import pkg from 'pg';
@@ -1066,7 +1059,38 @@ app.get('/api/export/transactions', async (req, res) => {
 });
 
 // ========================================================================
-// SHOPIFY WEBHOOK - SMART ORDER HANDLER (Creation + Fulfillment)
+// HELPER: Get volume from SKU type
+// ========================================================================
+const getVolumeFromSKU = (sku) => {
+  const skuUpper = sku.toUpperCase();
+  
+  // Volume mapping
+  if (skuUpper.includes('SA_CA')) return 400;      // Cartridge = 400ml
+  if (skuUpper.includes('SA_1L')) return 1000;     // 1 Liter = 1000ml
+  if (skuUpper.includes('SA_HF')) return 500;      // Half = 500ml
+  if (skuUpper.includes('SA_PRO')) return 1000;    // Pro = 1000ml
+  if (skuUpper.includes('SA_CDIFF')) return 700;   // Car Diffuser = 700ml
+  
+  return 1; // Default fallback
+};
+
+// ========================================================================
+// HELPER: Get variant from SKU
+// ========================================================================
+const getVariantFromSKU = (sku) => {
+  const skuUpper = sku.toUpperCase();
+  
+  if (skuUpper.includes('SA_CA')) return 'SA_CA';
+  if (skuUpper.includes('SA_1L')) return 'SA_1L';
+  if (skuUpper.includes('SA_HF')) return 'SA_HF';
+  if (skuUpper.includes('SA_PRO')) return 'SA_PRO';
+  if (skuUpper.includes('SA_CDIFF')) return 'SA_CDIFF';
+  
+  return null;
+};
+
+// ========================================================================
+// SHOPIFY WEBHOOK - SMART ORDER HANDLER WITH BOM INTEGRATION
 // ========================================================================
 app.post('/api/webhook/shopify', express.json(), async (req, res) => {
   const client = await pool.connect();
@@ -1083,10 +1107,10 @@ app.post('/api/webhook/shopify', express.json(), async (req, res) => {
     }
     
     // ========================================================================
-    // OPTION 1: ORDER FULFILLMENT - Auto debit stock
+    // OPTION 1: ORDER FULFILLMENT - Auto debit stock + BOM components
     // ========================================================================
     if (webhookTopic === 'orders/fulfilled' || webhookTopic === 'fulfillments/create') {
-      console.log('🚚 Order Fulfillment - Auto debiting stock...');
+      console.log('🚚 Order Fulfillment - Auto debiting stock + BOM...');
       
       await client.query('BEGIN');
       
@@ -1104,17 +1128,25 @@ app.post('/api/webhook/shopify', express.json(), async (req, res) => {
         
         if (productResult.rows.length > 0) {
           const product = productResult.rows[0];
-          const currentStock = parseFloat(product.currentStock) || 0;
-          const quantityToRemove = parseFloat(quantity);
-          const newStock = Math.max(0, currentStock - quantityToRemove);
           
-          // Update stock
+          // ========================================================================
+          // STEP 1: Calculate correct volume based on SKU type
+          // ========================================================================
+          const volumePerUnit = getVolumeFromSKU(sku);
+          const totalVolume = volumePerUnit * parseFloat(quantity);
+          
+          const currentStock = parseFloat(product.currentStock) || 0;
+          const newStock = Math.max(0, currentStock - totalVolume);
+          
+          console.log(`📊 SKU: ${sku}, Volume/unit: ${volumePerUnit}ml, Qty: ${quantity}, Total: ${totalVolume}ml`);
+          
+          // Update oil stock
           await client.query(
             'UPDATE products SET "currentStock" = $1, "stockBoxes" = $2 WHERE id = $3',
             [newStock, Math.floor(newStock / (product.unitPerBox || 1)), product.id]
           );
           
-          // Create transaction
+          // Create transaction for oil
           await client.query(
             `INSERT INTO transactions 
              (product_id, product_code, product_name, category, type, quantity, unit, balance_after, notes, shopify_order_id) 
@@ -1125,15 +1157,83 @@ app.post('/api/webhook/shopify', express.json(), async (req, res) => {
               product.name,
               product.category,
               'remove',
-              quantityToRemove,
-              product.unit || 'units',
+              totalVolume,
+              product.unit || 'mL',
               newStock,
-              `Shopify Order ${orderNumber} - Fulfilled`,
+              `Shopify Order ${orderNumber} - Fulfilled (${quantity}x ${volumePerUnit}ml)`,
               orderNumber
             ]
           );
           
-          console.log(`✅ Stock debited: ${product.name} -${quantityToRemove} (New: ${newStock})`);
+          console.log(`✅ Oil debited: ${product.name} -${totalVolume}ml (${quantity} units × ${volumePerUnit}ml) (New: ${newStock}ml)`);
+          
+          // ========================================================================
+          // STEP 2: Debit BOM components
+          // ========================================================================
+          const variant = getVariantFromSKU(sku);
+          
+          if (variant) {
+            console.log(`🔍 Looking for BOM components for variant: ${variant}`);
+            
+            // Get BOM components for this variant
+            const bomResult = await client.query(
+              'SELECT * FROM bom WHERE variant = $1 ORDER BY seq',
+              [variant]
+            );
+            
+            if (bomResult.rows.length > 0) {
+              console.log(`📦 Found ${bomResult.rows.length} BOM components for ${variant}`);
+              
+              for (const bomItem of bomResult.rows) {
+                const componentCode = bomItem.component_code;
+                const componentQty = parseFloat(bomItem.quantity) * parseFloat(quantity);
+                
+                // Find component product
+                const componentResult = await client.query(
+                  'SELECT * FROM products WHERE "productCode" = $1 OR tag = $1 OR id = $1',
+                  [componentCode]
+                );
+                
+                if (componentResult.rows.length > 0) {
+                  const component = componentResult.rows[0];
+                  const compCurrentStock = parseFloat(component.currentStock) || 0;
+                  const compNewStock = Math.max(0, compCurrentStock - componentQty);
+                  
+                  // Update component stock
+                  await client.query(
+                    'UPDATE products SET "currentStock" = $1, "stockBoxes" = $2 WHERE id = $3',
+                    [compNewStock, Math.floor(compNewStock / (component.unitPerBox || 1)), component.id]
+                  );
+                  
+                  // Create transaction for component
+                  await client.query(
+                    `INSERT INTO transactions 
+                     (product_id, product_code, product_name, category, type, quantity, unit, balance_after, notes, shopify_order_id) 
+                     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
+                    [
+                      component.id,
+                      component.productCode || component.tag,
+                      component.name,
+                      component.category,
+                      'remove',
+                      componentQty,
+                      component.unit || 'units',
+                      compNewStock,
+                      `Shopify Order ${orderNumber} - BOM Component (${quantity}x ${variant})`,
+                      orderNumber
+                    ]
+                  );
+                  
+                  console.log(`  ✅ BOM component: ${component.name} -${componentQty} ${component.unit} (New: ${compNewStock})`);
+                } else {
+                  console.log(`  ⚠️ BOM component not found: ${componentCode}`);
+                }
+              }
+            } else {
+              console.log(`ℹ️ No BOM found for variant ${variant}`);
+            }
+          }
+          
         } else {
           console.log(`⚠️ SKU not found: ${sku}`);
         }
@@ -1144,7 +1244,7 @@ app.post('/api/webhook/shopify', express.json(), async (req, res) => {
       
       return res.status(200).json({ 
         success: true, 
-        message: 'Stock debited',
+        message: 'Stock and BOM components debited',
         order: orderNumber 
       });
     }
