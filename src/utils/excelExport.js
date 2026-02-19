@@ -54,16 +54,16 @@ export function exportTransactionsToExcel(transactions) {
   // Prepare data for export
   const data = transactions.map(tx => ({
     'Transaction ID': tx.id,
-    'Date': new Date(tx.createdAt).toLocaleString(),
-    'Product Code': tx.productCode,
-    'Product Name': tx.productName,
+    'Date': new Date(tx.created_at || tx.createdAt).toLocaleString(),
+    'Product Code': tx.product_code || tx.productCode || '-',
+    'Product Name': tx.product_name || tx.productName || '-',
     'Category': tx.category,
     'Type': tx.type === 'add' ? 'Add Stock' : 'Remove Stock',
     'Quantity': tx.quantity,
     'Unit': tx.unit,
-    'Balance After': tx.balanceAfter,
+    'Balance After': tx.balance_after || tx.balanceAfter || '-',
     'Notes': tx.notes || '-',
-    'Shopify Order': tx.shopifyOrderId || '-'
+    'Shopify Order': tx.shopify_order_id || tx.shopifyOrderId || '-'
   }));
 
   // Create worksheet
@@ -119,15 +119,16 @@ export function exportFullDatabaseToExcel(products, transactions) {
   // Transactions sheet
   const transactionsData = transactions.map(tx => ({
     'ID': tx.id,
-    'Date': new Date(tx.createdAt).toLocaleString(),
-    'Product Code': tx.productCode,
-    'Product Name': tx.productName,
+    'Date': new Date(tx.created_at || tx.createdAt).toLocaleString(),
+    'Product Code': tx.product_code || tx.productCode || '-',
+    'Product Name': tx.product_name || tx.productName || '-',
     'Category': tx.category,
     'Type': tx.type,
     'Quantity': tx.quantity,
     'Unit': tx.unit,
-    'Balance After': tx.balanceAfter,
-    'Notes': tx.notes || '-'
+    'Balance After': tx.balance_after || tx.balanceAfter || '-',
+    'Notes': tx.notes || '-',
+    'Shopify Order': tx.shopify_order_id || tx.shopifyOrderId || '-'
   }));
   const wsTransactions = XLSX.utils.json_to_sheet(transactionsData);
   XLSX.utils.book_append_sheet(wb, wsTransactions, 'Transactions');
