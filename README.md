@@ -1,171 +1,179 @@
-# 🧴 ScentSystem - Sistema de Gestão de Estoque
+________________________________________________________________________________________________________________________
 
-Sistema completo de gerenciamento de estoque integrado com Shopify, com suporte a PostgreSQL para dados persistentes.
 
-## ✨ Funcionalidades
+ScentSystem — Inventory Management for Fragrance Operations
 
-- 📦 **Gestão de Produtos** - Óleos, frascos, tampas e componentes
-- 📊 **Controle de Estoque** - Rastreamento em tempo real
-- 🔄 **Integração Shopify** - Webhook automático de pedidos
-- 👥 **Multi-usuário** - Sistema de autenticação e permissões
-- 🏗️ **BOM (Bill of Materials)** - Receitas de produtos
-- 📎 **Anexos** - Upload de documentos e imagens
-- 📈 **Histórico Completo** - Todas as movimentações
-- 📋 **SKU Mapping** - Vinculação com produtos Shopify
-- 📊 **Relatórios Excel** - Exportação de dados
+________________________________________________________________________________________________________________________
 
-## 🗄️ Stack Tecnológico
 
-### Backend
-- **Node.js + Express** - API REST
-- **PostgreSQL** - Banco de dados persistente
-- **Bcrypt** - Segurança de senhas
-- **Multer** - Upload de arquivos
+ScentSystem is a full-stack inventory management platform designed for fragrance and component tracking, with real-time stock control and Shopify order integration.
+Built to handle products, raw materials, BOM recipes, and transaction history in a structured and scalable way.
 
-### Frontend
-- **React 18** - Interface moderna
-- **Vite** - Build ultra-rápido
-- **Wouter** - Roteamento leve
-- **Lucide React** - Ícones
+________________________________________________________________________________________________________________________
 
-### Infraestrutura
-- **Render** - Hospedagem (Free tier)
-- **PostgreSQL (Render)** - Database gratuito
-- **GitHub** - Controle de versão
+Features
+- Product & Component Management (oils, bottles, caps, materials)
+- Real-time Inventory Tracking
+- Shopify Order Webhook Integration
+- Multi-user Authentication & Role System
+- Bill of Materials (BOM) Support
+- File & Document Attachments
+- Full Transaction History & Audit Trail
+- SKU Mapping with Shopify Products
+- Excel Data Export
+________________________________________________________________________________________________________________________
 
-## 🚀 Deploy Rápido
+Tech Stack - Backend
+- Node.js (Express)
+- PostgreSQL
+- Bcrypt (password hashing)
+- Multer (file uploads)
+________________________________________________________________________________________________________________________
 
-### Pré-requisitos
-- Conta no [Render](https://render.com) (gratuita)
-- Repositório GitHub
-- Conta Shopify (para webhooks)
+Tech Stack - Frontend
+- React 18
+- Vite
+- Wouter (lightweight routing)
+- Lucide React (icons)
+________________________________________________________________________________________________________________________
 
-### Passos Rápidos
+Infrastructure
+Render (Hosting) > For Testing
+PostgreSQL (Render / external) > For Testing
+GitHub (Version Control)
+________________________________________________________________________________________________________________________
 
-1. **Criar PostgreSQL no Render**
-   - New + → PostgreSQL
-   - Copiar Internal Database URL
+# Free for Testing #
+Quick Deployment (Render)
+Prerequisites
+A Render account
+A PostgreSQL database
+A GitHub repository
+(Optional) Shopify store for webhook integration 
+Deployment Steps
+Create a PostgreSQL database on Render
+Copy your internal DATABASE_URL
+Upload this project to your GitHub repository
+Create a new Web Service on Render and connect the repo
+Configure the environment variables (see below)
+Deploy and wait for the build to complete
+After deployment, Render will provide a public URL for the application.
 
-2. **Executar Schema**
-   - PSQL Console → Colar `database-schema.sql`
+________________________________________________________________________________________________________________________
 
-3. **Upload para GitHub**
-   - Criar repo → Upload deste projeto
+Environment Configuration (Security First)
 
-4. **Criar Web Service**
-   - New + → Web Service
-   - Conectar GitHub repo
-   - Build: `npm run render-build`
-   - Start: `npm start`
+This project uses environment variables for all sensitive data.
+Never commit real credentials to the repository.
 
-5. **Configurar Environment**
-   ```
-   DATABASE_URL=postgresql://...
-   NODE_ENV=production
-   ```
+- - - - - - - - - - >  Create a .env file in the root directory:
 
-6. **Deploy!**
-   - Aguardar build
-   - Acessar URL fornecida
+|| DATABASE_URL=your_postgresql_connection_string ||
+|| NODE_ENV=development ||
+|| PORT=3000 ||
+|| SESSION_SECRET=your_secure_random_secret ||
 
-**📖 Guia Completo**: Ver `DEPLOY_RENDER.md`
+Important:
+Do NOT expose database credentials in the README
+Do NOT commit .env to GitHub
+Always use a .env.example file for reference
 
-## 🔑 Acesso Padrão
+- - - - - - - - - - >  Example .env.example:
 
-Após executar o schema SQL:
+|| DATABASE_URL=postgresql://user:password@host:5432/database ||
+|| NODE_ENV=development ||
+|| PORT=3000 ||
+|| SESSION_SECRET=change_this_in_production ||
 
-- **Usuário**: admin
-- **Senha**: admin123
+________________________________________________________________________________________________________________________
 
-⚠️ **Altere a senha após primeiro login!**
+Authentication & Access
 
-## 💻 Desenvolvimento Local
+For security reasons, default credentials are not stored in the repository.
+After initializing the database schema:
+Create an admin user manually or via seed script
+Change all initial credentials immediately in production
 
-```bash
-# Clone o repositório
-git clone https://github.com/seu-usuario/scentsystem.git
-cd scentsystem
+- - - - - - - - - - >  Best practice:
 
-# Instale dependências
-npm install
+- - - - - - - - - - >  Use strong passwords
 
-# Configure ambiente
-cp .env.example .env
-# Edite .env com suas credenciais
+- - - - - - - - - - >  Rotate secrets regularly
 
-# Instale PostgreSQL local
-# Ubuntu: sudo apt install postgresql
-# macOS: brew install postgresql
+- - - - - - - - - - >  Avoid hardcoding credentials in source files
 
-# Crie banco e execute schema
-createdb scentsystem
-psql scentsystem < database-schema.sql
+________________________________________________________________________________________________________________________
 
-# Inicie desenvolvimento
+Local Development
+# Clone the repository
+   git clone https://github.com/your-username/scentsystem.git
+   cd scentsystem
+
+# Install dependencies
+   npm install
+
+# Create environment file
+   cp .env.example .env
+# Then edit the values with your local credentials
+
+
+# Start development server
 npm run dev
-```
 
-Acesse: http://localhost:5173
+Frontend will be available at:
+   http://localhost:5173
 
-## 📡 Webhook Shopify
+________________________________________________________________________________________________________________________
 
-### Configuração
+Shopify Webhook Integration Setup
 
-1. Shopify Admin → Settings → Notifications → Webhooks
-2. Create webhook:
-   - **Event**: Order creation
-   - **Format**: JSON
-   - **URL**: `https://seu-app.onrender.com/api/webhooks/shopify/orders/create`
-   - **Version**: Latest
+Go to Shopify Admin → Settings → Notifications → Webhooks
+Create a new webhook:
+   Event: Order Creation
+   Format: JSON
+   URL:
+   https://your-app-domain.com/api/webhooks/shopify/orders/create
 
-3. Testar: "Send test notification"
+________________________________________________________________________________________________________________________
 
-### Como Funciona
+API Version: Latest
 
-```
-Cliente compra no Shopify
-    ↓
-Shopify envia webhook
-    ↓
-Sistema recebe order data
-    ↓
-Identifica produtos pelos SKUs
-    ↓
-Deduz quantidades do estoque
-    ↓
-Cria registro de transação
-    ↓
-Atualiza current_stock
-```
+Workflow
+Customer places an order on Shopify
+        ↓
+Shopify sends webhook payload
+        ↓
+System processes SKUs
+        ↓
+Stock quantities are automatically deducted
+        ↓
+Transaction record is created
+        ↓
+Inventory is updated in real time
 
-## 📊 Estrutura do Banco
+________________________________________________________________________________________________________________________
 
-```
-users         - Usuários do sistema
-products      - Produtos/matérias-primas
-transactions  - Histórico de movimentações
-bom           - Bill of Materials (receitas)
-attachments   - Arquivos anexados
-```
+Database Structure
 
-## 🔒 Segurança
+Main tables:
 
-- ✅ Senhas com bcrypt (10 rounds)
-- ✅ SQL injection protection (prepared statements)
-- ✅ CORS configurado
-- ✅ Validação de tipos de arquivo
-- ✅ Environment variables para credenciais
+users          - System users & roles
+products       - Products and raw materials
+transactions   - Inventory movement history
+bom            - Bill of Materials (recipes)
+attachments    - Uploaded files and documents
 
-## 📁 Estrutura de Pastas
+________________________________________________________________________________________________________________________
 
-```
+Project Structure
+
 SA_ScentSystem-POSTGRES/
 ├── server/
-│   └── index.js              # API Express + PostgreSQL
+│   └── index.js              # Express API + PostgreSQL logic
 ├── src/
-│   ├── App.jsx               # App principal
+│   ├── App.jsx               # Main application
 │   ├── main.jsx              # Entry point
-│   └── pages/                # Componentes de página
+│   └── pages/                # Application pages
 │       ├── Login.jsx
 │       ├── Dashboard.jsx
 │       ├── ProductManagement.jsx
@@ -175,116 +183,108 @@ SA_ScentSystem-POSTGRES/
 │       ├── TransactionHistory.jsx
 │       ├── Attachments.jsx
 │       └── UserManagement.jsx
-├── public/                   # Assets
-├── database-schema.sql       # Schema PostgreSQL
-├── migrate-to-postgres.js    # Script de migração
-├── DEPLOY_RENDER.md          # Guia de deploy
+├── public/
 ├── package.json
 └── vite.config.js
-```
 
-## 🔄 Migração de Dados
+________________________________________________________________________________________________________________________
 
-Se você tem um `database.json` antigo:
+Data Migration
 
-```bash
-# No Shell do Render (após deploy)
-npm run migrate
-```
+If you previously used a JSON-based database:
+   npm run migrate
+This will safely migrate legacy data to PostgreSQL.
 
-Isso vai transferir todos os dados para PostgreSQL.
+________________________________________________________________________________________________________________________
 
-## 📈 Performance
+Performance Notes
 
-- ✅ Connection pooling (PostgreSQL)
-- ✅ Índices em colunas críticas
-- ✅ Transações ACID
-- ✅ Queries otimizadas
+PostgreSQL connection pooling
+Indexed critical columns
+ACID-compliant transactions
+Optimized queries for inventory operations
 
-## 🔄 Backup
+________________________________________________________________________________________________________________________
 
-### Backup Manual
+Security Practices
 
-```bash
-# Backup
-pg_dump $DATABASE_URL > backup.sql
+Password hashing with bcrypt
+Prepared statements (SQL injection protection)
+Environment-based configuration
+File type validation for uploads
+CORS configuration
+No hardcoded secrets in source code
+Recommended for production:
+Enable HTTPS
+Use strong session secrets
+Restrict database access by IP
+Implement rate limiting (optional)
 
-# Restore
-psql $DATABASE_URL < backup.sql
-```
+________________________________________________________________________________________________________________________
 
-### Backup Automático
+Troubleshooting
 
-- Render Pro: Backup automático diário
-- Free tier: Export manual quando necessário
+Database connection issues
+   echo $DATABASE_URL
+   psql $DATABASE_URL
 
-## 🐛 Troubleshooting
+Webhook not triggering
+   curl -X POST https://your-app-domain.com/api/webhooks/shopify/orders/create \
+     -H "Content-Type: application/json" \
+     -d '{"id":123,"line_items":[]}'
 
-### Conexão com banco falha
-```bash
-# Verificar DATABASE_URL
-echo $DATABASE_URL
+Missing data in dashboard
+   SELECT COUNT(*) FROM products;
+   SELECT COUNT(*) FROM transactions;
 
-# Testar conexão
-psql $DATABASE_URL
-```
+Available Scripts
+   npm run dev          # Development mode (frontend + backend)
+   npm run build        # Production build
+   npm start            # Start production server
+   npm run migrate      # Migrate JSON data to PostgreSQL  < Script if need send me a Email
+   npm run render-build # Render build process (Free) 
 
-### Webhook não funciona
-```bash
-# Teste manual
-curl -X POST https://seu-app.onrender.com/api/webhooks/shopify/orders/create \
-  -H "Content-Type: application/json" \
-  -d '{"id": 123, "line_items": []}'
-```
+________________________________________________________________________________________________________________________
 
-### Dados não aparecem
-```sql
--- Verificar no PSQL Console
-SELECT COUNT(*) FROM products;
-SELECT COUNT(*) FROM transactions;
-```
+Roadmap
 
-## 📚 Scripts Disponíveis
+- Advanced analytics dashboard
+- Low stock notifications
+- Multi-warehouse support
+- Cloud storage for attachments
+- External API integrations
+- Automated reporting system
 
-```bash
-npm run dev          # Desenvolvimento (frontend + backend)
-npm run build        # Build de produção
-npm start            # Iniciar servidor
-npm run migrate      # Migrar dados do JSON para PostgreSQL
-npm run render-build # Build para Render (automático)
-```
 
-## 🌟 Melhorias Futuras
 
-- [ ] Cloudinary para uploads persistentes
-- [ ] Dashboard com gráficos
-- [ ] Relatórios avançados
-- [ ] API para integração com outros sistemas
-- [ ] Notificações de estoque baixo
-- [ ] Multi-warehouse support
+________________________________________________________________________________________________________________________
 
-## 📄 Licença
+License
 
-Uso privado.
+Private use.
+For internal inventory and operational management.
 
-## 👥 Autor
+________________________________________________________________________________________________________________________
 
-Desenvolvido para gerenciamento profissional de estoque de produtos de perfumaria.
+Author
 
-## 🙏 Tecnologias
+Fabricio Leopoldino
+   https://www.linkedin.com/in/fabricioleopoldino/
+Brasil > Australia
+sKp187Mv7kDkpWVtW0pHl1d6Au4sGivkf0LNjU6Po5acu24UiazZC9QWmTDTlTzeOjxkuECAfjBt_ICxeOXiVGPstfvJwjPCawrVnkPU-L7uMkg2gtO3p2n0uXCsgzxPC5Le-Lnuat7WPuLwLPDbkEVM9Wqjv4jG4vCCDl-L99dc2Kpod-ZCKx7ojgoVv0oLNFKkk_NLHoOzhDce4cMifpD-T2-GoBheJ92gg8_1G1IbcOeOCsPKHl8TSNw01yqWB2qD57mezJsXhf8JEHB4aAvEgDu9mAWYKX0QtFZnW_b49VUT6rhJR6N1nfQx1-38DCwwDTIfn3lB8Pz198YXS8F-TswZDuedDdxt_l7OU7RXVSy9E4YLgx_vZ_oDUPy_vl7Vo23gCl8BQqK27_LX1AEKVXKhvycbAPN1zaBgmc8fix7cm9StncAWKHxYuR78PHdUp0SlmoaycjAOYRFxrh7jdu91y-k7UthfH_GybP0
 
-- [React](https://react.dev/)
-- [Vite](https://vitejs.dev/)
-- [Express](https://expressjs.com/)
-- [PostgreSQL](https://www.postgresql.org/)
-- [Render](https://render.com/)
 
----
+   Version: #Test to Production > Next Step Azure ! 
+      Status: Testing 
+         Last Updated: 20/02/2026 
+            Deployment: Render + PostgreSQL #Free
 
-**Versão**: 2.1.0 (PostgreSQL)
 
-**Status**: ✅ Produção
+________________________________________________________________________________________________________________________
 
-**Última atualização**: Fevereiro 2026
+PLUS ! 
 
-**Deploy**: Render (Free tier)
+uptimerobot.com/monitors
+
+
+________________________________________________________________________________________________________________________
