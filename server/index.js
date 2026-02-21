@@ -1,12 +1,3 @@
-// ========================================================================
-// SCENT STOCK MANAGER - COMPATIBLE WITH EXISTING camelCase SCHEMA
-// Version: 4.1 - ALL MODIFICATIONS + EXISTING SCHEMA COMPATIBLE
-// ========================================================================
-// ✅ Works with YOUR current database schema (camelCase columns)
-// ✅ All your modifications implemented
-// ✅ No database changes needed!
-// ========================================================================
-
 import express from 'express';
 import cors from 'cors';
 import pkg from 'pg';
@@ -119,22 +110,49 @@ async function createProductInShopify(product) {
   }
   
   const shopifySkus = parseJSONB(product.shopifySkus);
+  const productName = product.name;
   
-  // Create variants for each SKU type
+  // Create variants for each SKU type with product name included
   const variants = [];
   const variantDetails = {
-    'SA_CA': { title: '400ml Cartridge', price: '50.00', weight: 400 },
-    'SA_HF': { title: '500ml Half Liter', price: '60.00', weight: 500 },
-    'SA_CDIFF': { title: '700ml Car Diffuser', price: '80.00', weight: 700 },
-    'SA_1L': { title: '1L Bottle', price: '100.00', weight: 1000 },
-    'SA_PRO': { title: '1L Pro Bottle', price: '120.00', weight: 1000 }
+    'SA_CA': { 
+      title: `${productName} Oil Cartridge (400ml)`, 
+      price: '165.00', 
+      weight: 400,
+      sku_suffix: 'Oil Cartridge (400ml)'
+    },
+    'SA_HF': { 
+      title: `${productName} -500ML Oil Refill Bottle`, 
+      price: '150.00', 
+      weight: 500,
+      sku_suffix: '-500ML Oil Refill Bottle'
+    },
+    'SA_CDIFF': { 
+      title: `${productName} -Oil Refill (700ml)`, 
+      price: '275.00', 
+      weight: 700,
+      sku_suffix: '-Oil Refill (700ml)'
+    },
+    'SA_1L': { 
+      title: `${productName} -1L Oil Refill Bottle`, 
+      price: '218.90', 
+      weight: 1000,
+      sku_suffix: '-1L Oil Refill Bottle'
+    },
+    'SA_PRO': { 
+      title: `${productName} -1L Oil Refill Pro Bottle`, 
+      price: '275.00', 
+      weight: 1000,
+      sku_suffix: '-1L Oil Refill Pro Bottle'
+    }
   };
   
   Object.entries(shopifySkus).forEach(([type, sku]) => {
     const details = variantDetails[type];
     if (details) {
       variants.push({
-        option1: details.title,
+        option1: details.sku_suffix, // Size option value
+        title: details.title, // Full variant title with product name
         sku: sku,
         price: details.price,
         weight: details.weight,
@@ -145,12 +163,14 @@ async function createProductInShopify(product) {
     }
   });
   
+  // Create product in DRAFT status
   const shopifyProduct = {
     product: {
       title: product.name,
       body_html: `<p>${product.name}</p><p>Product Code: ${product.productCode}</p>`,
       vendor: product.supplier || 'Scent Australia',
       product_type: 'Fragrance Oil',
+      status: 'draft', // DRAFT status - can add images/description manually later
       tags: [product.category, product.tag].filter(Boolean).join(', '),
       options: [
         {
