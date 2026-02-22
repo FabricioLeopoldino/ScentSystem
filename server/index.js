@@ -1107,6 +1107,198 @@ app.delete('/api/bom/:variant/component/:componentCode', async (req, res) => {
 });
 
 // ========================================================================
+// DIFFUSER MACHINE BOM
+// ========================================================================
+
+app.get('/api/diffuser-bom', async (req, res) => {
+  try {
+    const { machineType } = req.query;
+    
+    let query = 'SELECT * FROM diffuser_bom';
+    const params = [];
+    
+    if (machineType) {
+      params.push(machineType);
+      query += ' WHERE machine_type = $1';
+    }
+    
+    query += ' ORDER BY machine_type, seq';
+    
+    const result = await pool.query(query, params);
+    
+    // Group by machine type
+    const bomGrouped = {};
+    result.rows.forEach(row => {
+      if (!bomGrouped[row.machine_type]) {
+        bomGrouped[row.machine_type] = [];
+      }
+      bomGrouped[row.machine_type].push({
+        id: row.id,
+        seq: row.seq,
+        componentCode: row.component_code,
+        componentName: row.component_name,
+        quantity: parseFloat(row.quantity)
+      });
+    });
+    
+    res.json(bomGrouped);
+  } catch (error) {
+    console.error('Get diffuser BOM error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/api/diffuser-bom', async (req, res) => {
+  try {
+    const { machineType, componentCode, componentName, quantity } = req.body;
+    
+    // Check if component already exists
+    const existing = await pool.query(
+      'SELECT * FROM diffuser_bom WHERE machine_type = $1 AND component_code = $2',
+      [machineType, componentCode]
+    );
+    
+    if (existing.rows.length > 0) {
+      return res.status(400).json({ error: 'Component already exists in this BOM' });
+    }
+    
+    // Get next sequence number
+    const seqResult = await pool.query(
+      'SELECT COALESCE(MAX(seq), 0) + 1 as next_seq FROM diffuser_bom WHERE machine_type = $1',
+      [machineType]
+    );
+    
+    // Insert component
+    await pool.query(
+      `INSERT INTO diffuser_bom (machine_type, seq, component_code, component_name, quantity) 
+       VALUES ($1, $2, $3, $4, $5)`,
+      [machineType, seqResult.rows[0].next_seq, componentCode, componentName, quantity || 1]
+    );
+    
+    // Return updated BOM
+    const result = await pool.query(
+      'SELECT * FROM diffuser_bom WHERE machine_type = $1 ORDER BY seq',
+      [machineType]
+    );
+    
+    const components = result.rows.map(row => ({
+      id: row.id,
+      seq: row.seq,
+      componentCode: row.component_code,
+      componentName: row.component_name,
+      quantity: parseFloat(row.quantity)
+    }));
+    
+    res.json({ success: true, bom: components });
+  } catch (error) {
+    console.error('Add diffuser BOM component error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.put('/api/diffuser-bom/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { componentName, quantity } = req.body;
+    
+    // Update component
+    const updateResult = await pool.query(
+      `UPDATE diffuser_bom SET 
+       component_name = COALESCE($1, component_name),
+       quantity = COALESCE($2, quantity),
+       updated_at = CURRENT_TIMESTAMP
+       WHERE id = $3
+       RETURNING machine_type`,
+      [componentName, quantity, id]
+    );
+    
+    if (updateResult.rows.length === 0) {
+      return res.status(404).json({ error: 'Component not found' });
+    }
+    
+    const machineType = updateResult.rows[0].machine_type;
+    
+    // Return updated BOM
+    const result = await pool.query(
+      'SELECT * FROM diffuser_bom WHERE machine_type = $1 ORDER BY seq',
+      [machineType]
+    );
+    
+    const components = result.rows.map(row => ({
+      id: row.id,
+      seq: row.seq,
+      componentCode: row.component_code,
+      componentName: row.component_name,
+      quantity: parseFloat(row.quantity)
+    }));
+    
+    res.json({ success: true, bom: components });
+  } catch (error) {
+    console.error('Update diffuser BOM component error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.delete('/api/diffuser-bom/:id', async (req, res) => {
+  const client = await pool.connect();
+  
+  try {
+    await client.query('BEGIN');
+    
+    const { id } = req.params;
+    
+    // Delete component and get machine type
+    const deleteResult = await client.query(
+      'DELETE FROM diffuser_bom WHERE id = $1 RETURNING machine_type',
+      [id]
+    );
+    
+    if (deleteResult.rows.length === 0) {
+      throw new Error('Component not found');
+    }
+    
+    const machineType = deleteResult.rows[0].machine_type;
+    
+    // Resequence remaining components
+    const components = await client.query(
+      'SELECT * FROM diffuser_bom WHERE machine_type = $1 ORDER BY seq',
+      [machineType]
+    );
+    
+    for (let i = 0; i < components.rows.length; i++) {
+      await client.query(
+        'UPDATE diffuser_bom SET seq = $1 WHERE id = $2',
+        [i + 1, components.rows[i].id]
+      );
+    }
+    
+    await client.query('COMMIT');
+    
+    // Return updated BOM
+    const result = await pool.query(
+      'SELECT * FROM diffuser_bom WHERE machine_type = $1 ORDER BY seq',
+      [machineType]
+    );
+    
+    const updatedComponents = result.rows.map(row => ({
+      id: row.id,
+      seq: row.seq,
+      componentCode: row.component_code,
+      componentName: row.component_name,
+      quantity: parseFloat(row.quantity)
+    }));
+    
+    res.json({ success: true, bom: updatedComponents });
+  } catch (error) {
+    await client.query('ROLLBACK');
+    console.error('Delete diffuser BOM component error:', error);
+    res.status(500).json({ error: error.message });
+  } finally {
+    client.release();
+  }
+});
+
+// ========================================================================
 // ATTACHMENTS
 // ========================================================================
 app.get('/api/attachments', async (req, res) => {
