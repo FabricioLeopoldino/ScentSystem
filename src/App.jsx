@@ -9,6 +9,7 @@ import UserManagement from './pages/UserManagement';
 import ProductManagement from './pages/ProductManagement';
 
 import BOMViewer from './pages/BOMViewer';
+import DiffuserMachineBOM from './pages/DiffuserMachineBOM';
 import Attachments from './pages/Attachments';
 
 function App() {
@@ -60,6 +61,7 @@ function App() {
               <li><Link href="/stock">Stock Management</Link></li>
 
               <li><Link href="/bom">BOM</Link></li>
+              <li><Link href="/diffuser-bom">Diffuser BOM</Link></li>
               <li><Link href="/sku-mapping">SKU Mapping</Link></li>
               {/* <li><Link href="/attachments">Attachments</Link></li> */}
               <li><Link href="/history">History</Link></li>
@@ -92,6 +94,9 @@ function App() {
 
         <Route path="/bom">
           <BOMViewer user={user} />
+        </Route>
+        <Route path="/diffuser-bom">
+          <DiffuserMachineBOM user={user} />
         </Route>
         <Route path="/sku-mapping">
           <SkuMapping />
