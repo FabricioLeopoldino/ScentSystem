@@ -10,6 +10,8 @@ export default function ProductManagement({ user }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
+  
+  // Incoming Orders states
   const [showIncomingModal, setShowIncomingModal] = useState(false);
   const [incomingProduct, setIncomingProduct] = useState(null);
   const [incomingFormData, setIncomingFormData] = useState({
@@ -17,10 +19,12 @@ export default function ProductManagement({ user }) {
     quantity: '',
     notes: ''
   });
+  
+  // Receive Orders states
   const [showReceiveModal, setShowReceiveModal] = useState(false);
   const [receivingOrder, setReceivingOrder] = useState(null);
   const [receivingIndex, setReceivingIndex] = useState(null);
-  const [receivingOption, setReceivingOption] = useState('full'); // 'full' or 'partial'
+  const [receivingOption, setReceivingOption] = useState('full');
   const [receiveFormData, setReceiveFormData] = useState({
     quantityReceived: '',
     notes: ''
@@ -276,74 +280,102 @@ export default function ProductManagement({ user }) {
     });
   };
 
-  const getCategoryBadge = (category) => {
-    const colors = {
-      OILS: 'bg-blue-100 text-blue-800',
-      MACHINES_SPARES: 'bg-purple-100 text-purple-800',
-      RAW_MATERIALS: 'bg-orange-100 text-orange-800'
-    };
-    return colors[category] || 'bg-gray-100 text-gray-800';
-  };
-
   const getCategoryLabel = (category) => {
     const labels = {
-      OILS: 'Oils',
-      MACHINES_SPARES: 'Machines & Spares',
-      RAW_MATERIALS: 'Raw Materials'
+      'OILS': 'Oils',
+      'MACHINES_SPARES': 'Machines & Spares',
+      'RAW_MATERIALS': 'Raw Materials'
     };
     return labels[category] || category;
   };
 
+  const getCategoryBadge = (category) => {
+    const badges = {
+      'OILS': 'badge-blue',
+      'MACHINES_SPARES': 'badge-purple',
+      'RAW_MATERIALS': 'badge-green'
+    };
+    return badges[category] || 'badge-gray';
+  };
+
   const getStockStatus = (product) => {
-    if (product.currentStock === 0) return { label: 'Out of Stock', color: 'text-red-600' };
-    if (product.currentStock < product.minStockLevel) return { label: 'Low Stock', color: 'text-orange-600' };
-    return { label: 'Healthy', color: 'text-green-600' };
+    if (product.currentStock === 0) {
+      return { label: 'Out of Stock', color: 'red' };
+    }
+    if (product.currentStock < product.minStockLevel) {
+      return { label: 'Low Stock', color: 'yellow' };
+    }
+    return { label: 'Healthy', color: 'green' };
   };
 
   if (loading) {
-    return <div className="loading">Loading products...</div>;
+    return (
+      <div className="container" style={{ paddingTop: '40px' }}>
+        <div style={{ textAlign: 'center', padding: '60px', color: '#6b7280' }}>
+          Loading products...
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className="page">
+    <div className="container" style={{ paddingTop: '40px' }}>
       <div className="page-header">
-        <div>
-          <h1>Product Management</h1>
-          <p>Manage all products across categories</p>
-        </div>
-        <div style={{ display: 'flex', gap: '12px' }}>
+        <h2 className="page-title">Product Management</h2>
+        <p style={{ color: '#64748b', marginTop: '8px' }}>Manage all products across categories</p>
+      </div>
+
+      {/* Action Buttons */}
+      <div style={{ display: 'flex', gap: '12px', marginBottom: '24px', flexWrap: 'wrap' }}>
+        <button 
+          className="btn"
+          onClick={() => exportToShopifyCSV(products)}
+          style={{
+            background: '#6366f1',
+            color: 'white',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px'
+          }}
+        >
+          <span>📊</span>
+          Export for Shopify
+        </button>
+        
+        <button 
+          className="btn"
+          onClick={() => exportProductsToExcel(products)}
+          style={{
+            background: '#10b981',
+            color: 'white',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px'
+          }}
+        >
+          <span>📑</span>
+          Export to Excel
+        </button>
+
+        {user.role === 'admin' && (
           <button 
-            className="btn btn-secondary"
-            onClick={() => exportToShopifyCSV(products)}
-            style={{ background: '#5f3dc4', color: 'white' }}
+            className="btn btn-primary"
+            onClick={() => {
+              setEditingProduct(null);
+              resetForm();
+              setShowAddModal(true);
+            }}
+            style={{ marginLeft: 'auto' }}
           >
-            🛍️ Export for Shopify
+            + Add Product
           </button>
-          <button 
-            className="btn btn-secondary"
-            onClick={() => exportProductsToExcel(products)}
-          >
-            📊 Export to Excel
-          </button>
-          {user.role === 'admin' && (
-            <button 
-              className="btn btn-primary"
-              onClick={() => {
-                resetForm();
-                setEditingProduct(null);
-                setShowAddModal(true);
-              }}
-            >
-              + Add Product
-            </button>
-          )}
-        </div>
+        )}
       </div>
 
       {/* Filters */}
       <div className="card" style={{ marginBottom: '24px' }}>
-        <div style={{ display: 'flex', gap: '16px', alignItems: 'center', flexWrap: 'wrap' }}>
-          <div style={{ flex: '1', minWidth: '200px' }}>
+        <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
+          <div style={{ flex: 1, minWidth: '300px' }}>
             <input
               type="text"
               className="input"
@@ -362,9 +394,15 @@ export default function ProductManagement({ user }) {
             ].map(cat => (
               <button
                 key={cat.value}
-                className={`btn ${categoryFilter === cat.value ? 'btn-primary' : 'btn-secondary'}`}
                 onClick={() => setCategoryFilter(cat.value)}
-                style={{ fontSize: '13px', padding: '8px 16px' }}
+                className="btn"
+                style={{
+                  background: categoryFilter === cat.value ? '#3b82f6' : 'white',
+                  color: categoryFilter === cat.value ? 'white' : '#64748b',
+                  border: categoryFilter === cat.value ? 'none' : '1px solid #e5e7eb',
+                  fontSize: '13px',
+                  padding: '8px 16px'
+                }}
               >
                 {cat.label}
               </button>
@@ -458,7 +496,8 @@ export default function ProductManagement({ user }) {
                                       border: 'none',
                                       cursor: 'pointer',
                                       fontSize: '16px',
-                                      marginLeft: 'auto'
+                                      marginLeft: 'auto',
+                                      color: '#ef4444'
                                     }}
                                     title="Clear incoming order"
                                   >
@@ -522,17 +561,17 @@ export default function ProductManagement({ user }) {
         </div>
       </div>
 
-      {/* Add/Edit Modal */}
+      {/* Add/Edit Product Modal */}
       {showAddModal && (
         <div className="modal-overlay" onClick={() => setShowAddModal(false)}>
-          <div className="modal" onClick={(e) => e.stopPropagation()}>
+          <div className="modal" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '600px' }}>
             <div className="modal-header">
               <h2>{editingProduct ? 'Edit Product' : 'Add New Product'}</h2>
-              <button className="modal-close" onClick={() => setShowAddModal(false)}>X</button>
+              <button className="modal-close" onClick={() => setShowAddModal(false)}>×</button>
             </div>
             
             <form onSubmit={handleSubmit}>
-              <div className="form-grid">
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
                 <div className="form-group">
                   <label>Product Name *</label>
                   <input
@@ -549,17 +588,10 @@ export default function ProductManagement({ user }) {
                   <select
                     className="input"
                     value={formData.category}
-                    onChange={(e) => {
-                      const category = e.target.value;
-                      setFormData({
-                        ...formData, 
-                        category,
-                        unit: category === 'OILS' ? 'mL' : 'units'
-                      });
-                    }}
+                    onChange={(e) => setFormData({...formData, category: e.target.value})}
                     required
                   >
-                    <option value="OILS">Essential Oils</option>
+                    <option value="OILS">Oils</option>
                     <option value="MACHINES_SPARES">Machines & Spares</option>
                     <option value="RAW_MATERIALS">Raw Materials</option>
                   </select>
@@ -572,7 +604,6 @@ export default function ProductManagement({ user }) {
                     className="input"
                     value={formData.productCode}
                     onChange={(e) => setFormData({...formData, productCode: e.target.value})}
-                    placeholder="Auto-generated if empty"
                   />
                 </div>
 
@@ -583,48 +614,52 @@ export default function ProductManagement({ user }) {
                     className="input"
                     value={formData.tag}
                     onChange={(e) => setFormData({...formData, tag: e.target.value})}
-                    placeholder="Auto-generated if empty"
                   />
                 </div>
 
                 <div className="form-group">
-                  <label>Current Stock *</label>
-                  <input
-                    type="number"
-                    className="input"
-                    value={formData.currentStock}
-                    onChange={(e) => setFormData({...formData, currentStock: parseInt(e.target.value) || 0})}
-                    required
-                  />
-                </div>
-
-                <div className="form-group">
-                  <label>Min Stock Level *</label>
-                  <input
-                    type="number"
-                    className="input"
-                    value={formData.minStockLevel}
-                    onChange={(e) => setFormData({...formData, minStockLevel: parseInt(e.target.value) || 0})}
-                    required
-                  />
-                </div>
-
-                <div className="form-group">
-                  <label>Unit</label>
+                  <label>Unit *</label>
                   <select
                     className="input"
                     value={formData.unit}
                     onChange={(e) => setFormData({...formData, unit: e.target.value})}
+                    required
                   >
-                    <option value="mL">mL (milliliters)</option>
-                    <option value="units">Units</option>
-                    <option value="kg">kg (kilograms)</option>
+                    <option value="mL">mL</option>
+                    <option value="L">L</option>
+                    <option value="units">units</option>
+                    <option value="kg">kg</option>
+                    <option value="g">g</option>
                   </select>
+                </div>
+
+                <div className="form-group">
+                  <label>Current Stock</label>
+                  <input
+                    type="number"
+                    className="input"
+                    value={formData.currentStock}
+                    onChange={(e) => setFormData({...formData, currentStock: parseFloat(e.target.value) || 0})}
+                    min="0"
+                    step="any"
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>Min Stock Level</label>
+                  <input
+                    type="number"
+                    className="input"
+                    value={formData.minStockLevel}
+                    onChange={(e) => setFormData({...formData, minStockLevel: parseFloat(e.target.value) || 0})}
+                    min="0"
+                    step="any"
+                  />
                 </div>
 
                 {formData.category !== 'OILS' && (
                   <div className="form-group">
-                    <label>Units Per Box</label>
+                    <label>Units per Box</label>
                     <input
                       type="number"
                       className="input"
