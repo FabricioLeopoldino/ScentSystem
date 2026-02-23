@@ -1711,9 +1711,9 @@ app.post('/api/products/:id/incoming', async (req, res) => {
     
     incomingOrders.push(newIncoming);
     
-    // Update product
+    // Update product with JSONB cast
     await pool.query(
-      'UPDATE products SET incoming_orders = $1 WHERE id = $2',
+      'UPDATE products SET incoming_orders = $1::jsonb WHERE id = $2',
       [JSON.stringify(incomingOrders), id]
     );
     
@@ -1747,7 +1747,7 @@ app.delete('/api/products/:id/incoming/:index', async (req, res) => {
     incomingOrders.splice(parseInt(index), 1);
     
     await pool.query(
-      'UPDATE products SET incoming_orders = $1 WHERE id = $2',
+      'UPDATE products SET incoming_orders = $1::jsonb WHERE id = $2',
       [JSON.stringify(incomingOrders), id]
     );
     
@@ -1820,7 +1820,7 @@ app.post('/api/products/:id/incoming/:index/receive', async (req, res) => {
     // Remove incoming order
     incomingOrders.splice(parseInt(index), 1);
     await client.query(
-      'UPDATE products SET incoming_orders = $1 WHERE id = $2',
+      'UPDATE products SET incoming_orders = $1::jsonb WHERE id = $2',
       [JSON.stringify(incomingOrders), id]
     );
     
