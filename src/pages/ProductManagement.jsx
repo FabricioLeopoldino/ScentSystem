@@ -17,6 +17,14 @@ export default function ProductManagement({ user }) {
     quantity: '',
     notes: ''
   });
+  const [showReceiveModal, setShowReceiveModal] = useState(false);
+  const [receivingOrder, setReceivingOrder] = useState(null);
+  const [receivingIndex, setReceivingIndex] = useState(null);
+  const [receivingOption, setReceivingOption] = useState('full'); // 'full' or 'partial'
+  const [receiveFormData, setReceiveFormData] = useState({
+    quantityReceived: '',
+    notes: ''
+  });
   
   const [formData, setFormData] = useState({
     name: '',
@@ -175,6 +183,62 @@ export default function ProductManagement({ user }) {
       }
     } catch (error) {
       alert('Error adding incoming order: ' + error.message);
+    }
+  };
+
+  const handleOpenReceiveModal = (product, order, index) => {
+    setIncomingProduct(product);
+    setReceivingOrder(order);
+    setReceivingIndex(index);
+    setReceivingOption('full');
+    setReceiveFormData({
+      quantityReceived: order.quantity.toString(),
+      notes: ''
+    });
+    setShowReceiveModal(true);
+  };
+
+  const handleReceiveIncoming = async (e) => {
+    e.preventDefault();
+    
+    const quantityToReceive = receivingOption === 'full' 
+      ? receivingOrder.quantity 
+      : parseFloat(receiveFormData.quantityReceived);
+    
+    if (!quantityToReceive || quantityToReceive <= 0) {
+      alert('Please enter a valid quantity');
+      return;
+    }
+    
+    try {
+      const res = await fetch(`/api/products/${incomingProduct.id}/incoming/${receivingIndex}/receive`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          quantityReceived: quantityToReceive,
+          notes: receiveFormData.notes || (receivingOption === 'full' 
+            ? 'Full quantity received' 
+            : `Partial quantity received: ${quantityToReceive} of ${receivingOrder.quantity}`),
+          receivedBy: user?.username || 'admin'
+        })
+      });
+      
+      if (res.ok) {
+        const data = await res.json();
+        alert(`Stock updated successfully! New stock: ${data.newStock} ${incomingProduct.unit}`);
+        setShowReceiveModal(false);
+        setIncomingProduct(null);
+        setReceivingOrder(null);
+        setReceivingIndex(null);
+        setReceivingOption('full');
+        setReceiveFormData({ quantityReceived: '', notes: '' });
+        fetchProducts();
+      } else {
+        const error = await res.json();
+        alert(error.error || 'Error receiving incoming order');
+      }
+    } catch (error) {
+      alert('Error receiving incoming order: ' + error.message);
     }
   };
 
@@ -370,19 +434,37 @@ export default function ProductManagement({ user }) {
                                 ({order.quantity} {product.unit})
                               </span>
                               {user.role === 'admin' && (
-                                <button
-                                  onClick={() => handleClearIncoming(product.id, idx)}
-                                  style={{
-                                    background: 'none',
-                                    border: 'none',
-                                    cursor: 'pointer',
-                                    fontSize: '16px',
-                                    marginLeft: 'auto'
-                                  }}
-                                  title="Clear incoming order"
-                                >
-                                  ✕
-                                </button>
+                                <>
+                                  <button
+                                    onClick={() => handleOpenReceiveModal(product, order, idx)}
+                                    style={{
+                                      background: '#10b981',
+                                      color: 'white',
+                                      border: 'none',
+                                      borderRadius: '4px',
+                                      cursor: 'pointer',
+                                      fontSize: '11px',
+                                      padding: '4px 8px',
+                                      fontWeight: '600'
+                                    }}
+                                    title="Mark as received"
+                                  >
+                                    ✓ Received
+                                  </button>
+                                  <button
+                                    onClick={() => handleClearIncoming(product.id, idx)}
+                                    style={{
+                                      background: 'none',
+                                      border: 'none',
+                                      cursor: 'pointer',
+                                      fontSize: '16px',
+                                      marginLeft: 'auto'
+                                    }}
+                                    title="Clear incoming order"
+                                  >
+                                    ✕
+                                  </button>
+                                </>
                               )}
                             </div>
                           ))}
@@ -670,6 +752,139 @@ export default function ProductManagement({ user }) {
                 </button>
                 <button type="submit" className="btn btn-primary">
                   Add Incoming Order
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Receive Incoming Order Modal */}
+      {showReceiveModal && incomingProduct && receivingOrder && (
+        <div className="modal-overlay" onClick={() => setShowReceiveModal(false)}>
+          <div className="modal" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2>Receive Purchase Order</h2>
+              <button className="modal-close" onClick={() => setShowReceiveModal(false)}>×</button>
+            </div>
+            
+            <form onSubmit={handleReceiveIncoming}>
+              <div style={{ marginBottom: '20px', padding: '12px', background: '#f1f5f9', borderRadius: '8px' }}>
+                <div style={{ fontWeight: '600', marginBottom: '4px' }}>Product:</div>
+                <div style={{ fontSize: '14px', color: '#64748b' }}>{incomingProduct.name}</div>
+                <div style={{ fontSize: '12px', color: '#94a3b8', marginTop: '4px' }}>
+                  PO Number: {receivingOrder.orderNumber}
+                </div>
+                <div style={{ fontSize: '12px', color: '#94a3b8', marginTop: '4px' }}>
+                  Expected Quantity: {receivingOrder.quantity} {incomingProduct.unit}
+                </div>
+              </div>
+
+              <div className="form-group">
+                <label style={{ fontWeight: '600', marginBottom: '12px', display: 'block' }}>
+                  Recebeu a quantidade completa?
+                </label>
+                
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  <label style={{ 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    padding: '12px',
+                    border: receivingOption === 'full' ? '2px solid #10b981' : '1px solid #e5e7eb',
+                    borderRadius: '8px',
+                    cursor: 'pointer',
+                    background: receivingOption === 'full' ? '#ecfdf5' : 'white'
+                  }}>
+                    <input
+                      type="radio"
+                      name="receivingOption"
+                      value="full"
+                      checked={receivingOption === 'full'}
+                      onChange={(e) => setReceivingOption(e.target.value)}
+                      style={{ marginRight: '8px' }}
+                    />
+                    <span style={{ fontWeight: receivingOption === 'full' ? '600' : '400' }}>
+                      Sim, recebi {receivingOrder.quantity} {incomingProduct.unit} completo
+                    </span>
+                  </label>
+
+                  <label style={{ 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    padding: '12px',
+                    border: receivingOption === 'partial' ? '2px solid #f59e0b' : '1px solid #e5e7eb',
+                    borderRadius: '8px',
+                    cursor: 'pointer',
+                    background: receivingOption === 'partial' ? '#fffbeb' : 'white'
+                  }}>
+                    <input
+                      type="radio"
+                      name="receivingOption"
+                      value="partial"
+                      checked={receivingOption === 'partial'}
+                      onChange={(e) => setReceivingOption(e.target.value)}
+                      style={{ marginRight: '8px' }}
+                    />
+                    <span style={{ fontWeight: receivingOption === 'partial' ? '600' : '400' }}>
+                      Não, recebi quantidade diferente
+                    </span>
+                  </label>
+                </div>
+              </div>
+
+              {receivingOption === 'partial' && (
+                <div className="form-group">
+                  <label>Quantidade Recebida *</label>
+                  <input
+                    type="number"
+                    className="input"
+                    value={receiveFormData.quantityReceived}
+                    onChange={(e) => setReceiveFormData({...receiveFormData, quantityReceived: e.target.value})}
+                    placeholder={`e.g., ${receivingOrder.quantity}`}
+                    min="0"
+                    step="any"
+                    required
+                  />
+                  <small style={{ fontSize: '12px', color: '#64748b', marginTop: '4px', display: 'block' }}>
+                    Units: {incomingProduct.unit}
+                  </small>
+                </div>
+              )}
+
+              <div className="form-group">
+                <label>Notes (Optional)</label>
+                <textarea
+                  className="input"
+                  value={receiveFormData.notes}
+                  onChange={(e) => setReceiveFormData({...receiveFormData, notes: e.target.value})}
+                  placeholder="e.g., Received in good condition"
+                  rows="3"
+                />
+              </div>
+
+              <div style={{ 
+                padding: '12px', 
+                background: '#ecfdf5', 
+                borderRadius: '8px',
+                marginBottom: '20px',
+                fontSize: '13px',
+                color: '#065f46',
+                border: '1px solid #10b981'
+              }}>
+                <strong>✓ Automatic Actions:</strong>
+                <ul style={{ margin: '8px 0 0 20px', padding: 0 }}>
+                  <li>Stock will be updated automatically (+{receivingOption === 'full' ? receivingOrder.quantity : receiveFormData.quantityReceived || '___'} {incomingProduct.unit})</li>
+                  <li>Transaction will be created in History</li>
+                  <li>Incoming order badge will be removed</li>
+                </ul>
+              </div>
+
+              <div className="modal-footer">
+                <button type="button" className="btn btn-secondary" onClick={() => setShowReceiveModal(false)}>
+                  Cancel
+                </button>
+                <button type="submit" className="btn btn-primary" style={{ background: '#10b981', borderColor: '#10b981' }}>
+                  Confirm & Update Stock
                 </button>
               </div>
             </form>
