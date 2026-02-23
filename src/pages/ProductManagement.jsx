@@ -817,7 +817,7 @@ export default function ProductManagement({ user }) {
 
               <div className="form-group">
                 <label style={{ fontWeight: '600', marginBottom: '12px', display: 'block' }}>
-                  Recebeu a quantidade completa?
+                  Did you receive the full quantity?
                 </label>
                 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
@@ -839,7 +839,7 @@ export default function ProductManagement({ user }) {
                       style={{ marginRight: '8px' }}
                     />
                     <span style={{ fontWeight: receivingOption === 'full' ? '600' : '400' }}>
-                      Sim, recebi {receivingOrder.quantity} {incomingProduct.unit} completo
+                      Yes, I received {receivingOrder.quantity} {incomingProduct.unit} in full
                     </span>
                   </label>
 
@@ -861,7 +861,7 @@ export default function ProductManagement({ user }) {
                       style={{ marginRight: '8px' }}
                     />
                     <span style={{ fontWeight: receivingOption === 'partial' ? '600' : '400' }}>
-                      Não, recebi quantidade diferente
+                      No, I received a different quantity
                     </span>
                   </label>
                 </div>
@@ -869,7 +869,7 @@ export default function ProductManagement({ user }) {
 
               {receivingOption === 'partial' && (
                 <div className="form-group">
-                  <label>Quantidade Recebida *</label>
+                  <label>Quantity Received *</label>
                   <input
                     type="number"
                     className="input"
