@@ -408,7 +408,7 @@ app.get('/api/products', async (req, res) => {
       unitPerBox: parseInt(row.unitPerBox) || 1,
       stockBoxes: parseInt(row.stockBoxes) || 0,
       shopifySkus: parseJSONB(row.shopifySkus),
-      incoming_orders: parseJSONB(row.incoming_orders, []),
+      incomingOrders: parseJSONB(row.incoming_orders, []),
       createdAt: row.created_at,
       updatedAt: row.updated_at
     }));
@@ -443,7 +443,7 @@ app.get('/api/products/:id', async (req, res) => {
       unitPerBox: parseInt(row.unitPerBox) || 1,
       stockBoxes: parseInt(row.stockBoxes) || 0,
       shopifySkus: parseJSONB(row.shopifySkus),
-      incoming_orders: parseJSONB(row.incoming_orders, [])
+      incomingOrders: parseJSONB(row.incoming_orders, [])
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -1754,6 +1754,91 @@ app.delete('/api/products/:id/incoming/:index', async (req, res) => {
     res.json({ success: true });
   } catch (error) {
     res.status(500).json({ error: error.message });
+  }
+});
+
+// ========================================================================
+// RECEIVE INCOMING ORDER - Mark as Received and Update Stock
+// ========================================================================
+app.post('/api/products/:id/incoming/:index/receive', async (req, res) => {
+  const client = await pool.connect();
+  
+  try {
+    await client.query('BEGIN');
+    
+    const { id, index } = req.params;
+    const { quantityReceived, notes, receivedBy } = req.body;
+    
+    // Get product
+    const productResult = await client.query(
+      'SELECT * FROM products WHERE id = $1',
+      [id]
+    );
+    
+    if (productResult.rows.length === 0) {
+      throw new Error('Product not found');
+    }
+    
+    const product = productResult.rows[0];
+    const incomingOrders = parseJSONB(product.incoming_orders, []);
+    const incomingOrder = incomingOrders[parseInt(index)];
+    
+    if (!incomingOrder) {
+      throw new Error('Incoming order not found');
+    }
+    
+    const receivedQty = parseFloat(quantityReceived);
+    
+    // Update stock
+    const currentStock = parseFloat(product.currentStock) || 0;
+    const newStock = currentStock + receivedQty;
+    const newBoxes = Math.floor(newStock / (product.unitPerBox || 1));
+    
+    await client.query(
+      'UPDATE products SET "currentStock" = $1, "stockBoxes" = $2 WHERE id = $3',
+      [newStock, newBoxes, id]
+    );
+    
+    // Create transaction
+    await client.query(
+      `INSERT INTO transactions 
+       (product_id, product_code, product_name, category, type, quantity, unit, balance_after, notes) 
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+      [
+        product.id,
+        product.productCode || product.tag,
+        product.name,
+        product.category,
+        'add',
+        receivedQty,
+        product.unit || 'units',
+        newStock,
+        `PO Received: ${incomingOrder.orderNumber} - ${notes || 'Incoming order received'}${receivedBy ? ` (by ${receivedBy})` : ''}`
+      ]
+    );
+    
+    // Remove incoming order
+    incomingOrders.splice(parseInt(index), 1);
+    await client.query(
+      'UPDATE products SET incoming_orders = $1 WHERE id = $2',
+      [JSON.stringify(incomingOrders), id]
+    );
+    
+    await client.query('COMMIT');
+    
+    console.log(`✅ PO Received: ${product.name} - ${incomingOrder.orderNumber} (+${receivedQty} ${product.unit})`);
+    
+    res.json({ 
+      success: true, 
+      newStock,
+      message: 'Incoming order received and stock updated'
+    });
+  } catch (error) {
+    await client.query('ROLLBACK');
+    console.error('Receive incoming order error:', error);
+    res.status(500).json({ error: error.message });
+  } finally {
+    client.release();
   }
 });
 
