@@ -1,290 +1,299 @@
-________________________________________________________________________________________________________________________
+# 📦 Scent Stock Manager
 
+**Version 2.1.0**
 
-ScentSystem — Inventory Management for Fragrance Operations
+A comprehensive inventory management system built for Scent Australia, designed to streamline stock control, bill of materials tracking, and Shopify integration.
 
-________________________________________________________________________________________________________________________
+---
 
+## Overview
 
-ScentSystem is a full-stack inventory management platform designed for fragrance and component tracking, with real-time stock control and Shopify order integration.
-Built to handle products, raw materials, BOM recipes, and transaction history in a structured and scalable way.
+Scent Stock Manager helps manage product inventory across multiple categories including fragrance oils, raw materials, and machine parts. The system automates stock deductions through Shopify webhooks and provides complete visibility into incoming orders and transaction history.
 
-________________________________________________________________________________________________________________________
+**Live Demo:** [scentsystem.onrender.com](https://scentsystem.onrender.com)
 
-Features
-- Product & Component Management (oils, bottles, caps, materials)
-- Real-time Inventory Tracking
-- Shopify Order Webhook Integration
-- Multi-user Authentication & Role System
-- Bill of Materials (BOM) Support
-- File & Document Attachments
-- Full Transaction History & Audit Trail
-- SKU Mapping with Shopify Products
-- Excel Data Export
-________________________________________________________________________________________________________________________
+---
 
-Tech Stack - Backend
-- Node.js (Express)
-- PostgreSQL
-- Bcrypt (password hashing)
-- Multer (file uploads)
-________________________________________________________________________________________________________________________
+## Key Features
 
-Tech Stack - Frontend
-- React 18
-- Vite
-- Wouter (lightweight routing)
+### Inventory Management
+- Real-time stock tracking across oils, raw materials, and machines & spares
+- Low stock alerts and status monitoring
+- Multi-unit support (mL, L, units, kg, g)
+- Box-level tracking for bulk items
+
+### Bill of Materials (BOM)
+- Automatic component deduction for oil products (5 variants: SA_CA, SA_1L, SA_HF, SA_PRO, SA_CDIFF)
+- Diffuser machine BOM visualization (5 machine types)
+- Volume-based calculations with precision handling
+
+### Purchase Orders
+- Track incoming orders from suppliers
+- Quick-receive functionality with full or partial quantity options
+- Automatic stock updates and transaction logging
+- Shopify Purchase Order workflow integration
+
+### Shopify Integration
+- Webhook automation for order fulfillment
+- Automatic stock deduction when orders are fulfilled
+- SKU mapping for different product variants
+- Export capabilities for Shopify CSV format
+
+### Audit & Reporting
+- Complete transaction history with timestamps
+- User activity tracking (who added/removed stock)
+- Excel export for all products and transactions
+- Search and filter across all data
+
+### User Management
+- Role-based access (Admin/User)
+- Secure authentication with bcrypt
+- Activity logging per user
+
+---
+
+## Tech Stack
+
+**Frontend**
+- React 18.2
+- Vite 5.0
+- Wouter (routing)
 - Lucide React (icons)
-________________________________________________________________________________________________________________________
 
-Infrastructure
-Render (Hosting) > For Testing
-PostgreSQL (Render / external) > For Testing
-GitHub (Version Control)
-________________________________________________________________________________________________________________________
+**Backend**
+- Node.js with Express 4.18
+- PostgreSQL via Neon (serverless)
+- CORS-enabled API
+- Webhook handling
 
-# Free for Testing #
-Quick Deployment (Render)
-Prerequisites
-A Render account
-A PostgreSQL database
-A GitHub repository
-(Optional) Shopify store for webhook integration 
-Deployment Steps
-Create a PostgreSQL database on Render
-Copy your internal DATABASE_URL
-Upload this project to your GitHub repository
-Create a new Web Service on Render and connect the repo
-Configure the environment variables (see below)
-Deploy and wait for the build to complete
-After deployment, Render will provide a public URL for the application.
+**Libraries**
+- xlsx - Excel file generation
+- multer - File uploads
+- pg - PostgreSQL client
+- bcryptjs - Password hashing
 
-________________________________________________________________________________________________________________________
+---
 
-Environment Configuration (Security First)
+## Getting Started
 
-This project uses environment variables for all sensitive data.
-Never commit real credentials to the repository.
+### Prerequisites
+```bash
+Node.js 18.x or higher
+PostgreSQL database (Neon recommended)
+```
 
-- - - - - - - - - - >  Create a .env file in the root directory:
+### Installation
 
-|| DATABASE_URL=your_postgresql_connection_string ||
-|| NODE_ENV=development ||
-|| PORT=3000 ||
-|| SESSION_SECRET=your_secure_random_secret ||
+1. Clone the repository
+```bash
+git clone https://github.com/your-username/scent-stock-manager.git
+cd scent-stock-manager
+```
 
-Important:
-Do NOT expose database credentials in the README
-Do NOT commit .env to GitHub
-Always use a .env.example file for reference
+2. Install dependencies
+```bash
+npm install
+```
 
-- - - - - - - - - - >  Example .env.example:
+3. Configure environment variables
 
-|| DATABASE_URL=postgresql://user:password@host:5432/database ||
-|| NODE_ENV=development ||
-|| PORT=3000 ||
-|| SESSION_SECRET=change_this_in_production ||
+Create a `.env` file in the root directory:
+```env
+DATABASE_URL=your_postgresql_connection_string
+PORT=3000
+SHOPIFY_WEBHOOK_SECRET=your_shopify_secret
+SHOPIFY_SYNC_ENABLED=false
+```
 
-________________________________________________________________________________________________________________________
+4. Run database migrations
+```bash
+npm run migrate
+```
 
-Authentication & Access
-
-For security reasons, default credentials are not stored in the repository.
-After initializing the database schema:
-Create an admin user manually or via seed script
-Change all initial credentials immediately in production
-
-- - - - - - - - - - >  Best practice:
-
-- - - - - - - - - - >  Use strong passwords
-
-- - - - - - - - - - >  Rotate secrets regularly
-
-- - - - - - - - - - >  Avoid hardcoding credentials in source files
-
-________________________________________________________________________________________________________________________
-
-Local Development
-# Clone the repository
-   git clone https://github.com/your-username/scentsystem.git
-   cd scentsystem
-
-# Install dependencies
-   npm install
-
-# Create environment file
-   cp .env.example .env
-# Then edit the values with your local credentials
-
-
-# Start development server
+5. Start development server
+```bash
 npm run dev
+```
 
-Frontend will be available at:
-   http://localhost:5173
+The app will be available at `http://localhost:5173`
 
-________________________________________________________________________________________________________________________
+---
 
-Shopify Webhook Integration Setup
+## Production Deployment
 
-Go to Shopify Admin → Settings → Notifications → Webhooks
-Create a new webhook:
-   Event: Order Creation
-   Format: JSON
-   URL:
-   https://your-app-domain.com/api/webhooks/shopify/orders/create
+### Render Setup
 
-________________________________________________________________________________________________________________________
+**Build Command:**
+```bash
+npm install && npx vite build
+```
 
-API Version: Latest
+**Start Command:**
+```bash
+node server/index.js
+```
 
-Workflow
-Customer places an order on Shopify
-        ↓
-Shopify sends webhook payload
-        ↓
-System processes SKUs
-        ↓
-Stock quantities are automatically deducted
-        ↓
-Transaction record is created
-        ↓
-Inventory is updated in real time
+**Environment Variables:**
+```
+DATABASE_URL = your_neon_postgres_url
+SHOPIFY_WEBHOOK_SECRET = your_webhook_secret
+SHOPIFY_SYNC_ENABLED = false
+```
 
-________________________________________________________________________________________________________________________
+### Database Schema
 
-Database Structure
+The system uses 6 main tables:
+- `users` - Authentication and roles
+- `products` - Inventory items
+- `transactions` - Stock movement history
+- `bom` - Bill of materials for oils
+- `diffuser_bom` - Machine component lists
+- `attachments` - File uploads
 
-Main tables:
+---
 
-users          - System users & roles
-products       - Products and raw materials
-transactions   - Inventory movement history
-bom            - Bill of Materials (recipes)
-attachments    - Uploaded files and documents
+## Usage Guide
 
-________________________________________________________________________________________________________________________
+### Managing Products
 
-Project Structure
+Add products through the **Product Management** page. Each product requires:
+- Name and category (Oils, Raw Materials, or Machines & Spares)
+- Product code and tag
+- Current stock and minimum level
+- Supplier information
 
-SA_ScentSystem-POSTGRES/
+### Purchase Orders Workflow
+
+1. Create PO in Shopify with supplier and quantities
+2. Add same PO to Scent Stock Manager via `+ Incoming` button
+3. Badge appears showing pending quantity
+4. When goods arrive, click `✓ Received`
+5. Confirm full or partial quantity received
+6. System automatically updates stock and creates transaction
+7. Badge is removed
+
+### Shopify Integration
+
+Enable webhooks in Shopify admin:
+- Event: `orders/fulfilled`
+- URL: `https://your-domain.com/shopify/webhook/orders-fulfilled`
+- Format: JSON
+
+The system will automatically deduct oil stock and BOM components when orders are fulfilled.
+
+### BOM Configuration
+
+Bill of materials can be edited in the **BOM** page. Each oil variant has specific component requirements that are automatically deducted when products are sold.
+
+---
+
+## API Endpoints
+
+### Products
+```
+GET    /api/products
+POST   /api/products
+PUT    /api/products/:id
+DELETE /api/products/:id
+```
+
+### Stock Management
+```
+POST   /api/stock/add
+POST   /api/stock/remove
+POST   /api/stock/adjust
+```
+
+### Purchase Orders
+```
+POST   /api/products/:id/incoming
+DELETE /api/products/:id/incoming/:index
+POST   /api/products/:id/incoming/:index/receive
+```
+
+### Transactions
+```
+GET    /api/transactions
+GET    /api/transactions/product/:productId
+```
+
+---
+
+## Troubleshooting
+
+**Build fails with "vite: Permission denied"**
+- Ensure `package.json` uses `npx vite build` in scripts
+- Clear build cache in Render and redeploy
+
+**Stock not updating after webhook**
+- Verify `SHOPIFY_WEBHOOK_SECRET` matches Shopify settings
+- Check webhook logs in Render for errors
+- Ensure SKU mapping is configured correctly
+
+**Database connection errors**
+- Verify `DATABASE_URL` includes `?sslmode=require`
+- Check Neon database is active and accessible
+- Confirm connection string format is correct
+
+**Login issues**
+- Default admin credentials are set during migration
+- Reset password through database if needed
+- Check bcrypt is installed and working
+
+---
+
+## Project Structure
+
+```
+scent-stock-manager/
 ├── server/
-│   └── index.js              # Express API + PostgreSQL logic
+│   └── index.js           # Express API server
 ├── src/
-│   ├── App.jsx               # Main application
-│   ├── main.jsx              # Entry point
-│   └── pages/                # Application pages
-│       ├── Login.jsx
-│       ├── Dashboard.jsx
-│       ├── ProductManagement.jsx
-│       ├── StockManagement.jsx
-│       ├── SkuMapping.jsx
-│       ├── BOMViewer.jsx
-│       ├── TransactionHistory.jsx
-│       ├── Attachments.jsx
-│       └── UserManagement.jsx
-├── public/
+│   ├── pages/             # React page components
+│   ├── utils/             # Helper functions
+│   └── App.jsx            # Main app component
+├── dist/                  # Production build
 ├── package.json
-└── vite.config.js
+├── vite.config.js
+└── README.md
+```
 
-________________________________________________________________________________________________________________________
+---
 
-Data Migration
+## Contributing
 
-If you previously used a JSON-based database:
-   npm run migrate
-This will safely migrate legacy data to PostgreSQL.
+This is a private internal tool for Scent Australia. For feature requests or bug reports, contact the development team.
 
-________________________________________________________________________________________________________________________
+---
 
-Performance Notes
+## License
 
-PostgreSQL connection pooling
-Indexed critical columns
-ACID-compliant transactions
-Optimized queries for inventory operations
+Proprietary - Fabricio Leopoldino © 2026
 
-________________________________________________________________________________________________________________________
+---
 
-Security Practices
+## Changelog
 
-Password hashing with bcrypt
-Prepared statements (SQL injection protection)
-Environment-based configuration
-File type validation for uploads
-CORS configuration
-No hardcoded secrets in source code
-Recommended for production:
-Enable HTTPS
-Use strong session secrets
-Restrict database access by IP
-Implement rate limiting (optional)
+### v2.1.0 (Current)
+- Added Purchase Orders tracking system
+- Implemented receive workflow with full/partial quantities
+- Enhanced incoming orders visibility with badges
+- Automatic stock updates on PO receipt
+- Complete transaction logging for received orders
 
-________________________________________________________________________________________________________________________
+### v2.0.0
+- Migrated from SQLite to PostgreSQL (Neon)
+- Redesigned UI with improved navigation
+- Added Diffuser Machine BOM feature
+- Enhanced Shopify webhook integration
+- Implemented volume-based BOM calculations
 
-Troubleshooting
+### v1.0.0
+- Initial release with basic inventory tracking
+- User authentication system
+- Product and stock management
+- Transaction history
 
-Database connection issues
-   echo $DATABASE_URL
-   psql $DATABASE_URL
+---
 
-Webhook not triggering
-   curl -X POST https://your-app-domain.com/api/webhooks/shopify/orders/create \
-     -H "Content-Type: application/json" \
-     -d '{"id":123,"line_items":[]}'
-
-Missing data in dashboard
-   SELECT COUNT(*) FROM products;
-   SELECT COUNT(*) FROM transactions;
-
-Available Scripts
-   npm run dev          # Development mode (frontend + backend)
-   npm run build        # Production build
-   npm start            # Start production server
-   npm run migrate      # Migrate JSON data to PostgreSQL  < Script if need send me a Email
-   npm run render-build # Render build process (Free) 
-
-________________________________________________________________________________________________________________________
-
-Roadmap
-
-- Advanced analytics dashboard
-- Low stock notifications
-- Multi-warehouse support
-- Cloud storage for attachments
-- External API integrations
-- Automated reporting system
-
-
-
-________________________________________________________________________________________________________________________
-
-License
-
-Private use.
-For internal inventory and operational management.
-
-________________________________________________________________________________________________________________________
-
-Author
-
-Fabricio Leopoldino
-   https://www.linkedin.com/in/fabricioleopoldino/
-Brasil > Australia
-sKp187Mv7kDkpWVtW0pHl1d6Au4sGivkf0LNjU6Po5acu24UiazZC9QWmTDTlTzeOjxkuECAfjBt_ICxeOXiVGPstfvJwjPCawrVnkPU-L7uMkg2gtO3p2n0uXCsgzxPC5Le-Lnuat7WPuLwLPDbkEVM9Wqjv4jG4vCCDl-L99dc2Kpod-ZCKx7ojgoVv0oLNFKkk_NLHoOzhDce4cMifpD-T2-GoBheJ92gg8_1G1IbcOeOCsPKHl8TSNw01yqWB2qD57mezJsXhf8JEHB4aAvEgDu9mAWYKX0QtFZnW_b49VUT6rhJR6N1nfQx1-38DCwwDTIfn3lB8Pz198YXS8F-TswZDuedDdxt_l7OU7RXVSy9E4YLgx_vZ_oDUPy_vl7Vo23gCl8BQqK27_LX1AEKVXKhvycbAPN1zaBgmc8fix7cm9StncAWKHxYuR78PHdUp0SlmoaycjAOYRFxrh7jdu91y-k7UthfH_GybP0
-
-
-   Version: #Test to Production > Next Step Azure ! 
-      Status: Testing 
-         Last Updated: 20/02/2026 
-            Deployment: Render + PostgreSQL #Free
-
-
-________________________________________________________________________________________________________________________
-
-PLUS ! 
-
-uptimerobot.com/monitors
-
-
-________________________________________________________________________________________________________________________
+**Built with ❤️ for Scent Australia**
