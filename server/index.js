@@ -214,11 +214,10 @@ async function createProductInShopify(product) {
 
 const parseJSONB = (value, fallback = {}) => {
   if (!value) return fallback;
-  if (typeof value === 'object' && !Array.isArray(value)) return value;
+  if (typeof value === 'object') return value;
   if (typeof value === 'string') {
     try {
-      const parsed = JSON.parse(value);
-      return typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : fallback;
+      return JSON.parse(value);
     } catch (e) {
       return fallback;
     }
