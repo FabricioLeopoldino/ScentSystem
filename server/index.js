@@ -113,6 +113,11 @@ async function createProductInShopify(product) {
   const productName = product.name;
   
   // Create variants for each SKU type with product name included
+  //Para funcionar essa parte voce precisa configurar o ENV no render || SHOPIFY informacoes:
+  //API_KEY
+  //API_PASSWORD
+  //SHOPIFY_STORE_NAME
+  //SHOPIFY_SYNC_ENABLED = precisa estar TRUE
   const variants = [];
   const variantDetails = {
     'SA_CA': { 
@@ -251,7 +256,7 @@ const generateAutoSkus = (category, baseNumber) => {
 };
 
 // ========================================================================
-// HEALTH CHECK
+// HEALTH CHECK || Funcionamento junto com o UPTIMEROBOt
 // ========================================================================
 app.get('/api/health', async (req, res) => {
   try {
@@ -536,6 +541,11 @@ app.post('/api/products', async (req, res) => {
     
     // ========================================================================
     // OPTIONAL: Auto-create products in Shopify
+    //Para funcionar essa parte voce precisa configurar o ENV no render || SHOPIFY informacoes:
+    //API_KEY
+    //API_PASSWORD
+    //SHOPIFY_STORE_NAME
+    //SHOPIFY_SYNC_ENABLED = precisa estar TRUE
     // ========================================================================
     if (category === 'OILS' && process.env.SHOPIFY_SYNC_ENABLED === 'true') {
       try {
@@ -1299,7 +1309,9 @@ app.delete('/api/diffuser-bom/:id', async (req, res) => {
 });
 
 // ========================================================================
-// ATTACHMENTS
+// ATTACHMENTS 
+// Secao desabilitada pois esta com problema quando eu faco o upload do arquivo o mesmo esta crashando o banco de dados, nao irei arrumar esta secao ainda1
+//Possivel causa banco de dados+code (Fabricio Leopoldino 23/02/26
 // ========================================================================
 app.get('/api/attachments', async (req, res) => {
   try {
@@ -1425,7 +1437,7 @@ const getVolumeFromSKU = (sku) => {
   if (skuUpper.includes('SA_1L')) return 1000;     // 1 Liter = 1000ml
   if (skuUpper.includes('SA_HF')) return 500;      // Half = 500ml
   if (skuUpper.includes('SA_PRO')) return 1000;    // Pro = 1000ml
-  if (skuUpper.includes('SA_CDIFF')) return 700;   // Car Diffuser = 700ml
+  if (skuUpper.includes('SA_CDIFF')) return 700;   // Bottle Diffuser = 700ml
   
   return 1; // Default fallback
 };
@@ -1725,19 +1737,19 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, '0.0.0.0', () => {
   console.log('');
   console.log('═══════════════════════════════════════════════════');
-  console.log('🚀 SCENT STOCK MANAGER - v4.1');
+  console.log('    Scent Australia -  SCENT STOCK MANAGER ');
   console.log('═══════════════════════════════════════════════════');
   console.log(`🌐 Port:        ${PORT}`);
   console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log('Powered by: Fabricio Leopoldino 2026');
   console.log('');
-  console.log('✅ All fixes applied:');
-  console.log('  ✓ Compatible with existing camelCase schema');
-  console.log('  ✓ Auto SKU mapping for OILS');
-  console.log('  ✓ Sequential ordering fixed');
-  console.log('  ✓ Category filters fixed');
-  console.log('  ✓ BOM returns grouped object');
-  console.log('  ✓ Incoming orders from Shopify');
   console.log('');
-  console.log('🎯 Server ready!');
   console.log('');
+  console.log('');
+  console.log('');
+  console.log('');
+  console.log('');
+  console.log('═══════════════════════════════════════════════');
+  console.log('           Server ready!');
+  console.log('═══════════════════════════════════════════════');
 });
