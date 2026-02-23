@@ -94,8 +94,8 @@ export default function Login({ onLogin }) {
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '16px' }}>
             <img src="/leautotech.png" alt="FL" style={{ width: '60px', height: '60px', objectFit: 'contain' }} />
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '2px' }}>
-              <span style={{ fontWeight: '700', color: '#1e3a8a', fontSize: '18px', letterSpacing: '0.5px' }}>LeautoTech</span>
-              <span style={{ fontSize: '13px', color: '#64748b' }}>Powered by | Fabricio | 2026</span>
+              <span style={{ fontWeight: '700', color: '#1e3a8a', fontSize: '18px', letterSpacing: '0.5px' }}>F.L</span>
+              <span style={{ fontSize: '13px', color: '#64748b' }}>Powered by | Fabricio Leopoldino | 2026</span>
             </div>
           </div>
         </div>
