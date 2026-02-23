@@ -1674,6 +1674,62 @@ app.post('/api/webhook/shopify', express.json(), async (req, res) => {
   }
 });
 
+// ========================================================================
+// PURCHASE ORDERS - Add Incoming Order
+// ========================================================================
+app.post('/api/products/:id/incoming', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { orderNumber, quantity, supplier, notes, addedBy } = req.body;
+    
+    if (!orderNumber || !quantity) {
+      return res.status(400).json({ error: 'Order number and quantity are required' });
+    }
+    
+    // Get current product
+    const productResult = await pool.query(
+      'SELECT * FROM products WHERE id = $1',
+      [id]
+    );
+    
+    if (productResult.rows.length === 0) {
+      return res.status(404).json({ error: 'Product not found' });
+    }
+    
+    const product = productResult.rows[0];
+    const incomingOrders = parseJSONB(product.incoming_orders, []);
+    
+    // Add new incoming order
+    const newIncoming = {
+      orderNumber,
+      quantity: parseFloat(quantity),
+      supplier: supplier || product.supplier || '',
+      notes: notes || '',
+      addedAt: new Date().toISOString(),
+      addedBy: addedBy || 'manual'
+    };
+    
+    incomingOrders.push(newIncoming);
+    
+    // Update product
+    await pool.query(
+      'UPDATE products SET incoming_orders = $1 WHERE id = $2',
+      [JSON.stringify(incomingOrders), id]
+    );
+    
+    console.log(`📋 Incoming order added manually: ${product.name} - ${orderNumber} (${quantity} ${product.unit})`);
+    
+    res.json({ 
+      success: true, 
+      incomingOrders,
+      message: 'Incoming order added successfully'
+    });
+  } catch (error) {
+    console.error('Add incoming order error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 app.delete('/api/products/:id/incoming/:index', async (req, res) => {
   try {
     const { id, index } = req.params;
