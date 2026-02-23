@@ -10,6 +10,13 @@ export default function ProductManagement({ user }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
+  const [showIncomingModal, setShowIncomingModal] = useState(false);
+  const [incomingProduct, setIncomingProduct] = useState(null);
+  const [incomingFormData, setIncomingFormData] = useState({
+    orderNumber: '',
+    quantity: '',
+    notes: ''
+  });
   
   const [formData, setFormData] = useState({
     name: '',
@@ -122,6 +129,52 @@ export default function ProductManagement({ user }) {
       }
     } catch (error) {
       alert('Error clearing incoming order: ' + error.message);
+    }
+  };
+
+  const handleOpenIncomingModal = (product) => {
+    setIncomingProduct(product);
+    setIncomingFormData({
+      orderNumber: '',
+      quantity: '',
+      notes: ''
+    });
+    setShowIncomingModal(true);
+  };
+
+  const handleAddIncoming = async (e) => {
+    e.preventDefault();
+    
+    if (!incomingFormData.orderNumber || !incomingFormData.quantity) {
+      alert('Please fill in PO Number and Quantity');
+      return;
+    }
+    
+    try {
+      const res = await fetch(`/api/products/${incomingProduct.id}/incoming`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          orderNumber: incomingFormData.orderNumber,
+          quantity: parseFloat(incomingFormData.quantity),
+          supplier: incomingProduct.supplier,
+          notes: incomingFormData.notes,
+          addedBy: user?.username || 'admin'
+        })
+      });
+      
+      if (res.ok) {
+        alert('Incoming order added successfully!');
+        setShowIncomingModal(false);
+        setIncomingProduct(null);
+        setIncomingFormData({ orderNumber: '', quantity: '', notes: '' });
+        fetchProducts();
+      } else {
+        const error = await res.json();
+        alert(error.error || 'Error adding incoming order');
+      }
+    } catch (error) {
+      alert('Error adding incoming order: ' + error.message);
     }
   };
 
@@ -343,13 +396,27 @@ export default function ProductManagement({ user }) {
                     </td>
                     {user.role === 'admin' && (
                       <td>
-                        <div style={{ display: 'flex', gap: '8px' }}>
+                        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                           <button 
                             className="btn btn-secondary"
                             onClick={() => handleEdit(product)}
                             style={{ fontSize: '12px', padding: '6px 12px' }}
                           >
                             Edit
+                          </button>
+                          <button 
+                            className="btn"
+                            onClick={() => handleOpenIncomingModal(product)}
+                            style={{ 
+                              fontSize: '12px', 
+                              padding: '6px 12px',
+                              background: '#f59e0b',
+                              color: 'white',
+                              border: 'none'
+                            }}
+                            title="Add Incoming Order / Purchase Order"
+                          >
+                            + Incoming
                           </button>
                           <button 
                             className="btn btn-danger"
@@ -512,6 +579,97 @@ export default function ProductManagement({ user }) {
                 </button>
                 <button type="submit" className="btn btn-primary">
                   {editingProduct ? 'Update Product' : 'Create Product'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Add Incoming Order Modal */}
+      {showIncomingModal && incomingProduct && (
+        <div className="modal-overlay" onClick={() => setShowIncomingModal(false)}>
+          <div className="modal" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2>Add Incoming Order - Purchase Order</h2>
+              <button className="modal-close" onClick={() => setShowIncomingModal(false)}>×</button>
+            </div>
+            
+            <form onSubmit={handleAddIncoming}>
+              <div style={{ marginBottom: '20px', padding: '12px', background: '#f1f5f9', borderRadius: '8px' }}>
+                <div style={{ fontWeight: '600', marginBottom: '4px' }}>Product:</div>
+                <div style={{ fontSize: '14px', color: '#64748b' }}>{incomingProduct.name}</div>
+                <div style={{ fontSize: '12px', color: '#94a3b8', marginTop: '4px' }}>
+                  Tag: {incomingProduct.tag} | Code: {incomingProduct.productCode}
+                </div>
+                {incomingProduct.supplier && (
+                  <div style={{ fontSize: '12px', color: '#94a3b8', marginTop: '4px' }}>
+                    Supplier: {incomingProduct.supplier}
+                  </div>
+                )}
+              </div>
+
+              <div className="form-group">
+                <label>PO Number / Order Number *</label>
+                <input
+                  type="text"
+                  className="input"
+                  value={incomingFormData.orderNumber}
+                  onChange={(e) => setIncomingFormData({...incomingFormData, orderNumber: e.target.value})}
+                  placeholder="e.g., #PO166"
+                  required
+                />
+                <small style={{ fontSize: '12px', color: '#64748b', marginTop: '4px', display: 'block' }}>
+                  Same PO number as in Shopify Purchase Order
+                </small>
+              </div>
+
+              <div className="form-group">
+                <label>Quantity *</label>
+                <input
+                  type="number"
+                  className="input"
+                  value={incomingFormData.quantity}
+                  onChange={(e) => setIncomingFormData({...incomingFormData, quantity: e.target.value})}
+                  placeholder="e.g., 300"
+                  min="0"
+                  step="any"
+                  required
+                />
+                <small style={{ fontSize: '12px', color: '#64748b', marginTop: '4px', display: 'block' }}>
+                  Units: {incomingProduct.unit}
+                </small>
+              </div>
+
+              <div className="form-group">
+                <label>Notes (Optional)</label>
+                <textarea
+                  className="input"
+                  value={incomingFormData.notes}
+                  onChange={(e) => setIncomingFormData({...incomingFormData, notes: e.target.value})}
+                  placeholder="e.g., Expected arrival 25/02, Wilmar BioEthanol"
+                  rows="3"
+                />
+              </div>
+
+              <div style={{ 
+                padding: '12px', 
+                background: '#fef3c7', 
+                borderRadius: '8px',
+                marginBottom: '20px',
+                fontSize: '13px',
+                color: '#78350f'
+              }}>
+                <strong>💡 Reminder:</strong> After creating the PO in Shopify, add it here to track incoming stock. 
+                When you receive the goods and click "Receive inventory" in Shopify, update the stock in ScentSystem via Stock Management.
+              </div>
+
+              <div className="modal-footer">
+                <button type="button" className="btn btn-secondary" onClick={() => setShowIncomingModal(false)}>
+                  Cancel
+                </button>
+                <button type="submit" className="btn btn-primary">
+                  Add Incoming Order
                 </button>
               </div>
             </form>
