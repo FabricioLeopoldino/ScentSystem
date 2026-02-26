@@ -190,7 +190,7 @@ export default function Dashboard() {
       <div className="card" style={{ marginBottom: '32px', borderLeft: '4px solid #3b82f6' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
           <h3 style={{ fontSize: '16px', fontWeight: '700', color: '#3b82f6' }}>
-            ⭐ Priority Watchlist ({watchlistProducts.length}/10)
+            🤖 Priority Watchlist ({watchlistProducts.length}/10)
           </h3>
           <button 
             className="btn btn-primary"
