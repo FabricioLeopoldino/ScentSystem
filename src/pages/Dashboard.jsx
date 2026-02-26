@@ -5,9 +5,12 @@ export default function Dashboard() {
   const [data, setData] = useState(null);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [watchlist, setWatchlist] = useState([]);
+  const [showWatchlistModal, setShowWatchlistModal] = useState(false);
 
   useEffect(() => {
     fetchData();
+    loadWatchlist();
   }, []);
 
   const fetchData = async () => {
@@ -29,6 +32,42 @@ export default function Dashboard() {
     }
   };
 
+  const loadWatchlist = () => {
+    try {
+      const saved = localStorage.getItem('priority_watchlist');
+      if (saved) {
+        setWatchlist(JSON.parse(saved));
+      }
+    } catch (error) {
+      console.error('Error loading watchlist:', error);
+    }
+  };
+
+  const saveWatchlist = (newWatchlist) => {
+    try {
+      localStorage.setItem('priority_watchlist', JSON.stringify(newWatchlist));
+      setWatchlist(newWatchlist);
+    } catch (error) {
+      console.error('Error saving watchlist:', error);
+    }
+  };
+
+  const addToWatchlist = (productId) => {
+    if (watchlist.length >= 10) {
+      alert('You can only track up to 10 products in your Priority Watchlist');
+      return;
+    }
+    if (watchlist.includes(productId)) {
+      alert('This product is already in your watchlist');
+      return;
+    }
+    saveWatchlist([...watchlist, productId]);
+  };
+
+  const removeFromWatchlist = (productId) => {
+    saveWatchlist(watchlist.filter(id => id !== productId));
+  };
+
   const getStockPercentage = (current, min) => {
     return Math.round((current / (min * 2)) * 100);
   };
@@ -40,19 +79,16 @@ export default function Dashboard() {
     return { label: 'Healthy', class: 'green', badge: 'badge-success' };
   };
 
-  // 🔧 CORREÇÃO: Calcular volume real de óleo
   const calculateTotalOilVolume = () => {
     return products
       .filter(p => p.category === 'OILS')
       .reduce((total, product) => total + (product.currentStock || 0), 0);
   };
 
-  // 🔧 Formatar números grandes com separador de milhares
   const formatNumber = (num) => {
     return new Intl.NumberFormat('en-US').format(Math.round(num));
   };
 
-  // 🔧 Contar produtos por categoria
   const countByCategory = (category) => {
     return products.filter(p => p.category === category).length;
   };
@@ -72,6 +108,7 @@ export default function Dashboard() {
   const machinesData = products.filter(p => p.category === 'MACHINES_SPARES');
   const rawMaterialsData = products.filter(p => p.category === 'RAW_MATERIALS');
   const totalOilVolume = calculateTotalOilVolume();
+  const watchlistProducts = products.filter(p => watchlist.includes(p.id));
 
   return (
     <div className="container" style={{ paddingTop: '40px' }}>
@@ -98,38 +135,29 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Main Stats */}
-      <div className="stats-grid">
-        <div className="stat-card">
-          <div className="stat-value green">{data?.totalProducts || 0}</div>
-          <div className="stat-label">Total Products</div>
-        </div>
-
-        <div className="stat-card">
-          <div className="stat-value red">
-            {lowStockProducts.length}
-            {lowStockProducts.length > 0 && <span className="alert-icon">!</span>}
-          </div>
-          <div className="stat-label">Low Stock Alerts</div>
-        </div>
-
-        <div className="stat-card">
-          <div className="stat-value green">{formatNumber(totalOilVolume)}L</div>
-          <div className="stat-label">Total Oil Volume</div>
-        </div>
-      </div>
-
-      {/* Category Breakdown */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px', marginBottom: '32px' }}>
+      {/* Stats Grid */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '24px', marginBottom: '32px' }}>
         <div className="card" style={{ borderLeft: '4px solid #3b82f6' }}>
+          <h3 style={{ fontSize: '14px', fontWeight: '700', color: '#64748b', marginBottom: '12px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+            Total Products
+          </h3>
+          <div style={{ fontSize: '32px', fontWeight: '900', color: '#3b82f6', marginBottom: '8px' }}>
+            {products.length}
+          </div>
+          <div style={{ fontSize: '13px', color: '#64748b' }}>
+            {lowStockProducts.length} need attention
+          </div>
+        </div>
+
+        <div className="card" style={{ borderLeft: '4px solid #10b981' }}>
           <h3 style={{ fontSize: '14px', fontWeight: '700', color: '#64748b', marginBottom: '12px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
             Essential Oils
           </h3>
-          <div style={{ fontSize: '32px', fontWeight: '900', color: '#3b82f6', marginBottom: '8px' }}>
+          <div style={{ fontSize: '32px', fontWeight: '900', color: '#10b981', marginBottom: '8px' }}>
             {countByCategory('OILS')}
           </div>
           <div style={{ fontSize: '13px', color: '#64748b' }}>
-            {oilsData.filter(p => p.currentStock < p.minStockLevel).length} low stock
+            {formatNumber(totalOilVolume)} mL total volume
           </div>
         </div>
 
@@ -158,14 +186,99 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Low Stock Alerts */}
+      {/* Priority Watchlist */}
+      <div className="card" style={{ marginBottom: '32px', borderLeft: '4px solid #3b82f6' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+          <h3 style={{ fontSize: '16px', fontWeight: '700', color: '#3b82f6' }}>
+            ⭐ Priority Watchlist ({watchlistProducts.length}/10)
+          </h3>
+          <button 
+            className="btn btn-primary"
+            onClick={() => setShowWatchlistModal(true)}
+            style={{ fontSize: '13px', padding: '8px 16px' }}
+          >
+            + Add Product
+          </button>
+        </div>
+        
+        {watchlistProducts.length > 0 ? (
+          <div style={{ display: 'grid', gap: '12px' }}>
+            {watchlistProducts.map(product => {
+              const status = getStockStatus(product.currentStock, product.minStockLevel);
+              const percentage = getStockPercentage(product.currentStock, product.minStockLevel);
+              
+              return (
+                <div key={product.id} style={{ 
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '16px',
+                  padding: '12px',
+                  background: '#f8fafc',
+                  borderRadius: '8px',
+                  border: '1px solid #e2e8f0'
+                }}>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                      <span style={{ fontWeight: '600' }}>{product.name}</span>
+                      <span style={{ fontSize: '12px', color: '#64748b' }}>
+                        ({product.productCode})
+                      </span>
+                      <span className={`badge ${status.badge}`} style={{ fontSize: '11px' }}>
+                        {status.label}
+                      </span>
+                    </div>
+                    <div style={{ display: 'flex', gap: '16px', fontSize: '13px', color: '#64748b' }}>
+                      <span>Current: <strong>{product.currentStock} {product.unit}</strong></span>
+                      <span>Min: <strong>{product.minStockLevel} {product.unit}</strong></span>
+                      <span>Supplier: <strong>{product.supplier || '-'}</strong></span>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => removeFromWatchlist(product.id)}
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      cursor: 'pointer',
+                      fontSize: '18px',
+                      color: '#ef4444',
+                      padding: '4px 8px'
+                    }}
+                    title="Remove from watchlist"
+                  >
+                    ✕
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <div style={{ 
+            textAlign: 'center', 
+            padding: '40px', 
+            color: '#9ca3af',
+            background: '#f8fafc',
+            borderRadius: '8px',
+            border: '2px dashed #e2e8f0'
+          }}>
+            <div style={{ fontSize: '48px', marginBottom: '12px' }}>⭐</div>
+            <div style={{ fontSize: '14px', fontWeight: '600', marginBottom: '4px' }}>
+              No products in your watchlist
+            </div>
+            <div style={{ fontSize: '13px' }}>
+              Click "+ Add Product" to track your most important products
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Low Stock Alerts - Increased to 10 */}
       {lowStockProducts.length > 0 && (
         <div className="card" style={{ marginBottom: '32px', borderLeft: '4px solid #ef4444' }}>
           <h3 style={{ fontSize: '16px', fontWeight: '700', marginBottom: '16px', color: '#ef4444' }}>
             ⚠️ Low Stock Alerts ({lowStockProducts.length})
           </h3>
           <div style={{ display: 'grid', gap: '12px' }}>
-            {lowStockProducts.slice(0, 5).map(product => {
+            {lowStockProducts.slice(0, 10).map(product => {
               const status = getStockStatus(product.currentStock, product.minStockLevel);
               return (
                 <div key={product.id} style={{ 
@@ -196,60 +309,6 @@ export default function Dashboard() {
           </div>
         </div>
       )}
-
-      {/* Stock Status by Category */}
-      <div className="card">
-        <h3 style={{ fontSize: '16px', fontWeight: '700', marginBottom: '20px' }}>
-          Stock Status Overview
-        </h3>
-        
-        {['OILS', 'MACHINES_SPARES', 'RAW_MATERIALS'].map(category => {
-          const categoryProducts = products.filter(p => p.category === category);
-          const categoryName = category === 'OILS' ? 'Essential Oils' : 
-                              category === 'MACHINES_SPARES' ? 'Machines & Spares' : 'Raw Materials';
-          
-          if (categoryProducts.length === 0) return null;
-          
-          return (
-            <div key={category} style={{ marginBottom: '32px' }}>
-              <h4 style={{ fontSize: '14px', fontWeight: '700', color: '#64748b', marginBottom: '16px', textTransform: 'uppercase' }}>
-                {categoryName}
-              </h4>
-              <div style={{ display: 'grid', gap: '16px' }}>
-                {categoryProducts.slice(0, 10).map(product => {
-                  const status = getStockStatus(product.currentStock, product.minStockLevel);
-                  const percentage = getStockPercentage(product.currentStock, product.minStockLevel);
-                  
-                  return (
-                    <div key={product.id}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-                        <div>
-                          <span style={{ fontWeight: '600' }}>{product.name}</span>
-                          <span style={{ fontSize: '12px', color: '#64748b', marginLeft: '8px' }}>
-                            ({product.productCode})
-                          </span>
-                        </div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                          <span className={`badge ${status.badge}`}>{status.label}</span>
-                          <span style={{ fontWeight: '600' }}>
-                            {product.currentStock} / {product.minStockLevel * 2} {product.unit}
-                          </span>
-                        </div>
-                      </div>
-                      <div className="progress-bar">
-                        <div 
-                          className={`progress-fill ${status.class}`}
-                          style={{ width: `${Math.min(percentage, 100)}%` }}
-                        ></div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          );
-        })}
-      </div>
 
       {/* Recent Transactions */}
       <div className="card" style={{ marginTop: '32px' }}>
@@ -301,6 +360,76 @@ export default function Dashboard() {
           </div>
         )}
       </div>
+
+      {/* Add to Watchlist Modal */}
+      {showWatchlistModal && (
+        <div className="modal-overlay" onClick={() => setShowWatchlistModal(false)}>
+          <div className="modal" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '600px' }}>
+            <div className="modal-header">
+              <h2>Add Product to Priority Watchlist</h2>
+              <button className="modal-close" onClick={() => setShowWatchlistModal(false)}>×</button>
+            </div>
+            
+            <div style={{ marginBottom: '16px', padding: '12px', background: '#eff6ff', borderRadius: '8px', fontSize: '13px', color: '#1e40af' }}>
+              <strong>💡 Tip:</strong> Select up to 10 products you want to monitor closely (best sellers, critical items, etc.)
+            </div>
+
+            <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
+              {products
+                .filter(p => !watchlist.includes(p.id))
+                .map(product => (
+                  <div 
+                    key={product.id}
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      padding: '12px',
+                      borderBottom: '1px solid #e5e7eb',
+                      cursor: 'pointer'
+                    }}
+                    onClick={() => {
+                      addToWatchlist(product.id);
+                      if (watchlist.length >= 9) {
+                        setShowWatchlistModal(false);
+                      }
+                    }}
+                  >
+                    <div>
+                      <div style={{ fontWeight: '600', marginBottom: '4px' }}>{product.name}</div>
+                      <div style={{ fontSize: '12px', color: '#64748b' }}>
+                        {product.productCode} • {product.category}
+                      </div>
+                    </div>
+                    <button
+                      className="btn btn-primary"
+                      style={{ fontSize: '12px', padding: '6px 12px' }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        addToWatchlist(product.id);
+                        if (watchlist.length >= 9) {
+                          setShowWatchlistModal(false);
+                        }
+                      }}
+                    >
+                      + Add
+                    </button>
+                  </div>
+                ))}
+            </div>
+
+            <div className="modal-footer">
+              <button 
+                type="button" 
+                className="btn btn-secondary" 
+                onClick={() => setShowWatchlistModal(false)}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
