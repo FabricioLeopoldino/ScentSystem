@@ -423,9 +423,9 @@ export default function ProductManagement({ user }) {
                 <th>Category</th>
                 <th>Stock</th>
                 <th>Min Level</th>
-                <th>Status</th>
                 <th>Incoming Orders</th>
                 <th>Supplier</th>
+                <th>Supplier Code</th>
                 {user.role === 'admin' && <th>Actions</th>}
               </tr>
             </thead>
@@ -451,7 +451,6 @@ export default function ProductManagement({ user }) {
                       )}
                     </td>
                     <td>{product.minStockLevel} {product.unit}</td>
-                    <td className={status.color} style={{ fontWeight: '600' }}>{status.label}</td>
                     <td>
                       {product.incomingOrders && product.incomingOrders.length > 0 ? (
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
@@ -514,6 +513,9 @@ export default function ProductManagement({ user }) {
                     </td>
                     <td style={{ fontSize: '13px', color: '#64748b' }}>
                       {product.supplier || '-'}
+                    </td>
+                    <td style={{ fontSize: '13px', color: '#64748b', fontFamily: 'monospace' }}>
+                      {product.supplier_code || '-'}
                     </td>
                     {user.role === 'admin' && (
                       <td>
