@@ -1,16 +1,14 @@
-# 📦 Scent Stock Manager
+#  Scent Stock Manager
 
-**Version 2.1.0**
+* Testing
 
-A comprehensive inventory management system built for Scent Australia, designed to streamline stock control, bill of materials tracking, and Shopify integration.
+A comprehensive inventory management system, designed to streamline stock control, bill of materials tracking, and Shopify integration.
 
 ---
 
 ## Overview
 
 Scent Stock Manager helps manage product inventory across multiple categories including fragrance oils, raw materials, and machine parts. The system automates stock deductions through Shopify webhooks and provides complete visibility into incoming orders and transaction history.
-
-**Live Demo:** [scentsystem.onrender.com](https://scentsystem.onrender.com)
 
 ---
 
