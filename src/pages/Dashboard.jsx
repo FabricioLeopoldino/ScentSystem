@@ -260,12 +260,12 @@ export default function Dashboard() {
             borderRadius: '8px',
             border: '2px dashed #e2e8f0'
           }}>
-            <div style={{ fontSize: '48px', marginBottom: '12px' }}>⭐</div>
+            <div style={{ fontSize: '48px', marginBottom: '12px' }}>🤖</div>
             <div style={{ fontSize: '14px', fontWeight: '600', marginBottom: '4px' }}>
               No products in your watchlist
             </div>
             <div style={{ fontSize: '13px' }}>
-              Click "+ Add Product" to track your most important products
+              Click "+ Add Product" to track your most important products!!
             </div>
           </div>
         )}
