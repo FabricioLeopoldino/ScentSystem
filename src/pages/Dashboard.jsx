@@ -7,6 +7,7 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [watchlist, setWatchlist] = useState([]);
   const [showWatchlistModal, setShowWatchlistModal] = useState(false);
+  const [modalSearch, setModalSearch] = useState('');
 
   useEffect(() => {
     fetchData();
@@ -92,6 +93,19 @@ export default function Dashboard() {
   const countByCategory = (category) => {
     return products.filter(p => p.category === category).length;
   };
+
+  const filteredModalProducts = products
+    .filter(p => !watchlist.includes(p.id))
+    .filter(p => {
+      if (!modalSearch) return true;
+      const searchLower = modalSearch.toLowerCase();
+      return (
+        p.name.toLowerCase().includes(searchLower) ||
+        p.productCode.toLowerCase().includes(searchLower) ||
+        p.tag.toLowerCase().includes(searchLower) ||
+        (p.supplier && p.supplier.toLowerCase().includes(searchLower))
+      );
+    });
 
   if (loading) {
     return (
@@ -186,15 +200,18 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Priority Watchlist */}
+      {/* Priority Watchlist with Incoming Orders */}
       <div className="card" style={{ marginBottom: '32px', borderLeft: '4px solid #3b82f6' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
           <h3 style={{ fontSize: '16px', fontWeight: '700', color: '#3b82f6' }}>
-            🤖 Priority Watchlist ({watchlistProducts.length}/10)
+            ⭐ Priority Watchlist ({watchlistProducts.length}/10)
           </h3>
           <button 
             className="btn btn-primary"
-            onClick={() => setShowWatchlistModal(true)}
+            onClick={() => {
+              setShowWatchlistModal(true);
+              setModalSearch('');
+            }}
             style={{ fontSize: '13px', padding: '8px 16px' }}
           >
             + Add Product
@@ -205,48 +222,78 @@ export default function Dashboard() {
           <div style={{ display: 'grid', gap: '12px' }}>
             {watchlistProducts.map(product => {
               const status = getStockStatus(product.currentStock, product.minStockLevel);
-              const percentage = getStockPercentage(product.currentStock, product.minStockLevel);
+              const hasIncoming = product.incomingOrders && product.incomingOrders.length > 0;
               
               return (
                 <div key={product.id} style={{ 
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '16px',
                   padding: '12px',
                   background: '#f8fafc',
                   borderRadius: '8px',
                   border: '1px solid #e2e8f0'
                 }}>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-                      <span style={{ fontWeight: '600' }}>{product.name}</span>
-                      <span style={{ fontSize: '12px', color: '#64748b' }}>
-                        ({product.productCode})
-                      </span>
-                      <span className={`badge ${status.badge}`} style={{ fontSize: '11px' }}>
-                        {status.label}
-                      </span>
+                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px' }}>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                        <span style={{ fontWeight: '600' }}>{product.name}</span>
+                        <span style={{ fontSize: '12px', color: '#64748b' }}>
+                          ({product.productCode})
+                        </span>
+                        <span className={`badge ${status.badge}`} style={{ fontSize: '11px' }}>
+                          {status.label}
+                        </span>
+                      </div>
+                      <div style={{ display: 'flex', gap: '16px', fontSize: '13px', color: '#64748b', marginBottom: hasIncoming ? '12px' : '0' }}>
+                        <span>Current: <strong>{product.currentStock} {product.unit}</strong></span>
+                        <span>Min: <strong>{product.minStockLevel} {product.unit}</strong></span>
+                        <span>Supplier: <strong>{product.supplier || '-'}</strong></span>
+                      </div>
+                      
+                      {/* Incoming Orders Display */}
+                      {hasIncoming && (
+                        <div style={{ marginTop: '8px' }}>
+                          <div style={{ fontSize: '12px', fontWeight: '600', color: '#64748b', marginBottom: '6px' }}>
+                            📦 Incoming Orders:
+                          </div>
+                          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                            {product.incomingOrders.map((order, idx) => (
+                              <div key={idx} style={{ 
+                                display: 'inline-flex',
+                                alignItems: 'center', 
+                                gap: '6px',
+                                padding: '4px 10px',
+                                background: '#fef3c7',
+                                borderRadius: '4px',
+                                fontSize: '12px',
+                                border: '1px solid #fde68a'
+                              }}>
+                                <span style={{ fontWeight: '600', color: '#92400e' }}>
+                                  {order.orderNumber}
+                                </span>
+                                <span style={{ color: '#78350f' }}>
+                                  ({order.quantity} {product.unit})
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
                     </div>
-                    <div style={{ display: 'flex', gap: '16px', fontSize: '13px', color: '#64748b' }}>
-                      <span>Current: <strong>{product.currentStock} {product.unit}</strong></span>
-                      <span>Min: <strong>{product.minStockLevel} {product.unit}</strong></span>
-                      <span>Supplier: <strong>{product.supplier || '-'}</strong></span>
-                    </div>
+                    <button
+                      onClick={() => removeFromWatchlist(product.id)}
+                      style={{
+                        background: 'none',
+                        border: 'none',
+                        cursor: 'pointer',
+                        fontSize: '18px',
+                        color: '#ef4444',
+                        padding: '4px 8px',
+                        flexShrink: 0
+                      }}
+                      title="Remove from watchlist"
+                    >
+                      ✕
+                    </button>
                   </div>
-                  <button
-                    onClick={() => removeFromWatchlist(product.id)}
-                    style={{
-                      background: 'none',
-                      border: 'none',
-                      cursor: 'pointer',
-                      fontSize: '18px',
-                      color: '#ef4444',
-                      padding: '4px 8px'
-                    }}
-                    title="Remove from watchlist"
-                  >
-                    ✕
-                  </button>
                 </div>
               );
             })}
@@ -260,18 +307,18 @@ export default function Dashboard() {
             borderRadius: '8px',
             border: '2px dashed #e2e8f0'
           }}>
-            <div style={{ fontSize: '48px', marginBottom: '12px' }}>🤖</div>
+            <div style={{ fontSize: '48px', marginBottom: '12px' }}>⭐</div>
             <div style={{ fontSize: '14px', fontWeight: '600', marginBottom: '4px' }}>
               No products in your watchlist
             </div>
             <div style={{ fontSize: '13px' }}>
-              Click "+ Add Product" to track your most important products!!
+              Click "+ Add Product" to track your most important products
             </div>
           </div>
         )}
       </div>
 
-      {/* Low Stock Alerts - Increased to 10 */}
+      {/* Low Stock Alerts */}
       {lowStockProducts.length > 0 && (
         <div className="card" style={{ marginBottom: '32px', borderLeft: '4px solid #ef4444' }}>
           <h3 style={{ fontSize: '16px', fontWeight: '700', marginBottom: '16px', color: '#ef4444' }}>
@@ -361,23 +408,46 @@ export default function Dashboard() {
         )}
       </div>
 
-      {/* Add to Watchlist Modal */}
+      {/* Add to Watchlist Modal with Search */}
       {showWatchlistModal && (
-        <div className="modal-overlay" onClick={() => setShowWatchlistModal(false)}>
+        <div className="modal-overlay" onClick={() => {
+          setShowWatchlistModal(false);
+          setModalSearch('');
+        }}>
           <div className="modal" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '600px' }}>
             <div className="modal-header">
               <h2>Add Product to Priority Watchlist</h2>
-              <button className="modal-close" onClick={() => setShowWatchlistModal(false)}>×</button>
+              <button className="modal-close" onClick={() => {
+                setShowWatchlistModal(false);
+                setModalSearch('');
+              }}>×</button>
             </div>
             
             <div style={{ marginBottom: '16px', padding: '12px', background: '#eff6ff', borderRadius: '8px', fontSize: '13px', color: '#1e40af' }}>
               <strong>💡 Tip:</strong> Select up to 10 products you want to monitor closely (best sellers, critical items, etc.)
             </div>
 
+            {/* Search Bar */}
+            <div style={{ marginBottom: '16px' }}>
+              <input
+                type="text"
+                className="input"
+                placeholder="🔍 Search by name, code, tag, or supplier..."
+                value={modalSearch}
+                onChange={(e) => setModalSearch(e.target.value)}
+                autoFocus
+                style={{ fontSize: '14px' }}
+              />
+              {modalSearch && (
+                <div style={{ fontSize: '12px', color: '#64748b', marginTop: '6px' }}>
+                  Found {filteredModalProducts.length} product{filteredModalProducts.length !== 1 ? 's' : ''}
+                </div>
+              )}
+            </div>
+
             <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
-              {products
-                .filter(p => !watchlist.includes(p.id))
-                .map(product => (
+              {filteredModalProducts.length > 0 ? (
+                filteredModalProducts.map(product => (
                   <div 
                     key={product.id}
                     style={{
@@ -386,12 +456,16 @@ export default function Dashboard() {
                       alignItems: 'center',
                       padding: '12px',
                       borderBottom: '1px solid #e5e7eb',
-                      cursor: 'pointer'
+                      cursor: 'pointer',
+                      transition: 'background 0.15s',
                     }}
+                    onMouseEnter={(e) => e.currentTarget.style.background = '#f8fafc'}
+                    onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
                     onClick={() => {
                       addToWatchlist(product.id);
                       if (watchlist.length >= 9) {
                         setShowWatchlistModal(false);
+                        setModalSearch('');
                       }
                     }}
                   >
@@ -399,6 +473,7 @@ export default function Dashboard() {
                       <div style={{ fontWeight: '600', marginBottom: '4px' }}>{product.name}</div>
                       <div style={{ fontSize: '12px', color: '#64748b' }}>
                         {product.productCode} • {product.category}
+                        {product.supplier && ` • ${product.supplier}`}
                       </div>
                     </div>
                     <button
@@ -409,20 +484,38 @@ export default function Dashboard() {
                         addToWatchlist(product.id);
                         if (watchlist.length >= 9) {
                           setShowWatchlistModal(false);
+                          setModalSearch('');
                         }
                       }}
                     >
                       + Add
                     </button>
                   </div>
-                ))}
+                ))
+              ) : (
+                <div style={{ 
+                  textAlign: 'center', 
+                  padding: '40px', 
+                  color: '#9ca3af' 
+                }}>
+                  <div style={{ fontSize: '14px', marginBottom: '4px' }}>
+                    No products found
+                  </div>
+                  <div style={{ fontSize: '12px' }}>
+                    Try a different search term
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className="modal-footer">
               <button 
                 type="button" 
                 className="btn btn-secondary" 
-                onClick={() => setShowWatchlistModal(false)}
+                onClick={() => {
+                  setShowWatchlistModal(false);
+                  setModalSearch('');
+                }}
               >
                 Close
               </button>
