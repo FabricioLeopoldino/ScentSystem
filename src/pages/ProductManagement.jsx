@@ -432,22 +432,60 @@ export default function ProductManagement({ user }) {
             <tbody>
               {filteredProducts.map(product => {
                 const status = getStockStatus(product);
+                const isNegative = product.currentStock < 0;
                 return (
-                  <tr key={product.id}>
+                  <tr 
+                    key={product.id}
+                    style={isNegative ? {
+                      background: '#fef2f2',
+                      borderLeft: '4px solid #dc2626'
+                    } : {}}
+                  >
                     <td style={{ fontFamily: 'monospace', fontSize: '12px' }}>{product.tag}</td>
                     <td style={{ fontFamily: 'monospace', fontSize: '12px' }}>{product.productCode}</td>
-                    <td style={{ fontWeight: '600' }}>{product.name}</td>
+                    <td style={{ fontWeight: '600' }}>
+                      {product.name}
+                      {isNegative && (
+                        <span style={{
+                          marginLeft: '8px',
+                          padding: '2px 8px',
+                          background: '#dc2626',
+                          color: 'white',
+                          fontSize: '11px',
+                          fontWeight: '700',
+                          borderRadius: '4px'
+                        }}>
+                          🚨 NEGATIVE STOCK
+                        </span>
+                      )}
+                    </td>
                     <td>
                       <span className={`badge ${getCategoryBadge(product.category)}`}>
                         {getCategoryLabel(product.category)}
                       </span>
                     </td>
                     <td>
-                      {product.currentStock} {product.unit}
+                      <span style={{ 
+                        fontWeight: isNegative ? '900' : 'normal',
+                        color: isNegative ? '#dc2626' : 'inherit',
+                        fontSize: isNegative ? '15px' : 'inherit'
+                      }}>
+                        {product.currentStock} {product.unit}
+                      </span>
                       {product.unitPerBox > 1 && (
                         <span style={{ fontSize: '11px', color: '#64748b', marginLeft: '4px' }}>
                           ({product.stockBoxes} boxes)
                         </span>
+                      )}
+                      {isNegative && (
+                        <div style={{
+                          fontSize: '11px',
+                          color: '#991b1b',
+                          fontWeight: '600',
+                          marginTop: '4px'
+                        }}>
+                          ⚠️ {Math.abs(product.currentStock)} {product.unit} MISSING
+                        </div>
                       )}
                     </td>
                     <td>{product.minStockLevel} {product.unit}</td>
