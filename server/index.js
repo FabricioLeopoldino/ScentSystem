@@ -751,9 +751,7 @@ app.post('/api/stock/remove', async (req, res) => {
     const product = productResult.rows[0];
     const newStock = parseFloat(product.currentStock) - parseFloat(quantity);
     
-    if (newStock < 0) {
-      throw new Error('Insufficient stock');
-    }
+    // Allow negative stock to track discrepancies
     
     await client.query(
       'UPDATE products SET "currentStock" = $1, "stockBoxes" = $2 WHERE id = $3',
@@ -822,10 +820,7 @@ app.post('/api/stock/adjust', async (req, res) => {
       newStock = currentStock + adjustQuantity;
     } else {
       newStock = currentStock - adjustQuantity;
-      
-      if (newStock < 0) {
-        throw new Error('Insufficient stock - cannot reduce below 0');
-      }
+      // Allow negative stock to track discrepancies
     }
     
     // Update product stock
@@ -1503,7 +1498,7 @@ app.post('/api/webhook/shopify', express.json(), async (req, res) => {
           const totalVolume = volumePerUnit * parseFloat(quantity);
           
           const currentStock = parseFloat(product.currentStock) || 0;
-          const newStock = Math.max(0, currentStock - totalVolume);
+          const newStock = currentStock - totalVolume; // Allow negative stock
           
           console.log(`📊 SKU: ${sku}, Volume/unit: ${volumePerUnit}ml, Qty: ${quantity}, Total: ${totalVolume}ml`);
           
@@ -1564,7 +1559,7 @@ app.post('/api/webhook/shopify', express.json(), async (req, res) => {
                 if (componentResult.rows.length > 0) {
                   const component = componentResult.rows[0];
                   const compCurrentStock = parseFloat(component.currentStock) || 0;
-                  const compNewStock = Math.max(0, compCurrentStock - componentQty);
+                  const compNewStock = compCurrentStock - componentQty; // Allow negative stock
                   
                   // Update component stock
                   await client.query(
