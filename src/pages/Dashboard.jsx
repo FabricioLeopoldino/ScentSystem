@@ -318,6 +318,86 @@ export default function Dashboard() {
         )}
       </div>
 
+      {/* Negative Stock Alerts - CRITICAL! */}
+      {products.filter(p => p.currentStock < 0).length > 0 && (
+        <div className="card" style={{ 
+          marginBottom: '32px', 
+          borderLeft: '4px solid #dc2626',
+          background: '#fef2f2',
+          border: '2px solid #fecaca'
+        }}>
+          <h3 style={{ fontSize: '16px', fontWeight: '700', marginBottom: '16px', color: '#dc2626' }}>
+            🚨 NEGATIVE STOCK ALERTS ({products.filter(p => p.currentStock < 0).length}) - CHECK PHYSICAL COUNT!
+          </h3>
+          <div style={{ 
+            padding: '12px', 
+            background: '#fee2e2', 
+            borderRadius: '8px', 
+            marginBottom: '16px',
+            border: '1px solid #fecaca'
+          }}>
+            <div style={{ fontSize: '13px', color: '#991b1b', fontWeight: '600', marginBottom: '4px' }}>
+              ⚠️ These products have negative stock - indicating one of:
+            </div>
+            <ul style={{ 
+              fontSize: '12px', 
+              color: '#991b1b', 
+              marginLeft: '20px',
+              marginTop: '8px',
+              marginBottom: '0'
+            }}>
+              <li>Physical count discrepancy</li>
+              <li>Missing stock entry in system</li>
+              <li>Unregistered removal</li>
+              <li>Shopify/System sync issue</li>
+            </ul>
+          </div>
+          <div style={{ display: 'grid', gap: '12px' }}>
+            {products.filter(p => p.currentStock < 0).map(product => (
+              <div key={product.id} style={{ 
+                display: 'flex', 
+                justifyContent: 'space-between', 
+                alignItems: 'center',
+                padding: '12px',
+                background: 'white',
+                borderRadius: '8px',
+                border: '2px solid #dc2626'
+              }}>
+                <div>
+                  <div style={{ fontWeight: '700', marginBottom: '4px', fontSize: '15px' }}>
+                    {product.name}
+                  </div>
+                  <div style={{ fontSize: '12px', color: '#64748b' }}>
+                    {product.productCode} • {product.category === 'MACHINES_SPARES' ? 'Machines & Spares' : product.category === 'RAW_MATERIALS' ? 'Raw Materials' : 'Oils'}
+                  </div>
+                </div>
+                <div style={{ textAlign: 'right' }}>
+                  <div style={{ 
+                    fontWeight: '900', 
+                    color: '#dc2626',
+                    fontSize: '18px',
+                    marginBottom: '2px'
+                  }}>
+                    {product.currentStock} {product.unit}
+                  </div>
+                  <div style={{ 
+                    fontSize: '11px', 
+                    color: '#991b1b',
+                    fontWeight: '600',
+                    background: '#fee2e2',
+                    padding: '2px 8px',
+                    borderRadius: '4px',
+                    display: 'inline-block'
+                  }}>
+                    {Math.abs(product.currentStock)} {product.unit} MISSING
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Low Stock Alerts */}
       {lowStockProducts.length > 0 && (
         <div className="card" style={{ marginBottom: '32px', borderLeft: '4px solid #ef4444' }}>
