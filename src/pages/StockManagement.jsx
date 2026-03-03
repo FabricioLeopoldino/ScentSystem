@@ -148,30 +148,76 @@ export default function StockManagement() {
             <tbody>
               {filteredProducts.map(product => {
                 const status = getStockStatus(product);
+                const isNegative = product.currentStock < 0;
                 return (
-                  <tr key={product.id}>
+                  <tr 
+                    key={product.id}
+                    style={isNegative ? {
+                      background: '#fef2f2',
+                      borderLeft: '4px solid #dc2626'
+                    } : {}}
+                  >
                     <td style={{ fontFamily: 'monospace', fontSize: '12px' }}>
                       {product.productCode}
                     </td>
-                    <td style={{ fontWeight: '600' }}>{product.name}</td>
+                    <td style={{ fontWeight: '600' }}>
+                      {product.name}
+                      {isNegative && (
+                        <span style={{
+                          marginLeft: '8px',
+                          padding: '2px 8px',
+                          background: '#dc2626',
+                          color: 'white',
+                          fontSize: '11px',
+                          fontWeight: '700',
+                          borderRadius: '4px'
+                        }}>
+                          🚨 NEGATIVE
+                        </span>
+                      )}
+                    </td>
                     <td>
                       <span className="badge" style={{ fontSize: '11px' }}>
                         {getCategoryLabel(product.category)}
                       </span>
                     </td>
-                    <td style={{ fontWeight: '700', fontSize: '15px' }}>
+                    <td style={{ 
+                      fontWeight: '700', 
+                      fontSize: '15px',
+                      color: isNegative ? '#dc2626' : 'inherit'
+                    }}>
                       {product.currentStock} {product.unit}
                       {product.unitPerBox > 1 && (
                         <div style={{ fontSize: '11px', color: '#64748b', fontWeight: '400' }}>
                           ({product.stockBoxes} boxes)
                         </div>
                       )}
+                      {isNegative && (
+                        <div style={{
+                          fontSize: '11px',
+                          color: '#991b1b',
+                          fontWeight: '600',
+                          marginTop: '4px'
+                        }}>
+                          ⚠️ CHECK PHYSICAL COUNT
+                        </div>
+                      )}
                     </td>
                     <td>{product.minStockLevel} {product.unit}</td>
                     <td>
-                      <span className={`badge badge-${status.class === 'green' ? 'success' : status.class === 'yellow' ? 'warning' : 'danger'}`}>
-                        {status.label}
-                      </span>
+                      {isNegative ? (
+                        <span className="badge" style={{ 
+                          background: '#dc2626', 
+                          color: 'white',
+                          fontWeight: '700'
+                        }}>
+                          NEGATIVE STOCK
+                        </span>
+                      ) : (
+                        <span className={`badge badge-${status.class === 'green' ? 'success' : status.class === 'yellow' ? 'warning' : 'danger'}`}>
+                          {status.label}
+                        </span>
+                      )}
                     </td>
                     <td>
                       <button
