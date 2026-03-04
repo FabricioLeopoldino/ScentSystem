@@ -19,7 +19,7 @@ export default function MachineInventory({ user }) {
   
   const [formData, setFormData] = useState({
     name: '',
-    subCategory: '',
+    sub_category: '',
     color: '',
     location: '',
     supplier: '',
@@ -28,7 +28,7 @@ export default function MachineInventory({ user }) {
     tag: '',
     currentStock: 0,
     minStockLevel: 0,
-    shopifySkus: {}
+    shopifySkus: ''
   });
   
   const [incomingFormData, setIncomingFormData] = useState({
@@ -103,8 +103,18 @@ export default function MachineInventory({ user }) {
       
       const method = editingMachine ? 'PUT' : 'POST';
       
+      // Convert shopifySkus string to object
+      let skusObject = {};
+      if (formData.shopifySkus && formData.shopifySkus.trim()) {
+        const skusArray = formData.shopifySkus.split(',').map(s => s.trim()).filter(Boolean);
+        skusArray.forEach(sku => {
+          skusObject[sku] = sku;
+        });
+      }
+      
       const payload = {
         ...formData,
+        shopifySkus: skusObject,
         category: 'SCENT_MACHINES',
         unit: 'units'
       };
@@ -148,7 +158,7 @@ export default function MachineInventory({ user }) {
     setEditingMachine(machine);
     setFormData({
       name: machine.name,
-      subCategory: machine.sub_category || '',
+      sub_category: machine.sub_category || '',
       color: machine.color || '',
       location: machine.location || '',
       supplier: machine.supplier || '',
@@ -157,7 +167,7 @@ export default function MachineInventory({ user }) {
       tag: machine.tag,
       currentStock: machine.currentStock,
       minStockLevel: machine.minStockLevel,
-      shopifySkus: machine.shopifySkus || {}
+      shopifySkus: Object.keys(machine.shopifySkus || {}).join(', ') || ''
     });
     setShowAddModal(true);
   };
@@ -165,7 +175,7 @@ export default function MachineInventory({ user }) {
   const resetForm = () => {
     setFormData({
       name: '',
-      subCategory: '',
+      sub_category: '',
       color: '',
       location: '',
       supplier: '',
@@ -174,7 +184,7 @@ export default function MachineInventory({ user }) {
       tag: '',
       currentStock: 0,
       minStockLevel: 0,
-      shopifySkus: {}
+      shopifySkus: ''
     });
   };
 
@@ -694,8 +704,8 @@ export default function MachineInventory({ user }) {
                   <input
                     type="text"
                     className="input"
-                    value={formData.subCategory}
-                    onChange={(e) => setFormData({...formData, subCategory: e.target.value})}
+                    value={formData.sub_category}
+                    onChange={(e) => setFormData({...formData, sub_category: e.target.value})}
                     placeholder="e.g., HVAC, Scentpro, Scentlite"
                   />
                 </div>
@@ -751,6 +761,20 @@ export default function MachineInventory({ user }) {
                     value={formData.tag}
                     onChange={(e) => setFormData({...formData, tag: e.target.value})}
                   />
+                </div>
+
+                <div className="form-group" style={{ gridColumn: '1 / -1' }}>
+                  <label>Shopify SKUs (comma-separated)</label>
+                  <input
+                    type="text"
+                    className="input"
+                    value={formData.shopifySkus}
+                    onChange={(e) => setFormData({...formData, shopifySkus: e.target.value})}
+                    placeholder="e.g., SA_0001, SA_0002"
+                  />
+                  <div style={{ fontSize: '12px', color: '#64748b', marginTop: '4px' }}>
+                    Enter multiple SKUs separated by commas
+                  </div>
                 </div>
 
                 <div className="form-group">
