@@ -399,6 +399,9 @@ app.get('/api/products', async (req, res) => {
       productCode: row.productCode,
       name: row.name,
       category: row.category,
+      sub_category: row.sub_category || '',
+      color: row.color || '',
+      location: row.location || '',
       unit: row.unit,
       currentStock: parseFloat(row.currentStock) || 0,
       minStockLevel: parseFloat(row.minStockLevel) || 0,
@@ -434,6 +437,9 @@ app.get('/api/products/:id', async (req, res) => {
       productCode: row.productCode,
       name: row.name,
       category: row.category,
+      sub_category: row.sub_category || '',
+      color: row.color || '',
+      location: row.location || '',
       unit: row.unit,
       currentStock: parseFloat(row.currentStock) || 0,
       minStockLevel: parseFloat(row.minStockLevel) || 0,
@@ -454,8 +460,16 @@ app.post('/api/products', async (req, res) => {
     const { 
       name, category, productCode, tag, unit, currentStock, 
       minStockLevel, shopifySkus, supplier, supplier_code, unitPerBox,
-      subCategory, color, location
+      subCategory, sub_category, color, location
     } = req.body;
+    
+    // Map both camelCase and snake_case
+    const finalSubCategory = sub_category || subCategory || null;
+    const finalColor = color || null;
+    const finalLocation = location || null;
+    
+    console.log('📥 Received:', { subCategory, sub_category, color, location });
+    console.log('✅ Using:', { finalSubCategory, finalColor, finalLocation });
     
     if (!name || !category) {
       return res.status(400).json({ error: 'Name and category are required' });
@@ -535,7 +549,7 @@ app.post('/api/products', async (req, res) => {
         newId, newTag, newProductCode, name, category, unit || 'units', 
         currentStock || 0, minStockLevel || 0, skusJson, 
         supplier || '', supplier_code || '', unitPerBox || 1, stockBoxes, '[]',
-        subCategory || null, color || null, location || null
+        finalSubCategory, finalColor, finalLocation
       ]
     );
     
@@ -565,6 +579,9 @@ app.post('/api/products', async (req, res) => {
       productCode: row.productCode,
       name: row.name,
       category: row.category,
+      sub_category: row.sub_category || '',
+      color: row.color || '',
+      location: row.location || '',
       unit: row.unit,
       currentStock: parseFloat(row.currentStock),
       minStockLevel: parseFloat(row.minStockLevel),
@@ -587,8 +604,16 @@ app.put('/api/products/:id', async (req, res) => {
     const { 
       name, category, productCode, tag, unit, currentStock, 
       minStockLevel, shopifySkus, supplier, supplier_code, unitPerBox,
-      subCategory, color, location
+      subCategory, sub_category, color, location
     } = req.body;
+    
+    // Map both camelCase and snake_case
+    const finalSubCategory = sub_category || subCategory;
+    const finalColor = color;
+    const finalLocation = location;
+    
+    console.log('📥 PUT Received:', { subCategory, sub_category, color, location });
+    console.log('✅ PUT Using:', { finalSubCategory, finalColor, finalLocation });
     
     const stockBoxes = unitPerBox && currentStock 
       ? Math.floor(currentStock / unitPerBox) 
@@ -621,7 +646,7 @@ app.put('/api/products/:id', async (req, res) => {
       [
         name, category, productCode, tag, unit, currentStock, minStockLevel, 
         skusJson, supplier, supplier_code, unitPerBox, stockBoxes,
-        subCategory, color, location, productId
+        finalSubCategory, finalColor, finalLocation, productId
       ]
     );
     
@@ -636,6 +661,9 @@ app.put('/api/products/:id', async (req, res) => {
       productCode: row.productCode,
       name: row.name,
       category: row.category,
+      sub_category: row.sub_category || '',
+      color: row.color || '',
+      location: row.location || '',
       unit: row.unit,
       currentStock: parseFloat(row.currentStock),
       minStockLevel: parseFloat(row.minStockLevel),
