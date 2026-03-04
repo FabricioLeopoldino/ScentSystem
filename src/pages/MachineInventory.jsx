@@ -103,6 +103,14 @@ export default function MachineInventory({ user }) {
       
       const method = editingMachine ? 'PUT' : 'POST';
       
+      // DEBUG: Log formData BEFORE constructing payload
+      console.log('🔍 FormData BEFORE payload:', {
+        sub_category: formData.sub_category,
+        color: formData.color,
+        location: formData.location,
+        fullFormData: formData
+      });
+      
       // Convert shopifySkus string to object
       let skusObject = {};
       if (formData.shopifySkus && formData.shopifySkus.trim()) {
@@ -112,29 +120,32 @@ export default function MachineInventory({ user }) {
         });
       }
       
+      // ENSURE fields are strings (not undefined/null)
+      const sub_category = formData.sub_category || '';
+      const color = formData.color || '';
+      const location = formData.location || '';
+      
       const payload = {
         name: formData.name,
         category: 'SCENT_MACHINES',
         unit: 'units',
-        productCode: formData.productCode,
-        tag: formData.tag,
-        currentStock: formData.currentStock,
-        minStockLevel: formData.minStockLevel,
-        supplier: formData.supplier,
-        supplier_code: formData.supplier_code,
+        productCode: formData.productCode || '',
+        tag: formData.tag || '',
+        currentStock: parseFloat(formData.currentStock) || 0,
+        minStockLevel: parseFloat(formData.minStockLevel) || 0,
+        supplier: formData.supplier || '',
+        supplier_code: formData.supplier_code || '',
         shopifySkus: skusObject,
-        // Send snake_case (what backend expects)
-        sub_category: formData.sub_category,
-        color: formData.color,
-        location: formData.location
+        sub_category: sub_category,
+        color: color,
+        location: location
       };
       
       console.log('📤 Sending payload:', payload);
-      console.log('📝 Form data:', formData);
-      console.log('🎨 Specific fields:', { 
-        sub_category: formData.sub_category, 
-        color: formData.color, 
-        location: formData.location 
+      console.log('🎯 Critical fields in payload:', { 
+        sub_category: payload.sub_category, 
+        color: payload.color, 
+        location: payload.location 
       });
       
       const res = await fetch(url, {
