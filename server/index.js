@@ -451,10 +451,11 @@ app.get('/api/products/:id', async (req, res) => {
 
 app.post('/api/products', async (req, res) => {
   try {
-    const { 
-      name, category, productCode, tag, unit, currentStock, 
-      minStockLevel, shopifySkus, supplier, supplier_code, unitPerBox 
-    } = req.body;
+  const { 
+  name, category, productCode, tag, unit, currentStock, 
+  minStockLevel, shopifySkus, supplier, supplier_code, unitPerBox,
+  subCategory, color, location  // NEW FIELDS
+  } = req.body;
     
     if (!name || !category) {
       return res.status(400).json({ error: 'Name and category are required' });
@@ -523,18 +524,20 @@ app.post('/api/products', async (req, res) => {
     
     const skusJson = JSON.stringify(finalShopifySkus);
     
-    const result = await pool.query(
-      `INSERT INTO products 
-       (id, tag, "productCode", name, category, unit, "currentStock", "minStockLevel", 
-        "shopifySkus", supplier, "supplier_code", "unitPerBox", "stockBoxes", "incoming_orders") 
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) 
-       RETURNING *`,
-      [
-        newId, newTag, newProductCode, name, category, unit || 'units', 
-        currentStock || 0, minStockLevel || 0, skusJson, 
-        supplier || '', supplier_code || '', unitPerBox || 1, stockBoxes, '[]'
-      ]
-    );
+  const result = await pool.query(
+  `INSERT INTO products 
+   (id, name, category, "productCode", tag, unit, "currentStock", "minStockLevel", 
+    "shopifySkus", supplier, supplier_code, "unitPerBox", "stockBoxes", 
+    sub_category, color, location, "createdAt", "updatedAt") 
+   VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, NOW(), NOW()) 
+   RETURNING *`,
+  [
+    newId, name, category, newProductCode, newTag, unit || 'mL', 
+    currentStock || 0, minStockLevel || 0, JSON.stringify(finalShopifySkus),
+    supplier, supplier_code, unitPerBox || 1, stockBoxes,
+    subCategory, color, location  // NEW FIELDS
+  ]
+);
     
     const row = result.rows[0];
     
@@ -582,9 +585,10 @@ app.put('/api/products/:id', async (req, res) => {
   try {
     const productId = req.params.id;
     const { 
-      name, category, productCode, tag, unit, currentStock, 
-      minStockLevel, shopifySkus, supplier, supplier_code, unitPerBox 
-    } = req.body;
+    name, category, productCode, tag, unit, currentStock, 
+    minStockLevel, shopifySkus, supplier, supplier_code, unitPerBox,
+    subCategory, color, location  // NEW FIELDS
+  } = req.body;
     
     const stockBoxes = unitPerBox && currentStock 
       ? Math.floor(currentStock / unitPerBox) 
@@ -608,8 +612,11 @@ app.put('/api/products/:id', async (req, res) => {
        supplier = COALESCE($9, supplier),
        "supplier_code" = COALESCE($10, "supplier_code"),
        "unitPerBox" = COALESCE($11, "unitPerBox"),
-       "stockBoxes" = COALESCE($12, "stockBoxes")
-       WHERE id = $13
+       "stockBoxes" = COALESCE($12, "stockBoxes"),
+       sub_category = $13,
+       color =$14",
+       location = $15,
+       WHERE id = $13,
        RETURNING *`,
       [
         name, category, productCode, tag, unit, currentStock, minStockLevel, 
