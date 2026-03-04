@@ -6,6 +6,7 @@ import StockManagement from './pages/StockManagement';
 import SkuMapping from './pages/SkuMapping';
 import TransactionHistory from './pages/TransactionHistory';
 import UserManagement from './pages/UserManagement';
+import MachineInventory from './pages/MachineInventory';
 import ProductManagement from './pages/ProductManagement';
 
 import BOMViewer from './pages/BOMViewer';
@@ -58,6 +59,7 @@ function App() {
             <ul className="nav-links">
               <li><Link href="/">Dashboard</Link></li>
               <li><Link href="/products">Products</Link></li>
+              <Link to="/machines">Machine Inventory</Link>
               <li><Link href="/stock">Stock Management</Link></li>
 
               <li><Link href="/bom">BOM</Link></li>
@@ -89,6 +91,7 @@ function App() {
           <ProductManagement user={user} />
         </Route>
         <Route path="/stock">
+        <Route path="/machines" component={() => <MachineInventory user={user} />}  
           <StockManagement />
         </Route>
 
