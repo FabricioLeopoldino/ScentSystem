@@ -199,7 +199,17 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
-
+      <div className="card" style={{ borderLeft: '4px solid #8b5cf6' }}>
+    <h3 style={{ fontSize: '14px', fontWeight: '700', color: '#64748b', marginBottom: '12px', textTransform: 'uppercase' }}>
+    Machines
+    </h3>
+    <div style={{ fontSize: '32px', fontWeight: '900', color: '#8b5cf6', marginBottom: '8px' }}>
+    {products.filter(p => p.category === 'SCENT_MACHINES').length}
+    </div>
+    <div style={{ fontSize: '13px', color: '#64748b' }}>
+    {products.filter(p => p.category === 'SCENT_MACHINES' && p.currentStock < p.minStockLevel).length} low stock
+    </div>
+  </div>
       {/* Priority Watchlist with Incoming Orders */}
       <div className="card" style={{ marginBottom: '32px', borderLeft: '4px solid #3b82f6' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
