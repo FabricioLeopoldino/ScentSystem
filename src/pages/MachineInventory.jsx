@@ -113,11 +113,29 @@ export default function MachineInventory({ user }) {
       }
       
       const payload = {
-        ...formData,
-        shopifySkus: skusObject,
+        name: formData.name,
         category: 'SCENT_MACHINES',
-        unit: 'units'
+        unit: 'units',
+        productCode: formData.productCode,
+        tag: formData.tag,
+        currentStock: formData.currentStock,
+        minStockLevel: formData.minStockLevel,
+        supplier: formData.supplier,
+        supplier_code: formData.supplier_code,
+        shopifySkus: skusObject,
+        // Send snake_case (what backend expects)
+        sub_category: formData.sub_category,
+        color: formData.color,
+        location: formData.location
       };
+      
+      console.log('📤 Sending payload:', payload);
+      console.log('📝 Form data:', formData);
+      console.log('🎨 Specific fields:', { 
+        sub_category: formData.sub_category, 
+        color: formData.color, 
+        location: formData.location 
+      });
       
       const res = await fetch(url, {
         method,
@@ -500,9 +518,13 @@ export default function MachineInventory({ user }) {
                   >
                     <td style={{ fontSize: '13px' }}>{machine.supplier || '-'}</td>
                     <td>
-                      <span className="badge" style={{ background: '#8b5cf6', color: 'white', fontSize: '11px' }}>
-                        {machine.sub_category || '-'}
-                      </span>
+                      {machine.sub_category ? (
+                        <span className="badge" style={{ background: '#8b5cf6', color: 'white', fontSize: '11px' }}>
+                          {machine.sub_category}
+                        </span>
+                      ) : (
+                        <span style={{ color: '#9ca3af', fontSize: '12px' }}>-</span>
+                      )}
                     </td>
                     <td style={{ fontWeight: '600' }}>
                       {machine.name}
@@ -723,13 +745,46 @@ export default function MachineInventory({ user }) {
 
                 <div className="form-group">
                   <label>Location</label>
-                  <input
-                    type="text"
-                    className="input"
-                    value={formData.location}
-                    onChange={(e) => setFormData({...formData, location: e.target.value})}
-                    placeholder="e.g., Warehouse A, Production Floor"
-                  />
+                  <div style={{ display: 'flex', gap: '8px' }}>
+                    <input
+                      type="text"
+                      className="input"
+                      value={formData.location}
+                      onChange={(e) => setFormData({...formData, location: e.target.value})}
+                      placeholder="e.g., Shelf A-1, Shelf B-2"
+                      style={{ flex: 1 }}
+                    />
+                    <select
+                      className="input"
+                      onChange={(e) => {
+                        if (e.target.value) {
+                          setFormData({...formData, location: e.target.value});
+                        }
+                      }}
+                      style={{ width: '140px' }}
+                      value=""
+                    >
+                      <option value="">Quick...</option>
+                      <optgroup label="Shelf A">
+                        {[1,2,3,4,5,6,7,8,9,10].map(n => (
+                          <option key={`A-${n}`} value={`Shelf A-${n}`}>Shelf A-{n}</option>
+                        ))}
+                      </optgroup>
+                      <optgroup label="Shelf B">
+                        {[1,2,3,4,5,6,7,8,9,10].map(n => (
+                          <option key={`B-${n}`} value={`Shelf B-${n}`}>Shelf B-{n}</option>
+                        ))}
+                      </optgroup>
+                      <optgroup label="Shelf C">
+                        {[1,2,3,4,5,6,7,8,9,10].map(n => (
+                          <option key={`C-${n}`} value={`Shelf C-${n}`}>Shelf C-{n}</option>
+                        ))}
+                      </optgroup>
+                    </select>
+                  </div>
+                  <div style={{ fontSize: '11px', color: '#64748b', marginTop: '4px' }}>
+                    Type manually or use quick select
+                  </div>
                 </div>
 
                 <div className="form-group">
