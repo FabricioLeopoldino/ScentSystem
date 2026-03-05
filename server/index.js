@@ -1892,6 +1892,111 @@ if (!existsSync(uploadsDir)) {
   mkdirSync(uploadsDir, { recursive: true });
 }
 
+
+// ========================================================================
+// PRODUCT RETURNS ENDPOINT
+// ========================================================================
+app.post('/api/returns', async (req, res) => {
+  const client = await pool.connect();
+  
+  try {
+    await client.query('BEGIN');
+    
+    const { items, notes, returnedBy } = req.body;
+    
+    // Validation
+    if (!items || !Array.isArray(items) || items.length === 0) {
+      throw new Error('No items provided');
+    }
+    
+    if (!returnedBy || !returnedBy.trim()) {
+      throw new Error('returnedBy is required');
+    }
+    
+    const processedItems = [];
+    
+    // Process each return item
+    for (const item of items) {
+      const { productId, quantity } = item;
+      
+      if (!productId || !quantity || quantity <= 0) {
+        continue; // Skip invalid items
+      }
+      
+      // Get product FOR UPDATE to lock row
+      const productResult = await client.query(
+        'SELECT * FROM products WHERE id = $1 FOR UPDATE',
+        [productId]
+      );
+      
+      if (productResult.rows.length === 0) {
+        console.error(`Product not found: ${productId}`);
+        continue; // Skip if product not found
+      }
+      
+      const product = productResult.rows[0];
+      const currentStock = parseFloat(product.currentStock) || 0;
+      const quantityToAdd = parseFloat(quantity);
+      const newStock = currentStock + quantityToAdd;
+      
+      // Update product stock
+      await client.query(
+        'UPDATE products SET "currentStock" = $1, "stockBoxes" = $2 WHERE id = $3',
+        [newStock, Math.floor(newStock / (product.unitPerBox || 1)), productId]
+      );
+      
+      // Create return transaction with notes and returnedBy
+      const transactionNotes = notes && notes.trim() 
+        ? `Return: ${notes.trim()} | Returned by: ${returnedBy.trim()}`
+        : `Product return | Returned by: ${returnedBy.trim()}`;
+      
+      await client.query(
+        `INSERT INTO transactions 
+         (product_id, product_code, product_name, category, type, quantity, unit, balance_after, notes) 
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+        [
+          productId,
+          product.productCode || product.tag,
+          product.name,
+          product.category,
+          'return', // New transaction type
+          quantityToAdd,
+          product.unit,
+          newStock,
+          transactionNotes
+        ]
+      );
+      
+      processedItems.push({
+        productId,
+        productName: product.name,
+        quantityReturned: quantityToAdd,
+        newStock,
+        unit: product.unit
+      });
+      
+      console.log(`✅ Return processed: ${product.name} +${quantityToAdd} ${product.unit} → ${newStock} ${product.unit}`);
+    }
+    
+    await client.query('COMMIT');
+    
+    res.json({
+      success: true,
+      processedCount: processedItems.length,
+      items: processedItems,
+      returnedBy: returnedBy.trim(),
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    await client.query('ROLLBACK');
+    console.error('Process returns error:', error);
+    res.status(500).json({ error: error.message });
+  } finally {
+    client.release();
+  }
+});
+
 // ========================================================================
 // ERROR HANDLING
 // ========================================================================
