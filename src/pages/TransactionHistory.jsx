@@ -27,7 +27,8 @@ export default function TransactionHistory() {
     const labels = {
       OILS: 'Oils',
       MACHINES_SPARES: 'Machines & Spares',
-      RAW_MATERIALS: 'Raw Materials'
+      RAW_MATERIALS: 'Raw Materials',
+      SCENT_MACHINES: 'Machines'
     };
     return labels[category] || category;
   };
@@ -104,6 +105,7 @@ export default function TransactionHistory() {
                 { value: 'ALL', label: 'All' },
                 { value: 'OILS', label: 'Oils' },
                 { value: 'MACHINES_SPARES', label: 'Machines & Spares' },
+                { value: 'SCENT_MACHINES', label: 'Machines' },
                 { value: 'RAW_MATERIALS', label: 'Raw Materials' }
               ].map(cat => (
                 <button
@@ -156,8 +158,15 @@ export default function TransactionHistory() {
                         </span>
                       </td>
                       <td>
-                        <span className={`badge ${t.type === 'add' ? 'badge-success' : 'badge-danger'}`}>
-                          {t.type === 'add' ? '+ Addition' : '- Removal'}
+                        <span className={`badge ${
+                          t.type === 'add' || t.type === 'return' || t.type === 'incoming' || t.type === 'adjust' ? 'badge-success' : 'badge-danger'
+                        }`}>
+                          {t.type === 'add' ? '+ Addition' : 
+                           t.type === 'return' ? '↩️ Return' : 
+                           t.type === 'incoming' ? '📦 Incoming' : 
+                           t.type === 'adjust' ? '⚖️ Adjust' : 
+                           t.type === 'shopify_sale' ? '🛒 Shopify Sale' :
+                           '- Removal'}
                         </span>
                       </td>
                       <td style={{ fontWeight: '700' }}>
