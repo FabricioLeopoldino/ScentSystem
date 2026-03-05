@@ -476,12 +476,22 @@ export default function Dashboard() {
                     <td style={{ fontWeight: '600' }}>{tx.product_name || '-'}</td>
                     <td>
                       <span className="badge" style={{ fontSize: '11px' }}>
-                        {tx.category === 'MACHINES_SPARES' ? 'Machines & Spares' : tx.category === 'RAW_MATERIALS' ? 'Raw Materials' : 'Oils'}
+                        {tx.category === 'MACHINES_SPARES' ? 'Machines & Spares' : 
+                         tx.category === 'RAW_MATERIALS' ? 'Raw Materials' : 
+                         tx.category === 'SCENT_MACHINES' ? 'Machines' : 
+                         'Oils'}
                       </span>
                     </td>
                     <td>
-                      <span className={`badge ${tx.type === 'add' ? 'badge-success' : 'badge-danger'}`}>
-                        {tx.type === 'add' ? '+ Add' : '- Remove'}
+                      <span className={`badge ${
+                        tx.type === 'add' || tx.type === 'return' || tx.type === 'incoming' || tx.type === 'adjust' ? 'badge-success' : 'badge-danger'
+                      }`}>
+                        {tx.type === 'add' ? '+ Add' : 
+                         tx.type === 'return' ? '↩️ Return' : 
+                         tx.type === 'incoming' ? '📦 Incoming' : 
+                         tx.type === 'adjust' ? '⚖️ Adjust' : 
+                         tx.type === 'shopify_sale' ? '🛒 Shopify' :
+                         '- Remove'}
                       </span>
                     </td>
                     <td style={{ fontWeight: '600' }}>
