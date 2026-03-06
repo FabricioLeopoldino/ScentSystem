@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import BinLocationInput from '../components/BinLocationInput';
 
 export default function StockManagement({ user }) {
   const [products, setProducts] = useState([]);
@@ -10,6 +11,9 @@ export default function StockManagement({ user }) {
   const [notes, setNotes] = useState('');
   const [search, setSearch] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('ALL');
+  const [showLocationModal, setShowLocationModal] = useState(false);
+  const [locationProduct, setLocationProduct] = useState(null);
+  const [newLocation, setNewLocation] = useState('');
 
   useEffect(() => {
     fetchProducts();
@@ -55,6 +59,40 @@ export default function StockManagement({ user }) {
     } catch (error) {
       console.error('Error:', error);
       alert('Error adjusting stock');
+    }
+  };
+
+  const handleUpdateLocation = async (e) => {
+    e.preventDefault();
+    
+    if (!newLocation.trim()) {
+      alert('Please enter a location');
+      return;
+    }
+    
+    try {
+      const res = await fetch(`/api/products/${locationProduct.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...locationProduct,
+          bin_location: newLocation
+        })
+      });
+      
+      if (res.ok) {
+        alert('Location updated successfully!');
+        setShowLocationModal(false);
+        setLocationProduct(null);
+        setNewLocation('');
+        fetchProducts();
+      } else {
+        const error = await res.json();
+        alert(`Error: ${error.error || 'Failed to update location'}`);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Error updating location: ' + error.message);
     }
   };
 
@@ -139,6 +177,7 @@ export default function StockManagement({ user }) {
                 <th>Product Code</th>
                 <th>Name</th>
                 <th>Category</th>
+                <th>Bin Location</th>
                 <th>Current Stock</th>
                 <th>Min Level</th>
                 <th>Status</th>
@@ -181,6 +220,9 @@ export default function StockManagement({ user }) {
                         {getCategoryLabel(product.category)}
                       </span>
                     </td>
+                    <td style={{ fontSize: '12px', color: '#64748b' }}>
+                      {product.bin_location || '-'}
+                    </td>
                     <td style={{ 
                       fontWeight: '700', 
                       fontSize: '15px',
@@ -221,19 +263,32 @@ export default function StockManagement({ user }) {
                     </td>
                     <td>
                       {user?.role === 'admin' ? (
-                        <button
-                          className="btn btn-primary"
-                          onClick={() => {
-                            setSelectedProduct(product);
-                            setShowModal(true);
-                            setType('add');
-                            setQuantity('');
-                            setNotes('');
-                          }}
-                          style={{ fontSize: '12px', padding: '6px 16px' }}
-                        >
-                          Adjust Stock
-                        </button>
+                        <div style={{ display: 'flex', gap: '8px' }}>
+                          <button
+                            className="btn btn-primary"
+                            onClick={() => {
+                              setSelectedProduct(product);
+                              setShowModal(true);
+                              setType('add');
+                              setQuantity('');
+                              setNotes('');
+                            }}
+                            style={{ fontSize: '12px', padding: '6px 16px' }}
+                          >
+                            Adjust Stock
+                          </button>
+                          <button
+                            className="btn btn-secondary"
+                            onClick={() => {
+                              setLocationProduct(product);
+                              setNewLocation(product.bin_location || '');
+                              setShowLocationModal(true);
+                            }}
+                            style={{ fontSize: '12px', padding: '6px 16px' }}
+                          >
+                            📍 Edit Location
+                          </button>
+                        </div>
                       ) : (
                         <button
                           className="btn btn-secondary"
@@ -342,6 +397,47 @@ export default function StockManagement({ user }) {
                 </button>
                 <button type="submit" className="btn btn-primary">
                   Confirm Adjustment
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Location Modal */}
+      {showLocationModal && locationProduct && (
+        <div className="modal-overlay" onClick={() => setShowLocationModal(false)}>
+          <div className="modal" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '600px' }}>
+            <div className="modal-header">
+              <h2>📍 Edit Bin Location</h2>
+              <button onClick={() => setShowLocationModal(false)}>&times;</button>
+            </div>
+            
+            <form onSubmit={handleUpdateLocation}>
+              <div style={{ marginBottom: '16px' }}>
+                <strong>Product:</strong> {locationProduct.name}
+              </div>
+              
+              <div style={{ marginBottom: '16px', padding: '12px', background: '#f3f4f6', borderRadius: '8px' }}>
+                <strong>Current Location:</strong> {locationProduct.bin_location || 'Not set'}
+              </div>
+              
+              <BinLocationInput
+                category={locationProduct.category}
+                value={newLocation}
+                onChange={setNewLocation}
+              />
+              
+              <div style={{ display: 'flex', gap: '12px', marginTop: '20px' }}>
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={() => setShowLocationModal(false)}
+                >
+                  Cancel
+                </button>
+                <button type="submit" className="btn btn-primary">
+                  Update Location
                 </button>
               </div>
             </form>
