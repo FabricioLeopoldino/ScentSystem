@@ -112,7 +112,7 @@ export default function ColdRoomMap({ user }) {
             Bay: {bay}
           </div>
           <div style={{ fontSize: '10px', color: '#d1d5db' }}>
-            Positions ({positions.join(',')})
+            Pos ({positions.join(',')})
           </div>
           {hasProds && (
             <div style={{ 
@@ -123,7 +123,7 @@ export default function ColdRoomMap({ user }) {
               fontSize: '10px',
               color: 'white'
             }}>
-              {productsHere.length} product{productsHere.length > 1 ? 's' : ''}
+              {productsHere.length} item{productsHere.length > 1 ? 's' : ''}
             </div>
           )}
         </div>
@@ -234,15 +234,15 @@ export default function ColdRoomMap({ user }) {
 
           {/* CENTER AREA */}
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            {/* TOP ROW - Aisle 4 */}
+            {/* TOP ROW - Aisle 4 (Bay E + D) */}
             <div style={{ 
               padding: '16px', 
               background: '#d97706', 
               borderRadius: '12px',
               border: '3px solid #b45309'
             }}>
-              <div style={{ display: 'flex', gap: '12px', marginBottom: '8px' }}>
-                {renderBinPosition(4, 'D', [1, 2, 3])}
+              <div style={{ display: 'flex', gap: '12px' }}>
+                {renderBinPosition(4, 'E', [1, 2, 3])}
                 {renderBinPosition(4, 'D', [10, 11, 12])}
                 {renderBinPosition(4, 'D', [7, 8, 9])}
                 {renderBinPosition(4, 'D', [4, 5, 6])}
