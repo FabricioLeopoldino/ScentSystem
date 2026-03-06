@@ -99,7 +99,7 @@ function App() {
           <ProductReturns user={user} />
         </Route>
         <Route path="/stock">
-          <StockManagement />
+          <StockManagement user={user} />
         </Route>
 
         <Route path="/bom">
