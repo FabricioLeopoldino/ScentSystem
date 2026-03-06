@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-export default function StockManagement() {
+export default function StockManagement({ user }) {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
@@ -220,19 +220,30 @@ export default function StockManagement() {
                       )}
                     </td>
                     <td>
-                      <button
-                        className="btn btn-primary"
-                        onClick={() => {
-                          setSelectedProduct(product);
-                          setShowModal(true);
-                          setType('add');
-                          setQuantity('');
-                          setNotes('');
-                        }}
-                        style={{ fontSize: '12px', padding: '6px 16px' }}
-                      >
-                        Adjust Stock
-                      </button>
+                      {user?.role === 'admin' ? (
+                        <button
+                          className="btn btn-primary"
+                          onClick={() => {
+                            setSelectedProduct(product);
+                            setShowModal(true);
+                            setType('add');
+                            setQuantity('');
+                            setNotes('');
+                          }}
+                          style={{ fontSize: '12px', padding: '6px 16px' }}
+                        >
+                          Adjust Stock
+                        </button>
+                      ) : (
+                        <button
+                          className="btn btn-secondary"
+                          disabled
+                          title="Admin only"
+                          style={{ fontSize: '12px', padding: '6px 16px', cursor: 'not-allowed', opacity: 0.5 }}
+                        >
+                          🔒 Admin Only
+                        </button>
+                      )}
                     </td>
                   </tr>
                 );
