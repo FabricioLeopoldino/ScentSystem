@@ -36,9 +36,9 @@ export default function Login({ onLogin }) {
       <div className="login-card">
         <img src="/logo.png" alt="Logo" className="login-logo" />
         
-        <h1 className="login-title">Scent Stock Manager</h1>
+        <h1 className="login-title">SCENT STOCK MANAGER</h1>
         <p className="login-subtitle">
-          Revolutionizing Inventory Management for Scent Australia
+          Revolutionizing Essential Oil Inventory Management for Scent Australia
         </p>
 
         {error && (
@@ -91,11 +91,32 @@ export default function Login({ onLogin }) {
         </form>
 
         <div className="login-footer">
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '16px' }}>
-            <img src="/leautotech.png" alt="FL" style={{ width: '60px', height: '60px', objectFit: 'contain' }} />
+          <div style={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'center', 
+            gap: '12px',
+            padding: '16px 0',
+            borderTop: '1px solid #e5e7eb'
+          }}>
+            <img 
+              src="/leautotech.png" 
+              alt="LeAutoTech" 
+              style={{ width: '48px', height: '48px', objectFit: 'contain', borderRadius: '8px' }} 
+            />
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '2px' }}>
-              <span style={{ fontWeight: '700', color: '#1e3a8a', fontSize: '18px', letterSpacing: '0.5px' }}></span>
-              <span style={{ fontSize: '13px', color: '#64748b' }}>Powered by | Fabricio Leopoldino | 2026</span>
+              <span style={{ 
+                fontWeight: '700', 
+                color: '#1e3a8a', 
+                fontSize: '16px', 
+                letterSpacing: '0.5px',
+                fontFamily: 'system-ui, -apple-system, sans-serif'
+              }}>
+                LeAutoTech Solutions
+              </span>
+              <span style={{ fontSize: '12px', color: '#64748b' }}>
+                Developed by Fabricio Leopoldino © 2026
+              </span>
             </div>
           </div>
         </div>
