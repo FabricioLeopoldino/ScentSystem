@@ -76,7 +76,7 @@ export default function BinLocationInput({ category, value, onChange, disabled =
                 <option value="1">1 (Bay A - Bottom)</option>
                 <option value="2">2 (Bay B - Middle-Bottom)</option>
                 <option value="3">3 (Bay C - Middle-Top)</option>
-                <option value="4">4 (Bay D - Top)</option>
+                <option value="4">4 (Bay E+D - Top)</option>
                 <option value="5">5 (Floor - Left)</option>
               </select>
             </div>
@@ -93,7 +93,12 @@ export default function BinLocationInput({ category, value, onChange, disabled =
                 {aisle === '1' && <option value="A">A</option>}
                 {aisle === '2' && <option value="B">B</option>}
                 {aisle === '3' && <option value="C">C</option>}
-                {aisle === '4' && <option value="D">D</option>}
+                {aisle === '4' && (
+                  <>
+                    <option value="E">E</option>
+                    <option value="D">D</option>
+                  </>
+                )}
                 {aisle === '5' && <option value="Floor">Floor</option>}
               </select>
             </div>
