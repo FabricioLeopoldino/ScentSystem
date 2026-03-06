@@ -36,9 +36,9 @@ export default function Login({ onLogin }) {
       <div className="login-card">
         <img src="/logo.png" alt="Logo" className="login-logo" />
         
-        <h1 className="login-title">SCENT STOCK MANAGER</h1>
+        <h1 className="login-title">Scent Stock Manager</h1>
         <p className="login-subtitle">
-          Revolutionizing Essential Oil Inventory Management for Scent Australia
+          Revolutionizing Inventory Management for Scent Australia
         </p>
 
         {error && (
