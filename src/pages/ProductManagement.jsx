@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { exportProductsToExcel } from '../utils/excelExport';
 import { exportToShopifyCSV } from '../utils/shopifyExport';
+import BinLocationInput from '../components/BinLocationInput';
 
 export default function ProductManagement({ user }) {
   const [products, setProducts] = useState([]);
@@ -41,7 +42,8 @@ export default function ProductManagement({ user }) {
     supplier: '',
     supplier_code: '',
     unitPerBox: 1,
-    shopifySkus: {}
+    shopifySkus: {},
+    bin_location: ''
   });
 
   useEffect(() => {
@@ -259,7 +261,8 @@ export default function ProductManagement({ user }) {
       supplier: product.supplier || '',
       supplier_code: product.supplier_code || '',
       unitPerBox: product.unitPerBox || 1,
-      shopifySkus: product.shopifySkus || {}
+      shopifySkus: product.shopifySkus || {},
+      bin_location: product.bin_location || ''
     });
     setShowAddModal(true);
   };
@@ -276,7 +279,8 @@ export default function ProductManagement({ user }) {
       supplier: '',
       supplier_code: '',
       unitPerBox: 1,
-      shopifySkus: {}
+      shopifySkus: {},
+      bin_location: ''
     });
   };
 
@@ -421,6 +425,7 @@ export default function ProductManagement({ user }) {
                 <th>Product Code</th>
                 <th>Name</th>
                 <th>Category</th>
+                <th>Bin Location</th>
                 <th>Stock</th>
                 <th>Min Level</th>
                 <th>Incoming Orders</th>
@@ -463,6 +468,9 @@ export default function ProductManagement({ user }) {
                       <span className={`badge ${getCategoryBadge(product.category)}`}>
                         {getCategoryLabel(product.category)}
                       </span>
+                    </td>
+                    <td style={{ fontSize: '12px', color: '#64748b' }}>
+                      {product.bin_location || '-'}
                     </td>
                     <td>
                       <span style={{ 
@@ -728,6 +736,13 @@ export default function ProductManagement({ user }) {
                     onChange={(e) => setFormData({...formData, supplier_code: e.target.value})}
                   />
                 </div>
+
+                {/* Bin Location */}
+                <BinLocationInput
+                  category={formData.category}
+                  value={formData.bin_location}
+                  onChange={(value) => setFormData({...formData, bin_location: value})}
+                />
               </div>
 
               <div className="modal-footer">
