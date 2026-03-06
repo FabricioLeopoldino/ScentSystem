@@ -1528,23 +1528,35 @@ app.post('/api/webhook/shopify', express.json(), async (req, res) => {
           const product = productResult.rows[0];
           
           // ========================================================================
-          // STEP 1: Calculate correct volume based on SKU type
+          // STEP 1: Calculate stock change based on product category
           // ========================================================================
-          const volumePerUnit = getVolumeFromSKU(sku);
-          const totalVolume = volumePerUnit * parseFloat(quantity);
+          let totalDeduction;
+          let notes;
+          
+          // Check if product is a Machine (SCENT_MACHINES) - no BOM, direct debit
+          if (product.category === 'SCENT_MACHINES') {
+            // Machines: Simple quantity debit (no volume calculation, no BOM)
+            totalDeduction = parseFloat(quantity);
+            notes = `Shopify Order ${orderNumber} - Fulfilled (${quantity} units)`;
+            console.log(`📦 Machine SKU: ${sku}, Qty: ${quantity} units`);
+          } else {
+            // Oils: Calculate volume based on SKU
+            const volumePerUnit = getVolumeFromSKU(sku);
+            totalDeduction = volumePerUnit * parseFloat(quantity);
+            notes = `Shopify Order ${orderNumber} - Fulfilled (${quantity}x ${volumePerUnit}ml)`;
+            console.log(`📊 Oil SKU: ${sku}, Volume/unit: ${volumePerUnit}ml, Qty: ${quantity}, Total: ${totalDeduction}ml`);
+          }
           
           const currentStock = parseFloat(product.currentStock) || 0;
-          const newStock = currentStock - totalVolume; // Allow negative stock
+          const newStock = currentStock - totalDeduction; // Allow negative stock
           
-          console.log(`📊 SKU: ${sku}, Volume/unit: ${volumePerUnit}ml, Qty: ${quantity}, Total: ${totalVolume}ml`);
-          
-          // Update oil stock
+          // Update stock
           await client.query(
             'UPDATE products SET "currentStock" = $1, "stockBoxes" = $2 WHERE id = $3',
             [newStock, Math.floor(newStock / (product.unitPerBox || 1)), product.id]
           );
           
-          // Create transaction for oil
+          // Create transaction
           await client.query(
             `INSERT INTO transactions 
              (product_id, product_code, product_name, category, type, quantity, unit, balance_after, notes, shopify_order_id) 
@@ -1554,82 +1566,86 @@ app.post('/api/webhook/shopify', express.json(), async (req, res) => {
               product.productCode || product.tag,
               product.name,
               product.category,
-              'remove',
-              totalVolume,
+              'shopify_sale',
+              totalDeduction,
               product.unit || 'mL',
               newStock,
-              `Shopify Order ${orderNumber} - Fulfilled (${quantity}x ${volumePerUnit}ml)`,
+              notes,
               orderNumber
             ]
           );
           
-          console.log(`✅ Oil debited: ${product.name} -${totalVolume}ml (${quantity} units × ${volumePerUnit}ml) (New: ${newStock}ml)`);
+          console.log(`✅ ${product.category === 'SCENT_MACHINES' ? 'Machine' : 'Oil'} debited: ${product.name} -${totalDeduction} ${product.unit} (New: ${newStock} ${product.unit})`);
           
           // ========================================================================
-          // STEP 2: Debit BOM components
+          // STEP 2: Debit BOM components (ONLY FOR OILS, NOT MACHINES)
           // ========================================================================
-          const variant = getVariantFromSKU(sku);
-          
-          if (variant) {
-            console.log(`🔍 Looking for BOM components for variant: ${variant}`);
+          if (product.category !== 'SCENT_MACHINES') {
+            const variant = getVariantFromSKU(sku);
             
-            // Get BOM components for this variant
-            const bomResult = await client.query(
-              'SELECT * FROM bom WHERE variant = $1 ORDER BY seq',
-              [variant]
-            );
-            
-            if (bomResult.rows.length > 0) {
-              console.log(`📦 Found ${bomResult.rows.length} BOM components for ${variant}`);
+            if (variant) {
+              console.log(`🔍 Looking for BOM components for variant: ${variant}`);
               
-              for (const bomItem of bomResult.rows) {
-                const componentCode = bomItem.component_code;
-                const componentQty = parseFloat(bomItem.quantity) * parseFloat(quantity);
+              // Get BOM components for this variant
+              const bomResult = await client.query(
+                'SELECT * FROM bom WHERE variant = $1 ORDER BY seq',
+                [variant]
+              );
+              
+              if (bomResult.rows.length > 0) {
+                console.log(`📦 Found ${bomResult.rows.length} BOM components for ${variant}`);
                 
-                // Find component product
-                const componentResult = await client.query(
-                  'SELECT * FROM products WHERE "productCode" = $1 OR tag = $1 OR id = $1',
-                  [componentCode]
-                );
-                
-                if (componentResult.rows.length > 0) {
-                  const component = componentResult.rows[0];
-                  const compCurrentStock = parseFloat(component.currentStock) || 0;
-                  const compNewStock = compCurrentStock - componentQty; // Allow negative stock
+                for (const bomItem of bomResult.rows) {
+                  const componentCode = bomItem.component_code;
+                  const componentQty = parseFloat(bomItem.quantity) * parseFloat(quantity);
                   
-                  // Update component stock
-                  await client.query(
-                    'UPDATE products SET "currentStock" = $1, "stockBoxes" = $2 WHERE id = $3',
-                    [compNewStock, Math.floor(compNewStock / (component.unitPerBox || 1)), component.id]
+                  // Find component product
+                  const componentResult = await client.query(
+                    'SELECT * FROM products WHERE "productCode" = $1 OR tag = $1 OR id = $1',
+                    [componentCode]
                   );
                   
-                  // Create transaction for component
-                  await client.query(
-                    `INSERT INTO transactions 
-                     (product_id, product_code, product_name, category, type, quantity, unit, balance_after, notes, shopify_order_id) 
-                     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
-                    [
-                      component.id,
-                      component.productCode || component.tag,
-                      component.name,
-                      component.category,
-                      'remove',
-                      componentQty,
-                      component.unit || 'units',
-                      compNewStock,
-                      `Shopify Order ${orderNumber} - BOM Component (${quantity}x ${variant})`,
-                      orderNumber
-                    ]
-                  );
-                  
-                  console.log(`  ✅ BOM component: ${component.name} -${componentQty} ${component.unit} (New: ${compNewStock})`);
-                } else {
-                  console.log(`  ⚠️ BOM component not found: ${componentCode}`);
+                  if (componentResult.rows.length > 0) {
+                    const component = componentResult.rows[0];
+                    const compCurrentStock = parseFloat(component.currentStock) || 0;
+                    const compNewStock = compCurrentStock - componentQty; // Allow negative stock
+                    
+                    // Update component stock
+                    await client.query(
+                      'UPDATE products SET "currentStock" = $1, "stockBoxes" = $2 WHERE id = $3',
+                      [compNewStock, Math.floor(compNewStock / (component.unitPerBox || 1)), component.id]
+                    );
+                    
+                    // Create transaction for component
+                    await client.query(
+                      `INSERT INTO transactions 
+                       (product_id, product_code, product_name, category, type, quantity, unit, balance_after, notes, shopify_order_id) 
+                       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
+                      [
+                        component.id,
+                        component.productCode || component.tag,
+                        component.name,
+                        component.category,
+                        'shopify_sale',
+                        componentQty,
+                        component.unit || 'units',
+                        compNewStock,
+                        `Shopify Order ${orderNumber} - BOM Component (${quantity}x ${variant})`,
+                        orderNumber
+                      ]
+                    );
+                    
+                    console.log(`  ✅ BOM component: ${component.name} -${componentQty} ${component.unit} (New: ${compNewStock})`);
+                  } else {
+                    console.log(`  ⚠️ BOM component not found: ${componentCode}`);
+                  }
                 }
+              } else {
+                console.log(`ℹ️ No BOM found for variant ${variant}`);
               }
-            } else {
-              console.log(`ℹ️ No BOM found for variant ${variant}`);
             }
+          } else {
+            console.log(`ℹ️ Machine product - No BOM processing needed`);
           }
           
         } else {
