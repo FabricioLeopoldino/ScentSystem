@@ -402,6 +402,7 @@ app.get('/api/products', async (req, res) => {
       sub_category: row.sub_category || '',
       color: row.color || '',
       location: row.location || '',
+      bin_location: row.bin_location || '',
       unit: row.unit,
       currentStock: parseFloat(row.currentStock) || 0,
       minStockLevel: parseFloat(row.minStockLevel) || 0,
@@ -440,6 +441,7 @@ app.get('/api/products/:id', async (req, res) => {
       sub_category: row.sub_category || '',
       color: row.color || '',
       location: row.location || '',
+      bin_location: row.bin_location || '',
       unit: row.unit,
       currentStock: parseFloat(row.currentStock) || 0,
       minStockLevel: parseFloat(row.minStockLevel) || 0,
@@ -460,16 +462,17 @@ app.post('/api/products', async (req, res) => {
     const { 
       name, category, productCode, tag, unit, currentStock, 
       minStockLevel, shopifySkus, supplier, supplier_code, unitPerBox,
-      subCategory, sub_category, color, location
+      subCategory, sub_category, color, location, bin_location
     } = req.body;
     
     // Map both camelCase and snake_case
     const finalSubCategory = sub_category || subCategory || null;
     const finalColor = color || null;
     const finalLocation = location || null;
+    const finalBinLocation = bin_location || null;
     
-    console.log('📥 Received:', { subCategory, sub_category, color, location });
-    console.log('✅ Using:', { finalSubCategory, finalColor, finalLocation });
+    console.log('📥 Received:', { subCategory, sub_category, color, location, bin_location });
+    console.log('✅ Using:', { finalSubCategory, finalColor, finalLocation, finalBinLocation });
     
     if (!name || !category) {
       return res.status(400).json({ error: 'Name and category are required' });
@@ -542,14 +545,14 @@ app.post('/api/products', async (req, res) => {
       `INSERT INTO products 
        (id, tag, "productCode", name, category, unit, "currentStock", "minStockLevel", 
         "shopifySkus", supplier, "supplier_code", "unitPerBox", "stockBoxes", "incoming_orders",
-        sub_category, color, location) 
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17) 
+        sub_category, color, location, bin_location) 
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18) 
        RETURNING *`,
       [
         newId, newTag, newProductCode, name, category, unit || 'units', 
         currentStock || 0, minStockLevel || 0, skusJson, 
         supplier || '', supplier_code || '', unitPerBox || 1, stockBoxes, '[]',
-        finalSubCategory, finalColor, finalLocation
+        finalSubCategory, finalColor, finalLocation, finalBinLocation
       ]
     );
     
@@ -582,6 +585,7 @@ app.post('/api/products', async (req, res) => {
       sub_category: row.sub_category || '',
       color: row.color || '',
       location: row.location || '',
+      bin_location: row.bin_location || '',
       unit: row.unit,
       currentStock: parseFloat(row.currentStock),
       minStockLevel: parseFloat(row.minStockLevel),
@@ -604,16 +608,17 @@ app.put('/api/products/:id', async (req, res) => {
     const { 
       name, category, productCode, tag, unit, currentStock, 
       minStockLevel, shopifySkus, supplier, supplier_code, unitPerBox,
-      subCategory, sub_category, color, location
+      subCategory, sub_category, color, location, bin_location
     } = req.body;
     
     // Map both camelCase and snake_case
     const finalSubCategory = sub_category || subCategory;
     const finalColor = color;
     const finalLocation = location;
+    const finalBinLocation = bin_location;
     
-    console.log('📥 PUT Received:', { subCategory, sub_category, color, location });
-    console.log('✅ PUT Using:', { finalSubCategory, finalColor, finalLocation });
+    console.log('📥 PUT Received:', { subCategory, sub_category, color, location, bin_location });
+    console.log('✅ PUT Using:', { finalSubCategory, finalColor, finalLocation, finalBinLocation });
     
     const stockBoxes = unitPerBox && currentStock 
       ? Math.floor(currentStock / unitPerBox) 
@@ -640,13 +645,14 @@ app.put('/api/products/:id', async (req, res) => {
        "stockBoxes" = COALESCE($12, "stockBoxes"),
        sub_category = COALESCE($13, sub_category),
        color = COALESCE($14, color),
-       location = COALESCE($15, location)
-       WHERE id = $16
+       location = COALESCE($15, location),
+       bin_location = COALESCE($16, bin_location)
+       WHERE id = $17
        RETURNING *`,
       [
         name, category, productCode, tag, unit, currentStock, minStockLevel, 
         skusJson, supplier, supplier_code, unitPerBox, stockBoxes,
-        finalSubCategory, finalColor, finalLocation, productId
+        finalSubCategory, finalColor, finalLocation, finalBinLocation, productId
       ]
     );
     
@@ -664,6 +670,7 @@ app.put('/api/products/:id', async (req, res) => {
       sub_category: row.sub_category || '',
       color: row.color || '',
       location: row.location || '',
+      bin_location: row.bin_location || '',
       unit: row.unit,
       currentStock: parseFloat(row.currentStock),
       minStockLevel: parseFloat(row.minStockLevel),
