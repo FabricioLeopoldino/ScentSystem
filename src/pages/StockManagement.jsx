@@ -75,7 +75,6 @@ export default function StockManagement({ user }) {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          ...locationProduct,
           bin_location: newLocation
         })
       });
