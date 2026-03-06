@@ -22,6 +22,7 @@ export default function MachineInventory({ user }) {
     sub_category: '',
     color: '',
     location: '',
+    bin_location: '',
     supplier: '',
     supplier_code: '',
     productCode: '',
@@ -190,6 +191,7 @@ export default function MachineInventory({ user }) {
       sub_category: machine.sub_category || '',
       color: machine.color || '',
       location: machine.location || '',
+      bin_location: machine.bin_location || '',
       supplier: machine.supplier || '',
       supplier_code: machine.supplier_code || '',
       productCode: machine.productCode,
@@ -207,6 +209,7 @@ export default function MachineInventory({ user }) {
       sub_category: '',
       color: '',
       location: '',
+      bin_location: '',
       supplier: '',
       supplier_code: '',
       productCode: '',
@@ -506,7 +509,8 @@ export default function MachineInventory({ user }) {
                 <th>SubCategory</th>
                 <th>Name</th>
                 <th>Color</th>
-                <th>Location</th>
+                <th>Location (Shelf)</th>
+                <th>Bin Location</th>
                 <th>Shopify SKU</th>
                 <th>Stock</th>
                 <th>Min Level</th>
@@ -568,6 +572,9 @@ export default function MachineInventory({ user }) {
                     </td>
                     <td style={{ fontSize: '13px', color: '#64748b' }}>
                       {machine.location || '-'}
+                    </td>
+                    <td style={{ fontSize: '12px', color: '#64748b' }}>
+                      {machine.bin_location || '-'}
                     </td>
                     <td style={{ fontFamily: 'monospace', fontSize: '12px' }}>
                       {Object.keys(machine.shopifySkus || {}).join(', ') || '-'}
@@ -795,6 +802,20 @@ export default function MachineInventory({ user }) {
                   </div>
                   <div style={{ fontSize: '11px', color: '#64748b', marginTop: '4px' }}>
                     Type manually or use quick select
+                  </div>
+                </div>
+
+                <div className="form-group">
+                  <label>Bin Location (Physical Warehouse)</label>
+                  <input
+                    type="text"
+                    className="input"
+                    value={formData.bin_location}
+                    onChange={(e) => setFormData({...formData, bin_location: e.target.value})}
+                    placeholder="e.g., Shelf D-5, Production Floor, Warehouse Section B"
+                  />
+                  <div style={{ fontSize: '11px', color: '#64748b', marginTop: '4px' }}>
+                    Physical warehouse location for inventory control
                   </div>
                 </div>
 
