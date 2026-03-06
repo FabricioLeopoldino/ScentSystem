@@ -9,6 +9,7 @@ import UserManagement from './pages/UserManagement';
 import ProductManagement from './pages/ProductManagement';
 import MachineInventory from './pages/MachineInventory';
 import ProductReturns from './pages/ProductReturns';
+import ColdRoomMap from './pages/ColdRoomMap';
 
 import BOMViewer from './pages/BOMViewer';
 import DiffuserMachineBOM from './pages/DiffuserMachineBOM';
@@ -63,6 +64,7 @@ function App() {
               <li><Link href="/machines">Machine Inventory</Link></li>
               <li><Link href="/returns">Product Returns</Link></li>
               <li><Link href="/stock">Stock Management</Link></li>
+              <li><Link href="/cold-room-map">🗺️ Cold Room Map</Link></li>
 
               <li><Link href="/bom">BOM</Link></li>
               <li><Link href="/diffuser-bom">Diffuser BOM</Link></li>
@@ -97,6 +99,9 @@ function App() {
         </Route>
         <Route path="/returns">
           <ProductReturns user={user} />
+        </Route>
+        <Route path="/cold-room-map">
+          <ColdRoomMap user={user} />
         </Route>
         <Route path="/stock">
           <StockManagement user={user} />
