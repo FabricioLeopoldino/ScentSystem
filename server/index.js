@@ -1503,7 +1503,10 @@ app.post('/api/webhook/shopify', express.json(), async (req, res) => {
   try {
     console.log('📬 Shopify webhook received');
     const webhookTopic = req.headers['x-shopify-topic'];
+    // Shopify sends a unique delivery ID per webhook attempt
+    const webhookDeliveryId = req.headers['x-shopify-webhook-id'] || req.headers['x-shopify-delivery-id'] || null;
     console.log('📦 Webhook type:', webhookTopic || 'unknown');
+    console.log('🔑 Webhook delivery ID:', webhookDeliveryId || 'none');
     
     const { line_items, name: orderNumber, id: orderId } = req.body;
     
@@ -1516,6 +1519,27 @@ app.post('/api/webhook/shopify', express.json(), async (req, res) => {
     // ========================================================================
     if (webhookTopic === 'orders/fulfilled' || webhookTopic === 'fulfillments/create') {
       console.log('🚚 Order Fulfillment - Auto debiting stock + BOM...');
+
+      // ── IDEMPOTENCY GUARD ─────────────────────────────────────────────────
+      // Shopify retries webhooks if no 2xx is received within ~5s.
+      // A large order (25 SKUs + BOM components) can take >5s to process,
+      // causing the webhook to fire multiple times and double-debit stock.
+      //
+      // Guard: check if this order was already fully processed as a sale.
+      // ─────────────────────────────────────────────────────────────────────
+      const dupOrder = await pool.query(
+        `SELECT 1 FROM transactions WHERE shopify_order_id = $1 AND type = 'shopify_sale' LIMIT 1`,
+        [orderNumber]
+      );
+      if (dupOrder.rows.length > 0) {
+        console.log(`⚠️  Order ${orderNumber} already processed — ignoring duplicate fulfillment webhook.`);
+        client.release();
+        return res.status(200).json({ success: true, message: 'Order already processed', order: orderNumber });
+      }
+
+      // Acknowledge Shopify IMMEDIATELY so it stops retrying.
+      // Large orders take time — responding first prevents the retry loop.
+      res.status(200).json({ success: true, message: 'Webhook acknowledged, processing...', order: orderNumber });
       
       await client.query('BEGIN');
       
@@ -1662,12 +1686,8 @@ app.post('/api/webhook/shopify', express.json(), async (req, res) => {
       
       await client.query('COMMIT');
       console.log('✅ Order fulfillment processed successfully');
-      
-      return res.status(200).json({ 
-        success: true, 
-        message: 'Stock and BOM components debited',
-        order: orderNumber 
-      });
+      // Note: HTTP response was already sent above (early 200) to prevent Shopify retries.
+      // Do NOT call res.json() again here.
     }
     
     // ========================================================================
@@ -1719,9 +1739,14 @@ app.post('/api/webhook/shopify', express.json(), async (req, res) => {
     res.status(200).json({ received: true, message: 'Webhook received but not processed' });
     
   } catch (error) {
-    if (client) await client.query('ROLLBACK');
+    if (client) {
+      try { await client.query('ROLLBACK'); } catch(e) {}
+    }
     console.error('❌ Webhook error:', error);
-    res.status(500).json({ error: error.message });
+    // Only send error response if we haven't already responded (early 200 for fulfillment)
+    if (!res.headersSent) {
+      res.status(500).json({ error: error.message });
+    }
   } finally {
     if (client) client.release();
   }
