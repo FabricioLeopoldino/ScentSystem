@@ -1506,6 +1506,8 @@ const getVariantFromSKU = (sku) => {
 // ========================================================================
 app.post('/api/webhook/shopify', express.json(), async (req, res) => {
   const client = await pool.connect();
+  // Declare outside try so catch block can access for lock cleanup
+  let orderNumber = null;
   
   try {
     console.log('📬 Shopify webhook received');
@@ -1515,7 +1517,8 @@ app.post('/api/webhook/shopify', express.json(), async (req, res) => {
     console.log('📦 Webhook type:', webhookTopic || 'unknown');
     console.log('🔑 Webhook delivery ID:', webhookDeliveryId || 'none');
     
-    const { line_items, name: orderNumber, id: orderId } = req.body;
+    const { line_items, name: orderNumber_body, id: orderId } = req.body;
+    orderNumber = orderNumber_body; // assign to outer variable
     
     if (!line_items || !Array.isArray(line_items)) {
       return res.status(400).json({ error: 'Invalid webhook data' });
@@ -1744,12 +1747,13 @@ app.post('/api/webhook/shopify', express.json(), async (req, res) => {
       console.log(`✅ Order ${orderNumber} fulfillment processed successfully`);
       processingOrders.delete(orderNumber); // Release in-memory lock
       // Note: HTTP response was already sent above (early 200) to prevent Shopify retries.
+      return; // CRITICAL: stop here — do not fall through to other webhook handlers
     }
     
     // ========================================================================
     // OPTION 2: ORDER CREATION - Add to incoming orders
     // ========================================================================
-    if (webhookTopic === 'orders/create' || !webhookTopic) {
+    if (webhookTopic === 'orders/create') {
       console.log('📝 Order Creation - Adding to incoming orders...');
       
       for (const item of line_items) {
