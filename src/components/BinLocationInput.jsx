@@ -1,7 +1,7 @@
 // BinLocationInput.jsx - Reusable component for bin location
 // Use in: Products, Stock Management, Machine Inventory
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function BinLocationInput({ category, value, onChange, disabled = false }) {
   const [inputMode, setInputMode] = useState('helper'); // 'helper' or 'manual'
@@ -9,32 +9,35 @@ export default function BinLocationInput({ category, value, onChange, disabled =
   // Parse existing location
   const parseLocation = (loc) => {
     if (!loc) return { aisle: '', bay: '', position: '' };
-    const match = loc.match(/Aisle:?\s*(\d+),?\s*Bay:?\s*([A-Z]+),?\s*Position:?\s*(\d+)/i);
+    const match = loc.match(/Aisle:?\s*(\d+),?\s*Bay:?\s*([A-Z]+|Floor),?\s*Position:?\s*(\d+)/i);
     if (match) {
       return { aisle: match[1], bay: match[2].toUpperCase(), position: match[3] };
     }
     return { aisle: '', bay: '', position: '' };
   };
 
-  const [aisle, setAisle] = useState(parseLocation(value).aisle);
-  const [bay, setBay] = useState(parseLocation(value).bay);
-  const [position, setPosition] = useState(parseLocation(value).position);
+  const parsed = parseLocation(value);
+  const [aisle, setAisle] = useState(parsed.aisle);
+  const [bay, setBay] = useState(parsed.bay);
+  const [position, setPosition] = useState(parsed.position);
   const [manualText, setManualText] = useState(value || '');
 
-  // Build location string
-  const buildLocation = () => {
-    if (inputMode === 'manual') {
-      return manualText;
+  // FIX: useEffect propagates onChange whenever aisle/bay/position change
+  // Avoids stale closure bug where old state values were captured in handleUpdate
+  useEffect(() => {
+    if (inputMode !== 'helper') return;
+    if (aisle && bay && position) {
+      onChange(`Aisle: ${aisle}, Bay: ${bay}, Position: ${position}`);
     }
+  }, [aisle, bay, position, inputMode]);
+
+  // Build location string (for display only)
+  const buildLocation = () => {
+    if (inputMode === 'manual') return manualText;
     if (aisle && bay && position) {
       return `Aisle: ${aisle}, Bay: ${bay}, Position: ${position}`;
     }
     return '';
-  };
-
-  // Handle updates
-  const handleUpdate = () => {
-    onChange(buildLocation());
   };
 
   // OILS get structured helper
@@ -69,7 +72,14 @@ export default function BinLocationInput({ category, value, onChange, disabled =
               <select
                 className="input"
                 value={aisle}
-                onChange={(e) => { setAisle(e.target.value); setTimeout(handleUpdate, 10); }}
+                onChange={(e) => {
+                  const newAisle = e.target.value;
+                  setAisle(newAisle);
+                  // Auto-set bay based on aisle
+                  const bayMap = { '1': 'A', '2': 'B', '3': 'C', '4': 'D', '5': 'FLOOR' };
+                  setBay(bayMap[newAisle] || '');
+                  setPosition('');
+                }}
                 disabled={disabled}
               >
                 <option value="">Select...</option>
@@ -86,7 +96,7 @@ export default function BinLocationInput({ category, value, onChange, disabled =
               <select
                 className="input"
                 value={bay}
-                onChange={(e) => { setBay(e.target.value); setTimeout(handleUpdate, 10); }}
+                onChange={(e) => setBay(e.target.value)}
                 disabled={disabled}
               >
                 <option value="">Select...</option>
@@ -94,7 +104,7 @@ export default function BinLocationInput({ category, value, onChange, disabled =
                 {aisle === '2' && <option value="B">B</option>}
                 {aisle === '3' && <option value="C">C</option>}
                 {aisle === '4' && <option value="D">D</option>}
-                {aisle === '5' && <option value="Floor">Floor</option>}
+                {aisle === '5' && <option value="FLOOR">Floor</option>}
               </select>
             </div>
 
@@ -104,10 +114,10 @@ export default function BinLocationInput({ category, value, onChange, disabled =
                 type="number"
                 className="input"
                 value={position}
-                onChange={(e) => { setPosition(e.target.value); setTimeout(handleUpdate, 10); }}
-                placeholder="1-16"
+                onChange={(e) => setPosition(e.target.value)}
+                placeholder={aisle === '4' ? '1-19' : '1-16'}
                 min="1"
-                max="16"
+                max={aisle === '4' ? 19 : 16}
                 disabled={disabled}
               />
             </div>
@@ -119,7 +129,10 @@ export default function BinLocationInput({ category, value, onChange, disabled =
               type="text"
               className="input"
               value={manualText}
-              onChange={(e) => { setManualText(e.target.value); setTimeout(handleUpdate, 10); }}
+              onChange={(e) => {
+                setManualText(e.target.value);
+                onChange(e.target.value);
+              }}
               placeholder="e.g., Aisle: 1, Bay: A, Position: 3"
               disabled={disabled}
             />
