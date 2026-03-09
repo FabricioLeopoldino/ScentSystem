@@ -77,6 +77,13 @@ pool.query('SELECT NOW()', (err, res) => {
 });
 
 // ========================================================================
+// IN-MEMORY WEBHOOK LOCK
+// Prevents race conditions when two webhook requests arrive simultaneously
+// (before either has written to the DB). This is the first line of defense.
+// ========================================================================
+const processingOrders = new Set();
+
+// ========================================================================
 // MULTER
 // ========================================================================
 const storage = multer.diskStorage({
@@ -1520,22 +1527,71 @@ app.post('/api/webhook/shopify', express.json(), async (req, res) => {
     if (webhookTopic === 'orders/fulfilled' || webhookTopic === 'fulfillments/create') {
       console.log('🚚 Order Fulfillment - Auto debiting stock + BOM...');
 
-      // ── IDEMPOTENCY GUARD ─────────────────────────────────────────────────
-      // Shopify retries webhooks if no 2xx is received within ~5s.
-      // A large order (25 SKUs + BOM components) can take >5s to process,
-      // causing the webhook to fire multiple times and double-debit stock.
+      // ════════════════════════════════════════════════════════════════════
+      // 🔒 3-LAYER IDEMPOTENCY GUARD — prevents any order from being
+      //    processed more than once, regardless of order size or timing.
       //
-      // Guard: check if this order was already fully processed as a sale.
-      // ─────────────────────────────────────────────────────────────────────
+      // LAYER 1 — In-memory lock (catches simultaneous requests on same server)
+      // LAYER 2 — DB unique lock via INSERT (catches restarts / race conditions)  
+      // LAYER 3 — Transaction check (final fallback, catches everything else)
+      // ════════════════════════════════════════════════════════════════════
+
+      // ── LAYER 1: In-memory lock ───────────────────────────────────────────
+      // Two webhook requests arriving within milliseconds of each other will
+      // both pass the DB check before either writes — the in-memory Set catches
+      // this race condition instantly.
+      if (processingOrders.has(orderNumber)) {
+        console.log(`⚠️  [LAYER 1] Order ${orderNumber} is currently being processed — ignoring duplicate.`);
+        client.release();
+        return res.status(200).json({ success: true, message: 'Order already being processed', order: orderNumber });
+      }
+      processingOrders.add(orderNumber);
+
+      // ── LAYER 2: DB unique lock ───────────────────────────────────────────
+      // Uses INSERT ... ON CONFLICT DO NOTHING with a UNIQUE constraint on
+      // (shopify_order_id, type) in the webhook_processed table.
+      // Even across server restarts or multiple instances, only one INSERT wins.
+      try {
+        await pool.query(`
+          CREATE TABLE IF NOT EXISTS webhook_processed (
+            order_id TEXT NOT NULL,
+            webhook_type TEXT NOT NULL,
+            processed_at TIMESTAMPTZ DEFAULT NOW(),
+            CONSTRAINT webhook_processed_unique UNIQUE (order_id, webhook_type)
+          )
+        `);
+        const lockResult = await pool.query(`
+          INSERT INTO webhook_processed (order_id, webhook_type)
+          VALUES ($1, 'fulfillment')
+          ON CONFLICT (order_id, webhook_type) DO NOTHING
+          RETURNING order_id
+        `, [orderNumber]);
+        if (lockResult.rowCount === 0) {
+          console.log(`⚠️  [LAYER 2] Order ${orderNumber} already locked in DB — ignoring duplicate.`);
+          processingOrders.delete(orderNumber);
+          client.release();
+          return res.status(200).json({ success: true, message: 'Order already processed', order: orderNumber });
+        }
+        console.log(`✅ [LAYER 2] Lock acquired for order ${orderNumber}`);
+      } catch (lockErr) {
+        console.error('⚠️  Webhook lock error (non-fatal):', lockErr.message);
+        // Continue — Layer 3 will catch it if needed
+      }
+
+      // ── LAYER 3: Transaction check (final fallback) ───────────────────────
       const dupOrder = await pool.query(
         `SELECT 1 FROM transactions WHERE shopify_order_id = $1 AND type = 'shopify_sale' LIMIT 1`,
         [orderNumber]
       );
       if (dupOrder.rows.length > 0) {
-        console.log(`⚠️  Order ${orderNumber} already processed — ignoring duplicate fulfillment webhook.`);
+        console.log(`⚠️  [LAYER 3] Order ${orderNumber} found in transactions — ignoring duplicate.`);
+        processingOrders.delete(orderNumber);
         client.release();
         return res.status(200).json({ success: true, message: 'Order already processed', order: orderNumber });
       }
+
+      // ── All guards passed — safe to process ──────────────────────────────
+      console.log(`✅ All 3 guards passed — processing order ${orderNumber}`);
 
       // Acknowledge Shopify IMMEDIATELY so it stops retrying.
       // Large orders take time — responding first prevents the retry loop.
@@ -1685,9 +1741,9 @@ app.post('/api/webhook/shopify', express.json(), async (req, res) => {
       }
       
       await client.query('COMMIT');
-      console.log('✅ Order fulfillment processed successfully');
+      console.log(`✅ Order ${orderNumber} fulfillment processed successfully`);
+      processingOrders.delete(orderNumber); // Release in-memory lock
       // Note: HTTP response was already sent above (early 200) to prevent Shopify retries.
-      // Do NOT call res.json() again here.
     }
     
     // ========================================================================
@@ -1743,6 +1799,8 @@ app.post('/api/webhook/shopify', express.json(), async (req, res) => {
       try { await client.query('ROLLBACK'); } catch(e) {}
     }
     console.error('❌ Webhook error:', error);
+    // Clean up in-memory lock so a manual retry can be attempted if needed
+    if (orderNumber) processingOrders.delete(orderNumber);
     // Only send error response if we haven't already responded (early 200 for fulfillment)
     if (!res.headersSent) {
       res.status(500).json({ error: error.message });
