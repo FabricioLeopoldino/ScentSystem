@@ -509,7 +509,6 @@ export default function MachineInventory({ user }) {
                 <th>SubCategory</th>
                 <th>Name</th>
                 <th>Color</th>
-                <th>Location (Shelf)</th>
                 <th>Bin Location</th>
                 <th>Shopify SKU</th>
                 <th>Stock</th>
@@ -569,9 +568,6 @@ export default function MachineInventory({ user }) {
                           {machine.color}
                         </span>
                       ) : '-'}
-                    </td>
-                    <td style={{ fontSize: '13px', color: '#64748b' }}>
-                      {machine.location || '-'}
                     </td>
                     <td style={{ fontSize: '12px', color: '#64748b' }}>
                       {machine.bin_location || '-'}
