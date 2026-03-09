@@ -65,17 +65,12 @@ export default function StockManagement({ user }) {
   const handleUpdateLocation = async (e) => {
     e.preventDefault();
     
-    if (!newLocation.trim()) {
-      alert('Please enter a location');
-      return;
-    }
-    
     try {
       const res = await fetch(`/api/products/${locationProduct.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          bin_location: newLocation
+          bin_location: newLocation || null
         })
       });
       
