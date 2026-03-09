@@ -1540,8 +1540,8 @@ app.post('/api/webhook/shopify', express.json(), async (req, res) => {
           let totalDeduction;
           let notes;
           
-          // Check if product is a Machine (SCENT_MACHINES) - no BOM, direct debit
-          if (product.category === 'SCENT_MACHINES') {
+          // Check if product is a Machine (SCENT_MACHINES or MACHINES_SPARES) - no BOM, direct debit
+          if (product.category === 'SCENT_MACHINES' || product.category === 'MACHINES_SPARES') {
             // Machines: Simple quantity debit (no volume calculation, no BOM)
             totalDeduction = parseFloat(quantity);
             notes = `Shopify Order ${orderNumber} - Fulfilled (${quantity} units)`;
@@ -1582,12 +1582,12 @@ app.post('/api/webhook/shopify', express.json(), async (req, res) => {
             ]
           );
           
-          console.log(`✅ ${product.category === 'SCENT_MACHINES' ? 'Machine' : 'Oil'} debited: ${product.name} -${totalDeduction} ${product.unit} (New: ${newStock} ${product.unit})`);
+          console.log(`✅ ${(product.category === 'SCENT_MACHINES' || product.category === 'MACHINES_SPARES') ? 'Machine' : 'Oil'} debited: ${product.name} -${totalDeduction} ${product.unit} (New: ${newStock} ${product.unit})`);
           
           // ========================================================================
           // STEP 2: Debit BOM components (ONLY FOR OILS, NOT MACHINES)
           // ========================================================================
-          if (product.category !== 'SCENT_MACHINES') {
+          if (product.category !== 'SCENT_MACHINES' && product.category !== 'MACHINES_SPARES') {
             const variant = getVariantFromSKU(sku);
             
             if (variant) {
