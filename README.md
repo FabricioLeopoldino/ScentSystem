@@ -294,4 +294,3 @@ Proprietary - Fabricio Leopoldino © 2026
 
 ---
 
-**Built with ❤️ for Scent Australia**
