@@ -35,8 +35,9 @@ export function exportToShopifyCSV(products) {
       const variants = [
         { name: 'SA_CA', label: 'Oil Cartridge (400ml)', sku: product.shopifySkus.SA_CA },
         { name: 'SA_1L', label: '1L Oil Refill Bottle', sku: product.shopifySkus.SA_1L },
-        { name: 'SA_CDIFF', label: 'Commercial Diffuser', sku: product.shopifySkus.SA_CDIFF },
-        { name: 'SA_PRO', label: 'Professional', sku: product.shopifySkus.SA_PRO }
+        { name: 'SA_CDIFF', label: '700ml Oil Refil Bottle', sku: product.shopifySkus.SA_CDIFF },
+        { name: 'SA_PRO', label: '1L Oil Refill PRO Bottle', sku: product.shopifySkus.SA_PRO },
+        { name: 'SA_HF', label: '500ml Oil Refil Bottle', sku: produc.shopifySkus.SA_HF }
       ];
 
       variants.forEach(variant => {
