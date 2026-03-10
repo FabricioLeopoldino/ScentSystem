@@ -205,26 +205,22 @@ export default function ColdRoomMap({ user }) {
                 <div style={{ background: '#047857', color: 'white', padding: '8px 16px', borderRadius: '8px', fontWeight: '700', fontSize: '13px' }}>
                   Aisle 4
                 </div>
-                <div style={{ color: '#a0aec0', fontSize: '12px' }}>Bay D - Positions 1-19</div>
+                <div style={{ color: '#a0aec0', fontSize: '12px' }}>Bay D - Positions 1-15</div>
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '8px', padding: '16px', background: '#d97706', borderRadius: '12px', border: '3px solid #b45309' }}>
                 <div></div>
-                {renderPosition(4, 'D', 13)}
                 {renderPosition(4, 'D', 9)}
                 {renderPosition(4, 'D', 5)}
                 {renderPosition(4, 'D', 1)}
-                {renderPosition(4, 'D', 17)}
-                {renderPosition(4, 'D', 14)}
+                {renderPosition(4, 'D', 13)}
                 {renderPosition(4, 'D', 10)}
                 {renderPosition(4, 'D', 6)}
                 {renderPosition(4, 'D', 2)}
-                {renderPosition(4, 'D', 18)}
-                {renderPosition(4, 'D', 15)}
+                {renderPosition(4, 'D', 14)}
                 {renderPosition(4, 'D', 11)}
                 {renderPosition(4, 'D', 7)}
                 {renderPosition(4, 'D', 3)}
-                {renderPosition(4, 'D', 19)}
-                {renderPosition(4, 'D', 16)}
+                {renderPosition(4, 'D', 15)}
                 {renderPosition(4, 'D', 12)}
                 {renderPosition(4, 'D', 8)}
                 {renderPosition(4, 'D', 4)}
