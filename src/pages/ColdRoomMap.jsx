@@ -5,6 +5,7 @@ export default function ColdRoomMap({ user }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [highlightedProduct, setHighlightedProduct] = useState(null);
+  const [searchResults, setSearchResults] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -53,14 +54,24 @@ export default function ColdRoomMap({ user }) {
     setSearchTerm(term);
     if (!term.trim()) {
       setHighlightedProduct(null);
+      setSearchResults([]);
       return;
     }
-    const found = products.find(p =>
-      p.name.toLowerCase().includes(term.toLowerCase()) ||
-      p.productCode.toLowerCase().includes(term.toLowerCase()) ||
-      p.tag.toLowerCase().includes(term.toLowerCase())
+    const lower = term.toLowerCase();
+    const found = products.filter(p =>
+      p.name.toLowerCase().includes(lower) ||
+      p.productCode.toLowerCase().includes(lower) ||
+      p.tag.toLowerCase().includes(lower)
     );
-    setHighlightedProduct(found || null);
+    setSearchResults(found);
+    // Auto-highlight only if exactly 1 result
+    setHighlightedProduct(found.length === 1 ? found[0] : null);
+  };
+
+  const selectProduct = (product) => {
+    setHighlightedProduct(product);
+    setSearchResults([]);
+    setSearchTerm(product.name);
   };
 
   const renderPosition = (aisle, bay, position) => {
@@ -140,20 +151,69 @@ export default function ColdRoomMap({ user }) {
           style={{ fontSize: '16px' }}
           autoFocus
         />
-        {highlightedProduct && (
+        {/* Multiple results - show dropdown list */}
+        {searchResults.length > 1 && (
+          <div style={{ marginTop: '8px', border: '1px solid #d1fae5', borderRadius: '8px', overflow: 'hidden', maxHeight: '220px', overflowY: 'auto' }}>
+            {searchResults.map(p => (
+              <div
+                key={p.id}
+                onClick={() => selectProduct(p)}
+                style={{
+                  padding: '10px 14px',
+                  cursor: 'pointer',
+                  borderBottom: '1px solid #f0fdf4',
+                  background: 'white',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  transition: 'background 0.15s'
+                }}
+                onMouseEnter={e => e.currentTarget.style.background = '#f0fdf4'}
+                onMouseLeave={e => e.currentTarget.style.background = 'white'}
+              >
+                <div>
+                  <div style={{ fontWeight: '600', fontSize: '13px', color: '#065f46' }}>{p.name}</div>
+                  <div style={{ fontSize: '11px', color: '#6b7280' }}>{p.productCode}</div>
+                </div>
+                <div style={{ fontSize: '11px', color: '#047857', textAlign: 'right' }}>
+                  {p.bin_location || 'No location'}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Single highlighted product */}
+        {highlightedProduct && searchResults.length <= 1 && (
           <div style={{
             marginTop: '12px',
             padding: '12px',
             background: '#ecfdf5',
             borderRadius: '8px',
-            border: '2px solid #10b981'
+            border: '2px solid #10b981',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center'
           }}>
-            <div style={{ fontWeight: '700', color: '#065f46', marginBottom: '4px' }}>
-              Found: {highlightedProduct.name}
+            <div>
+              <div style={{ fontWeight: '700', color: '#065f46', marginBottom: '4px' }}>
+                📍 {highlightedProduct.name}
+              </div>
+              <div style={{ fontSize: '13px', color: '#047857' }}>
+                Location: {highlightedProduct.bin_location || 'Not set'}
+              </div>
             </div>
-            <div style={{ fontSize: '13px', color: '#047857' }}>
-              Location: {highlightedProduct.bin_location || 'Not set'}
-            </div>
+            <button
+              onClick={() => { setHighlightedProduct(null); setSearchTerm(''); setSearchResults([]); }}
+              style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#059669', fontSize: '18px', fontWeight: '700' }}
+            >×</button>
+          </div>
+        )}
+
+        {/* No results */}
+        {searchTerm && searchResults.length === 0 && !highlightedProduct && (
+          <div style={{ marginTop: '8px', padding: '10px', color: '#9ca3af', fontSize: '13px' }}>
+            No products found for "{searchTerm}"
           </div>
         )}
       </div>
@@ -188,21 +248,45 @@ export default function ColdRoomMap({ user }) {
 
         <div style={{ display: 'flex', gap: '20px' }}>
 
-          {/* Aisle 5 - Floor (left column) */}
+          {/* Aisle 5 - Floor (left column) - clickable, shows all Floor products */}
           <div style={{ width: '140px', display: 'flex', alignItems: 'center' }}>
-            <div style={{
-              padding: '30px 20px',
-              background: '#2c5282',
-              border: '3px solid #2b6cb0',
-              borderRadius: '12px',
-              textAlign: 'center',
-              color: 'white',
-              width: '100%'
-            }}>
-              <div style={{ fontSize: '13px', fontWeight: '700', marginBottom: '8px' }}>Aisle: 5</div>
-              <div style={{ fontSize: '12px', marginBottom: '4px' }}>Bay: Floor</div>
-              <div style={{ fontSize: '10px', color: '#90cdf4' }}>Positions: Any</div>
-            </div>
+            {(() => {
+              const floorProducts = products.filter(p => {
+                const loc = parseBinLocation(p.bin_location);
+                return loc && loc.aisle === 5;
+              });
+              const hasFloor = floorProducts.length > 0;
+              const isFloorHighlighted = highlightedProduct && (() => {
+                const loc = parseBinLocation(highlightedProduct.bin_location);
+                return loc && loc.aisle === 5;
+              })();
+              return (
+                <div
+                  onClick={() => setSelectedLocation({ aisle: 5, bay: 'FLOOR', position: 'Any', products: floorProducts })}
+                  style={{
+                    padding: '30px 20px',
+                    background: isFloorHighlighted ? '#10b981' : hasFloor ? '#3b82f6' : '#2c5282',
+                    border: `3px solid ${isFloorHighlighted ? '#059669' : hasFloor ? '#2563eb' : '#2b6cb0'}`,
+                    borderRadius: '12px',
+                    textAlign: 'center',
+                    color: 'white',
+                    width: '100%',
+                    cursor: 'pointer',
+                    animation: isFloorHighlighted ? 'pulse 1.5s infinite' : 'none',
+                    transition: 'all 0.3s'
+                  }}
+                >
+                  <div style={{ fontSize: '13px', fontWeight: '700', marginBottom: '8px' }}>Aisle: 5</div>
+                  <div style={{ fontSize: '12px', marginBottom: '4px' }}>Bay: Floor</div>
+                  <div style={{ fontSize: '10px', color: '#90cdf4', marginBottom: hasFloor ? '8px' : 0 }}>Positions: Any</div>
+                  {hasFloor && (
+                    <div style={{ padding: '2px 6px', background: 'rgba(255,255,255,0.25)', borderRadius: '4px', fontSize: '10px', fontWeight: '600' }}>
+                      {floorProducts.length} item{floorProducts.length > 1 ? 's' : ''}
+                    </div>
+                  )}
+                </div>
+              );
+            })()}
           </div>
 
           {/* Main aisles */}
