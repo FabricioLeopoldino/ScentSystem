@@ -139,7 +139,8 @@ export default function MachineInventory({ user }) {
         shopifySkus: skusObject,
         sub_category: sub_category,
         color: color,
-        location: location
+        location: location,
+        bin_location: formData.bin_location || ''
       };
       
       console.log('📤 Sending payload:', payload);
