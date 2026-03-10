@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { exportProductsToExcel } from '../utils/excelExport';
-import { exportToShopifyCSV } from '../utils/shopifyExport';
 import BinLocationInput from '../components/BinLocationInput';
 
 export default function ProductManagement({ user }) {
@@ -333,30 +332,15 @@ export default function ProductManagement({ user }) {
       <div style={{ display: 'flex', gap: '12px', marginBottom: '24px', flexWrap: 'wrap' }}>
         <button 
           className="btn"
-          onClick={() => exportToShopifyCSV(products)}
+          onClick={() => exportProductsToExcel(products)}
           style={{
-            background: '#6366f1',
+            background: '#10b981',
             color: 'white',
             display: 'flex',
             alignItems: 'center',
             gap: '8px'
           }}
-        //>
-          //<span>📊</span>
-          //Export for Shopify
-        //</button>
-        
-        //<button 
-          //className="btn"
-          //onClick={() => exportProductsToExcel(products)}
-          //style={{
-            //background: '#10b981',
-            //color: 'white',
-            //display: 'flex',
-            //alignItems: 'center',
-            //gap: '8px'
-          //}}
-        //>
+        >
           <span>📑</span>
           Export to Excel
         </button>
