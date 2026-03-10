@@ -209,21 +209,18 @@ export default function ColdRoomMap({ user }) {
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '8px', padding: '16px', background: '#d97706', borderRadius: '12px', border: '3px solid #b45309' }}>
                 <div></div>
-                {renderPosition(3, 'C', 9)}
-                {renderPosition(3, 'C', 5)}
-                {renderPosition(3, 'C', 1)}
-                {renderPosition(3, 'C', 10)}
-                {renderPosition(3, 'C', 6)}
-                {renderPosition(3, 'C', 2)}
-                {renderPosition(3, 'C', 11)}
-                {renderPosition(3, 'C', 7)}
-                {renderPosition(3, 'C', 3)}
-                {renderPosition(3, 'C', 12)}
-                {renderPosition(3, 'C', 8)}
-                {renderPosition(3, 'C', 4)}
-                {renderPosition(3, 'C', 13)} 
-                {renderPosition(3, 'C', 14)}
-                {renderPosition(3, 'C', 15)}
+                {renderPosition(3, 'D', 9)}
+                {renderPosition(3, 'D', 5)}
+                {renderPosition(3, 'D', 1)}
+                {renderPosition(3, 'D', 10)}
+                {renderPosition(3, 'D', 6)}
+                {renderPosition(3, 'D', 2)}
+                {renderPosition(3, 'D', 11)}
+                {renderPosition(3, 'D', 7)}
+                {renderPosition(3, 'D', 3)}
+                {renderPosition(3, 'D', 12)}
+                {renderPosition(3, 'D', 8)}
+                {renderPosition(3, 'D', 4)}
               </div>
             </div>
 
@@ -255,21 +252,24 @@ export default function ColdRoomMap({ user }) {
                 <div style={{ background: '#047857', color: 'white', padding: '8px 16px', borderRadius: '8px', fontWeight: '700', fontSize: '13px' }}>
                   Aisle 2
                 </div>
-                <div style={{ color: '#a0aec0', fontSize: '12px' }}>Bay B - Positions 1-12</div>
+                <div style={{ color: '#a0aec0', fontSize: '12px' }}>Bay B - Positions 1-15</div>
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px', padding: '16px', background: '#d97706', borderRadius: '12px', border: '3px solid #b45309' }}>
-                {renderPosition(2, 'B', 9)}
-                {renderPosition(2, 'B', 5)}
-                {renderPosition(2, 'B', 1)}
-                {renderPosition(2, 'B', 10)}
-                {renderPosition(2, 'B', 6)}
-                {renderPosition(2, 'B', 2)}
-                {renderPosition(2, 'B', 11)}
-                {renderPosition(2, 'B', 7)}
-                {renderPosition(2, 'B', 3)}
-                {renderPosition(2, 'B', 12)}
-                {renderPosition(2, 'B', 8)}
-                {renderPosition(2, 'B', 4)}
+                {renderPosition(1, 'D', 9)}
+                {renderPosition(1, 'D', 5)}
+                {renderPosition(1, 'D', 1)}
+                {renderPosition(1, 'D', 13)}
+                {renderPosition(1, 'D', 10)}
+                {renderPosition(1, 'D', 6)}
+                {renderPosition(1, 'D', 2)}
+                {renderPosition(1, 'D', 14)}
+                {renderPosition(1, 'D', 11)}
+                {renderPosition(1, 'D', 7)}
+                {renderPosition(1, 'D', 3)}
+                {renderPosition(1, 'D', 15)}
+                {renderPosition(1, 'D', 12)}
+                {renderPosition(1, 'D', 8)}
+                {renderPosition(1, 'D', 4)}
               </div>
             </div>
 
