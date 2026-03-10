@@ -55,13 +55,11 @@ export default function ColdRoomMap({ user }) {
       setHighlightedProduct(null);
       return;
     }
-
-    const found = products.find(p => 
+    const found = products.find(p =>
       p.name.toLowerCase().includes(term.toLowerCase()) ||
       p.productCode.toLowerCase().includes(term.toLowerCase()) ||
       p.tag.toLowerCase().includes(term.toLowerCase())
     );
-
     setHighlightedProduct(found || null);
   };
 
@@ -91,10 +89,10 @@ export default function ColdRoomMap({ user }) {
           BAY: {bay} Position: {position}
         </div>
         {hasProds && (
-          <div style={{ 
-            marginTop: '4px', 
-            padding: '2px 6px', 
-            background: 'rgba(255,255,255,0.25)', 
+          <div style={{
+            marginTop: '4px',
+            padding: '2px 6px',
+            background: 'rgba(255,255,255,0.25)',
             borderRadius: '4px',
             fontSize: '9px',
             color: 'white',
@@ -106,6 +104,11 @@ export default function ColdRoomMap({ user }) {
       </div>
     );
   };
+
+  // Empty placeholder cell
+  const emptyCell = (key) => (
+    <div key={key} style={{ minWidth: '95px' }} />
+  );
 
   if (loading) {
     return <div className="container" style={{ paddingTop: '40px', textAlign: 'center' }}>Loading...</div>;
@@ -138,10 +141,10 @@ export default function ColdRoomMap({ user }) {
           autoFocus
         />
         {highlightedProduct && (
-          <div style={{ 
-            marginTop: '12px', 
-            padding: '12px', 
-            background: '#ecfdf5', 
+          <div style={{
+            marginTop: '12px',
+            padding: '12px',
+            background: '#ecfdf5',
             borderRadius: '8px',
             border: '2px solid #10b981'
           }}>
@@ -156,10 +159,11 @@ export default function ColdRoomMap({ user }) {
       </div>
 
       <div className="card" style={{ background: '#1a202c', padding: '24px', position: 'relative' }}>
-        <div style={{ 
-          position: 'absolute', 
-          bottom: '16px', 
-          right: '16px', 
+        {/* Legend */}
+        <div style={{
+          position: 'absolute',
+          bottom: '16px',
+          right: '16px',
           background: '#2d3748',
           padding: '12px',
           borderRadius: '8px',
@@ -183,23 +187,34 @@ export default function ColdRoomMap({ user }) {
         </div>
 
         <div style={{ display: 'flex', gap: '20px' }}>
+
+          {/* Aisle 5 - Floor (left column) */}
           <div style={{ width: '140px', display: 'flex', alignItems: 'center' }}>
             <div style={{
-                padding: '30px 20px',
-                background: '#2c5282',
-                border: '3px solid #2b6cb0',
-                borderRadius: '12px',
-                textAlign: 'center',
-                color: 'white',
-                width: '100%'
-              }}>
+              padding: '30px 20px',
+              background: '#2c5282',
+              border: '3px solid #2b6cb0',
+              borderRadius: '12px',
+              textAlign: 'center',
+              color: 'white',
+              width: '100%'
+            }}>
               <div style={{ fontSize: '13px', fontWeight: '700', marginBottom: '8px' }}>Aisle: 5</div>
               <div style={{ fontSize: '12px', marginBottom: '4px' }}>Bay: Floor</div>
               <div style={{ fontSize: '10px', color: '#90cdf4' }}>Positions: Any</div>
             </div>
           </div>
 
+          {/* Main aisles */}
           <div style={{ flex: 1 }}>
+
+            {/* ── AISLE 4 — Bay D — 4 cols, positions 1-15 ── */}
+            {/* Layout from image:
+                Row 1: [empty]  D:9   D:5   D:1
+                Row 2:  D:13   D:10   D:6   D:2
+                Row 3:  D:14   D:11   D:7   D:3
+                Row 4:  D:15   D:12   D:8   D:4
+            */}
             <div style={{ marginBottom: '20px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
                 <div style={{ background: '#047857', color: 'white', padding: '8px 16px', borderRadius: '8px', fontWeight: '700', fontSize: '13px' }}>
@@ -207,30 +222,36 @@ export default function ColdRoomMap({ user }) {
                 </div>
                 <div style={{ color: '#a0aec0', fontSize: '12px' }}>Bay D - Positions 1-15</div>
               </div>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '8px', padding: '16px', background: '#d97706', borderRadius: '12px', border: '3px solid #b45309' }}>
-                <div></div>
-                
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '8px', padding: '16px', background: '#b45309', borderRadius: '12px', border: '3px solid #92400e' }}>
+                {emptyCell('d-empty')}
                 {renderPosition(4, 'D', 9)}
                 {renderPosition(4, 'D', 5)}
                 {renderPosition(4, 'D', 1)}
+
                 {renderPosition(4, 'D', 13)}
-                
                 {renderPosition(4, 'D', 10)}
                 {renderPosition(4, 'D', 6)}
                 {renderPosition(4, 'D', 2)}
+
                 {renderPosition(4, 'D', 14)}
-                
                 {renderPosition(4, 'D', 11)}
                 {renderPosition(4, 'D', 7)}
                 {renderPosition(4, 'D', 3)}
+
                 {renderPosition(4, 'D', 15)}
-               
                 {renderPosition(4, 'D', 12)}
                 {renderPosition(4, 'D', 8)}
                 {renderPosition(4, 'D', 4)}
               </div>
             </div>
 
+            {/* ── AISLE 3 — Bay C — 3 cols, positions 1-12 ── */}
+            {/* Layout from image:
+                Row 1:  C:9   C:5   C:1
+                Row 2:  C:10  C:6   C:2
+                Row 3:  C:11  C:7   C:3
+                Row 4:  C:12  C:8   C:4
+            */}
             <div style={{ marginBottom: '20px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
                 <div style={{ background: '#047857', color: 'white', padding: '8px 16px', borderRadius: '8px', fontWeight: '700', fontSize: '13px' }}>
@@ -238,25 +259,32 @@ export default function ColdRoomMap({ user }) {
                 </div>
                 <div style={{ color: '#a0aec0', fontSize: '12px' }}>Bay C - Positions 1-12</div>
               </div>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px', padding: '16px', background: '#d97706', borderRadius: '12px', border: '3px solid #b45309' }}>
-                {renderPosition(3, 'C, 9)}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px', padding: '16px', background: '#b45309', borderRadius: '12px', border: '3px solid #92400e' }}>
+                {renderPosition(3, 'C', 9)}
                 {renderPosition(3, 'C', 5)}
                 {renderPosition(3, 'C', 1)}
-                {renderPosition(3, 'C', 13)}
+
                 {renderPosition(3, 'C', 10)}
                 {renderPosition(3, 'C', 6)}
                 {renderPosition(3, 'C', 2)}
-                {renderPosition(3, 'C', 14)}
+
                 {renderPosition(3, 'C', 11)}
                 {renderPosition(3, 'C', 7)}
                 {renderPosition(3, 'C', 3)}
-                {renderPosition(3, 'C', 15)}
+
                 {renderPosition(3, 'C', 12)}
                 {renderPosition(3, 'C', 8)}
                 {renderPosition(3, 'C', 4)}
               </div>
             </div>
 
+            {/* ── AISLE 2 — Bay B — 3 cols, positions 1-12 ── */}
+            {/* Layout from image:
+                Row 1:  B:9   B:5   B:1
+                Row 2:  B:10  B:6   B:2
+                Row 3:  B:11  B:7   B:3
+                Row 4:  B:12  B:8   B:4
+            */}
             <div style={{ marginBottom: '20px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
                 <div style={{ background: '#047857', color: 'white', padding: '8px 16px', borderRadius: '8px', fontWeight: '700', fontSize: '13px' }}>
@@ -264,25 +292,32 @@ export default function ColdRoomMap({ user }) {
                 </div>
                 <div style={{ color: '#a0aec0', fontSize: '12px' }}>Bay B - Positions 1-12</div>
               </div>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px', padding: '16px', background: '#d97706', borderRadius: '12px', border: '3px solid #b45309' }}>
-                {renderPosition(1, 'B, 9)}
-                {renderPosition(1, 'B', 5)}
-                {renderPosition(1, 'B', 1)}
-                {renderPosition(1, 'B', 13)}
-                {renderPosition(1, 'B', 10)}
-                {renderPosition(1, 'B', 6)}
-                {renderPosition(1, 'B', 2)}
-                {renderPosition(1, 'B', 14)}
-                {renderPosition(1, 'B', 11)}
-                {renderPosition(1, 'B', 7)}
-                {renderPosition(1, 'B', 3)}
-                {renderPosition(1, 'B', 15)}
-                {renderPosition(1, 'B', 12)}
-                {renderPosition(1, 'B', 8)}
-                {renderPosition(1, 'B', 4)}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px', padding: '16px', background: '#b45309', borderRadius: '12px', border: '3px solid #92400e' }}>
+                {renderPosition(2, 'B', 9)}
+                {renderPosition(2, 'B', 5)}
+                {renderPosition(2, 'B', 1)}
+
+                {renderPosition(2, 'B', 10)}
+                {renderPosition(2, 'B', 6)}
+                {renderPosition(2, 'B', 2)}
+
+                {renderPosition(2, 'B', 11)}
+                {renderPosition(2, 'B', 7)}
+                {renderPosition(2, 'B', 3)}
+
+                {renderPosition(2, 'B', 12)}
+                {renderPosition(2, 'B', 8)}
+                {renderPosition(2, 'B', 4)}
               </div>
             </div>
 
+            {/* ── AISLE 1 — Bay A — 4 cols, positions 1-16 ── */}
+            {/* Layout from image:
+                Row 1:  A:13  A:9   A:5   A:1
+                Row 2:  A:14  A:10  A:6   A:2
+                Row 3:  A:15  A:11  A:7   A:3
+                Row 4:  A:16  A:12  A:8   A:4
+            */}
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
                 <div style={{ background: '#047857', color: 'white', padding: '8px 16px', borderRadius: '8px', fontWeight: '700', fontSize: '13px' }}>
@@ -290,35 +325,53 @@ export default function ColdRoomMap({ user }) {
                 </div>
                 <div style={{ color: '#a0aec0', fontSize: '12px' }}>Bay A - Positions 1-16</div>
               </div>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '8px', padding: '16px', background: '#d97706', borderRadius: '12px', border: '3px solid #b45309' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '8px', padding: '16px', background: '#b45309', borderRadius: '12px', border: '3px solid #92400e' }}>
                 {renderPosition(1, 'A', 13)}
                 {renderPosition(1, 'A', 9)}
                 {renderPosition(1, 'A', 5)}
                 {renderPosition(1, 'A', 1)}
+
                 {renderPosition(1, 'A', 14)}
                 {renderPosition(1, 'A', 10)}
                 {renderPosition(1, 'A', 6)}
                 {renderPosition(1, 'A', 2)}
+
                 {renderPosition(1, 'A', 15)}
                 {renderPosition(1, 'A', 11)}
                 {renderPosition(1, 'A', 7)}
                 {renderPosition(1, 'A', 3)}
+
                 {renderPosition(1, 'A', 16)}
                 {renderPosition(1, 'A', 12)}
                 {renderPosition(1, 'A', 8)}
                 {renderPosition(1, 'A', 4)}
               </div>
             </div>
+
           </div>
 
+          {/* Cold Room label (right) */}
           <div style={{ width: '120px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <div style={{ padding: '80px 20px', background: '#975a16', border: '3px solid #744210', borderRadius: '12px', textAlign: 'center', color: 'white', fontSize: '13px', fontWeight: '700', writingMode: 'vertical-rl', textOrientation: 'mixed' }}>
+            <div style={{
+              padding: '80px 20px',
+              background: '#975a16',
+              border: '3px solid #744210',
+              borderRadius: '12px',
+              textAlign: 'center',
+              color: 'white',
+              fontSize: '13px',
+              fontWeight: '700',
+              writingMode: 'vertical-rl',
+              textOrientation: 'mixed'
+            }}>
               ← Cold Room
             </div>
           </div>
+
         </div>
       </div>
 
+      {/* Selected location detail */}
       {selectedLocation && (
         <div className="card" style={{ marginTop: '24px', borderLeft: '4px solid #3b82f6' }}>
           <h3 style={{ fontSize: '16px', fontWeight: '700', marginBottom: '16px' }}>📍 Location Details</h3>
@@ -347,6 +400,7 @@ export default function ColdRoomMap({ user }) {
         </div>
       )}
 
+      {/* Products without bin location */}
       {products.filter(p => !p.bin_location).length > 0 && (
         <div className="card" style={{ marginTop: '24px', borderLeft: '4px solid #ef4444' }}>
           <h3 style={{ fontSize: '16px', fontWeight: '700', marginBottom: '16px' }}>
