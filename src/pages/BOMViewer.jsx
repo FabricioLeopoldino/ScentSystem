@@ -297,9 +297,11 @@ export default function BOMViewer({ user }) {
               <tbody>
                 {currentBOM.map((item, index) => {
                   const product = getProductByCode(item.componentCode);
-                  const currentStock = product ? product.currentStock : 0;
-                  const minStock = product ? product.minStockLevel : 0;
-                  const isLow = currentStock <= minStock;
+                  const currentStock = product ? parseFloat(product.currentStock) : 0;
+                  const minStock = product ? parseFloat(product.minStockLevel) : 0;
+                  const isOut = currentStock <= 0;
+                  const isLow = !isOut && currentStock <= minStock;
+                  const isOk = !isOut && !isLow;
 
                   return (
                     <tr key={item.componentCode || index}>
@@ -331,8 +333,8 @@ export default function BOMViewer({ user }) {
                       </td>
                       <td>
                         {product ? (
-                          <span className={`badge ${isLow ? 'badge-danger' : 'badge-success'}`}>
-                            {isLow ? 'Low Stock' : 'Available'}
+                          <span className={`badge ${isOut ? 'badge-danger' : isLow ? 'badge-warning' : 'badge-success'}`}>
+                            {isOut ? '⛔ Out of Stock' : isLow ? '⚠️ Low Stock' : '✅ Available'}
                           </span>
                         ) : (
                           <span className="badge badge-warning">Not Found</span>
@@ -380,7 +382,7 @@ export default function BOMViewer({ user }) {
           <div style={{ fontSize: '32px', fontWeight: '900', color: '#ef4444', marginBottom: '8px' }}>
             {currentBOM.filter(item => {
               const product = getProductByCode(item.componentCode);
-              return product && product.currentStock <= product.minStockLevel;
+              return product && (parseFloat(product.currentStock) <= parseFloat(product.minStockLevel));
             }).length}
           </div>
           <div style={{ fontSize: '13px', color: '#64748b', fontWeight: '600' }}>Low Stock Components</div>
