@@ -650,16 +650,16 @@ app.put('/api/products/:id', async (req, res) => {
        "supplier_code" = COALESCE($10, "supplier_code"),
        "unitPerBox" = COALESCE($11, "unitPerBox"),
        "stockBoxes" = COALESCE($12, "stockBoxes"),
-       sub_category = COALESCE($13, sub_category),
-       color = COALESCE($14, color),
-       location = COALESCE($15, location),
-       bin_location = COALESCE($16, bin_location)
+       sub_category = CASE WHEN $13::text IS NOT NULL THEN $13 ELSE sub_category END,
+       color = CASE WHEN $14::text IS NOT NULL THEN $14 ELSE color END,
+       location = CASE WHEN $15::text IS NOT NULL THEN $15 ELSE location END,
+       bin_location = CASE WHEN $16::text IS NOT NULL THEN $16 ELSE bin_location END
        WHERE id = $17
        RETURNING *`,
       [
         name, category, productCode, tag, unit, currentStock, minStockLevel, 
         skusJson, supplier, supplier_code, unitPerBox, stockBoxes,
-        finalSubCategory, finalColor, finalLocation, finalBinLocation, productId
+        finalSubCategory ?? null, finalColor ?? null, finalLocation ?? null, finalBinLocation ?? null, productId
       ]
     );
     
