@@ -33,11 +33,11 @@ export function exportToShopifyCSV(products) {
     if (product.category === 'OILS' && product.shopifySkus) {
       // Essential oils have 4 variants
       const variants = [
-        { name: 'SA_CA', label: 'Oil Cartridge (400ml)', sku: product.shopifySkus.SA_CA },
-        { name: 'SA_1L', label: '1L Oil Refill Bottle', sku: product.shopifySkus.SA_1L },
-        { name: 'SA_CDIFF', label: '700ml Oil Refil Bottle', sku: product.shopifySkus.SA_CDIFF },
-        { name: 'SA_PRO', label: '1L Oil Refill PRO Bottle', sku: product.shopifySkus.SA_PRO },
-        { name: 'SA_HF', label: '500ml Oil Refil Bottle', sku: produc.shopifySkus.SA_HF }
+        { name: 'SA_CA',    label: 'Oil Cartridge (400ml)',      sku: product.shopifySkus.SA_CA },
+        { name: 'SA_HF',    label: '500ML Oil Refill Bottle',    sku: product.shopifySkus.SA_HF },
+        { name: 'SA_1L',    label: '1L Oil Refill Bottle',       sku: product.shopifySkus.SA_1L },
+        { name: 'SA_CDIFF', label: 'Oil Refill (700ml)',         sku: product.shopifySkus.SA_CDIFF },
+        { name: 'SA_PRO',   label: '1L Oil Refill Pro Bottle',   sku: product.shopifySkus.SA_PRO }
       ];
 
       variants.forEach(variant => {
