@@ -341,22 +341,22 @@ export default function ProductManagement({ user }) {
             alignItems: 'center',
             gap: '8px'
           }}
-        >
-          <span>📊</span>
-          Export for Shopify
-        </button>
+        //>
+          //<span>📊</span>
+          //Export for Shopify
+        //</button>
         
-        <button 
-          className="btn"
-          onClick={() => exportProductsToExcel(products)}
-          style={{
-            background: '#10b981',
-            color: 'white',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px'
-          }}
-        >
+        //<button 
+          //className="btn"
+          //onClick={() => exportProductsToExcel(products)}
+          //style={{
+            //background: '#10b981',
+            //color: 'white',
+            //display: 'flex',
+            //alignItems: 'center',
+            //gap: '8px'
+          //}}
+        //>
           <span>📑</span>
           Export to Excel
         </button>
