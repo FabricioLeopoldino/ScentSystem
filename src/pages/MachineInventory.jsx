@@ -78,7 +78,7 @@ export default function MachineInventory({ user }) {
     }
     
     if (locationFilter !== 'ALL') {
-      filtered = filtered.filter(m => m.location === locationFilter);
+      filtered = filtered.filter(m => m.bin_location === locationFilter);
     }
     
     if (searchTerm) {
@@ -355,7 +355,7 @@ export default function MachineInventory({ user }) {
 
   const uniqueSubCategories = [...new Set(machines.map(m => m.sub_category).filter(Boolean))];
   const uniqueColors = [...new Set(machines.map(m => m.color).filter(Boolean))];
-  const uniqueLocations = [...new Set(machines.map(m => m.location).filter(Boolean))];
+  const uniqueBinLocations = [...new Set(machines.map(m => m.bin_location).filter(Boolean))];
 
   const totalMachines = machines.length;
   const inStock = machines.filter(m => m.currentStock > 0).length;
@@ -484,15 +484,15 @@ export default function MachineInventory({ user }) {
 
           <div>
             <label style={{ fontSize: '13px', fontWeight: '600', color: '#64748b', marginBottom: '8px', display: 'block' }}>
-              Location
+              Bin Location
             </label>
             <select
               className="input"
               value={locationFilter}
               onChange={(e) => setLocationFilter(e.target.value)}
             >
-              <option value="ALL">All Locations</option>
-              {uniqueLocations.map(loc => (
+              <option value="ALL">All Bin Locations</option>
+              {uniqueBinLocations.map(loc => (
                 <option key={loc} value={loc}>{loc}</option>
               ))}
             </select>
@@ -756,50 +756,6 @@ export default function MachineInventory({ user }) {
                     onChange={(e) => setFormData({...formData, color: e.target.value})}
                     placeholder="e.g., Black, White"
                   />
-                </div>
-
-                <div className="form-group">
-                  <label>Location</label>
-                  <div style={{ display: 'flex', gap: '8px' }}>
-                    <input
-                      type="text"
-                      className="input"
-                      value={formData.location}
-                      onChange={(e) => setFormData({...formData, location: e.target.value})}
-                      placeholder="e.g., Shelf A-1, Shelf B-2"
-                      style={{ flex: 1 }}
-                    />
-                    <select
-                      className="input"
-                      onChange={(e) => {
-                        if (e.target.value) {
-                          setFormData({...formData, location: e.target.value});
-                        }
-                      }}
-                      style={{ width: '140px' }}
-                      value=""
-                    >
-                      <option value="">Quick...</option>
-                      <optgroup label="Shelf A">
-                        {[1,2,3,4,5,6,7,8,9,10].map(n => (
-                          <option key={`A-${n}`} value={`Shelf A-${n}`}>Shelf A-{n}</option>
-                        ))}
-                      </optgroup>
-                      <optgroup label="Shelf B">
-                        {[1,2,3,4,5,6,7,8,9,10].map(n => (
-                          <option key={`B-${n}`} value={`Shelf B-${n}`}>Shelf B-{n}</option>
-                        ))}
-                      </optgroup>
-                      <optgroup label="Shelf C">
-                        {[1,2,3,4,5,6,7,8,9,10].map(n => (
-                          <option key={`C-${n}`} value={`Shelf C-${n}`}>Shelf C-{n}</option>
-                        ))}
-                      </optgroup>
-                    </select>
-                  </div>
-                  <div style={{ fontSize: '11px', color: '#64748b', marginTop: '4px' }}>
-                    Type manually or use quick select
-                  </div>
                 </div>
 
                 <div className="form-group">
