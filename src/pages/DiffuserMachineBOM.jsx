@@ -279,7 +279,8 @@ export default function DiffuserMachineBOM({ user }) {
                   const product = getProductByCode(item.componentCode);
                   const currentStock = product ? parseFloat(product.currentStock) : 0;
                   const minStock = product ? parseFloat(product.minStockLevel) : 0;
-                  const isLow = product && currentStock <= minStock;
+                  const isOut = product && currentStock <= 0;
+                  const isLow = product && !isOut && currentStock <= minStock;
 
                   return (
                     <tr key={item.id}>
@@ -331,8 +332,8 @@ export default function DiffuserMachineBOM({ user }) {
                       </td>
                       <td>
                         {product ? (
-                          <span className={`badge ${isLow ? 'badge-danger' : 'badge-success'}`}>
-                            {isLow ? 'Low Stock' : 'Available'}
+                          <span className={`badge ${isOut ? 'badge-danger' : isLow ? 'badge-warning' : 'badge-success'}`}>
+                            {isOut ? '⛔ Out of Stock' : isLow ? '⚠️ Low Stock' : '✅ Available'}
                           </span>
                         ) : (
                           <span className="badge badge-warning">Not Found</span>
