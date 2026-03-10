@@ -24,6 +24,7 @@ export default function SkuMapping() {
   const getCategoryLabel = (category) => {
     const labels = {
       OILS: 'Oils',
+      SCENT_MACHINES: 'Scent Machines',
       MACHINES_SPARES: 'Machines & Spares',
       RAW_MATERIALS: 'Raw Materials'
     };
@@ -35,13 +36,45 @@ export default function SkuMapping() {
     const mappings = [];
     
     products.forEach(product => {
-      if (product.shopifySkus && typeof product.shopifySkus === 'object') {
-        // Products with multiple SKUs (oils)
+      if (!product.shopifySkus) return;
+
+      if (product.category === 'OILS' && typeof product.shopifySkus === 'object') {
+        // Oils: multiple variants per product
         Object.entries(product.shopifySkus).forEach(([variant, sku]) => {
+          if (!sku) return;
           mappings.push({
             id: `${product.id}_${variant}`,
             shopifySku: sku,
             variant,
+            productCode: product.productCode,
+            productName: product.name,
+            category: product.category,
+            unit: product.unit
+          });
+        });
+      } else if (product.category === 'SCENT_MACHINES') {
+        // Machines: single SKU stored as string or object
+        const sku = typeof product.shopifySkus === 'string'
+          ? product.shopifySkus
+          : (Object.values(product.shopifySkus)[0] || product.productCode);
+        if (!sku) return;
+        mappings.push({
+          id: `${product.id}_machine`,
+          shopifySku: sku,
+          variant: 'Machine',
+          productCode: product.productCode,
+          productName: product.name,
+          category: product.category,
+          unit: product.unit
+        });
+      } else if (typeof product.shopifySkus === 'object') {
+        // Machines & Spares / Raw Materials
+        Object.entries(product.shopifySkus).forEach(([variant, sku]) => {
+          if (!sku) return;
+          mappings.push({
+            id: `${product.id}_${variant}`,
+            shopifySku: sku,
+            variant: variant === 'default' ? 'Default' : variant,
             productCode: product.productCode,
             productName: product.name,
             category: product.category,
@@ -88,6 +121,7 @@ export default function SkuMapping() {
           {[
             { value: 'ALL', label: 'All' },
             { value: 'OILS', label: 'Oils' },
+            { value: 'SCENT_MACHINES', label: 'Scent Machines' },
             { value: 'MACHINES_SPARES', label: 'Machines & Spares' },
             { value: 'RAW_MATERIALS', label: 'Raw Materials' }
           ].map(cat => (
@@ -185,6 +219,13 @@ export default function SkuMapping() {
             {mappings.filter(m => m.category === 'OILS').length}
           </div>
           <div style={{ fontSize: '13px', color: '#64748b', fontWeight: '600' }}>Oil SKUs</div>
+        </div>
+        
+        <div className="card" style={{ textAlign: 'center', padding: '20px' }}>
+          <div style={{ fontSize: '32px', fontWeight: '900', color: '#ec4899', marginBottom: '8px' }}>
+            {mappings.filter(m => m.category === 'SCENT_MACHINES').length}
+          </div>
+          <div style={{ fontSize: '13px', color: '#64748b', fontWeight: '600' }}>Scent Machine SKUs</div>
         </div>
         
         <div className="card" style={{ textAlign: 'center', padding: '20px' }}>
