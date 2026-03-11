@@ -286,6 +286,7 @@ export default function ProductManagement({ user }) {
   const getCategoryLabel = (category) => {
     const labels = {
       'OILS': 'Oils',
+      'SCENT_MACHINES': 'Scent Machines',
       'MACHINES_SPARES': 'Machines & Spares',
       'RAW_MATERIALS': 'Raw Materials'
     };
@@ -295,6 +296,7 @@ export default function ProductManagement({ user }) {
   const getCategoryBadge = (category) => {
     const badges = {
       'OILS': 'badge-blue',
+      'SCENT_MACHINES': 'badge-secondary',
       'MACHINES_SPARES': 'badge-purple',
       'RAW_MATERIALS': 'badge-green'
     };
@@ -377,6 +379,7 @@ export default function ProductManagement({ user }) {
             {[
               { value: 'ALL', label: 'All' },
               { value: 'OILS', label: 'Oils' },
+              { value: 'SCENT_MACHINES', label: 'Scent Machines' },
               { value: 'MACHINES_SPARES', label: 'Machines & Spares' },
               { value: 'RAW_MATERIALS', label: 'Raw Materials' }
             ].map(cat => (
@@ -624,6 +627,7 @@ export default function ProductManagement({ user }) {
                     required
                   >
                     <option value="OILS">Oils</option>
+                    <option value="SCENT_MACHINES">Scent Machines</option>
                     <option value="MACHINES_SPARES">Machines & Spares</option>
                     <option value="RAW_MATERIALS">Raw Materials</option>
                   </select>
