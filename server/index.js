@@ -1508,6 +1508,7 @@ app.post('/api/webhook/shopify', express.json(), async (req, res) => {
   const client = await pool.connect();
   // Declare outside try so catch block can access for lock cleanup
   let orderNumber = null;
+  let clientReleased = false; // Guard against double-release in finally
   
   try {
     console.log('📬 Shopify webhook received');
@@ -1545,7 +1546,7 @@ app.post('/api/webhook/shopify', express.json(), async (req, res) => {
       // this race condition instantly.
       if (processingOrders.has(orderNumber)) {
         console.log(`⚠️  [LAYER 1] Order ${orderNumber} is currently being processed — ignoring duplicate.`);
-        client.release();
+        clientReleased = true; client.release();
         return res.status(200).json({ success: true, message: 'Order already being processed', order: orderNumber });
       }
       processingOrders.add(orderNumber);
@@ -1572,7 +1573,7 @@ app.post('/api/webhook/shopify', express.json(), async (req, res) => {
         if (lockResult.rowCount === 0) {
           console.log(`⚠️  [LAYER 2] Order ${orderNumber} already locked in DB — ignoring duplicate.`);
           processingOrders.delete(orderNumber);
-          client.release();
+          clientReleased = true; client.release();
           return res.status(200).json({ success: true, message: 'Order already processed', order: orderNumber });
         }
         console.log(`✅ [LAYER 2] Lock acquired for order ${orderNumber}`);
@@ -1589,7 +1590,7 @@ app.post('/api/webhook/shopify', express.json(), async (req, res) => {
       if (dupOrder.rows.length > 0) {
         console.log(`⚠️  [LAYER 3] Order ${orderNumber} found in transactions — ignoring duplicate.`);
         processingOrders.delete(orderNumber);
-        client.release();
+        clientReleased = true; client.release();
         return res.status(200).json({ success: true, message: 'Order already processed', order: orderNumber });
       }
 
@@ -1810,7 +1811,7 @@ app.post('/api/webhook/shopify', express.json(), async (req, res) => {
       res.status(500).json({ error: error.message });
     }
   } finally {
-    if (client) client.release();
+    if (client && !clientReleased) client.release();
   }
 });
 
