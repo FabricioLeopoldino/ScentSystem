@@ -38,7 +38,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .container {
-  max-width: 1800px;
+  max-width: 100%;
   margin: 0 auto;
   padding: 0 2rem;
 }
@@ -338,9 +338,9 @@ textarea:focus {
 }
 
 .nav-container {
-  max-width: 1800px;
+  max-width: 100%;
   margin: 0 auto;
-  padding: 20px 2rem;
+  padding: 12px 2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -354,7 +354,7 @@ textarea:focus {
 
 .nav-links {
   display: flex;
-  gap: 32px;
+  gap: 18px;
   list-style: none;
   align-items: center;
 }
@@ -363,7 +363,7 @@ textarea:focus {
   text-decoration: none;
   color: var(--text-secondary);
   font-weight: 600;
-  font-size: 14px;
+  font-size: 13px;
   transition: color 0.2s;
 }
 
