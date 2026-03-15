@@ -262,22 +262,42 @@ const generateAutoSkus = (category, baseNumber) => {
 };
 
 // ========================================================================
-// HEALTH CHECK || Funcionamento junto com o UPTIMEROBOt
+// HEALTH CHECK — Smart (não acorda o Neon fora do horário comercial)
 // ========================================================================
 app.get('/api/health', async (req, res) => {
+  // Horário de Sydney (AEDT = UTC+11, AEST = UTC+10)
+  const now = new Date();
+  const sydneyHour = new Date(now.toLocaleString('en-US', { timeZone: 'Australia/Sydney' })).getHours();
+  const sydneyDay  = new Date(now.toLocaleString('en-US', { timeZone: 'Australia/Sydney' })).getDay(); // 0=Dom, 6=Sab
+
+  const isWeekday      = sydneyDay >= 1 && sydneyDay <= 5;
+  const isBusinessHour = sydneyHour >= 7 && sydneyHour < 17; // 07:00–17:00
+  const isBusinessTime = isWeekday && isBusinessHour;
+
+  // Fora do horário comercial → responde sem query no banco
+  if (!isBusinessTime) {
+    return res.json({
+      status: 'ok',
+      message: 'Service active (off-hours - DB not queried)',
+      timestamp: now.toISOString(),
+      businessHours: false
+    });
+  }
+
+  // Dentro do horário → verifica o banco normalmente
   try {
     const result = await pool.query('SELECT NOW() as now, current_database() as db');
     res.json({
       status: 'ok',
       message: 'Service active',
       timestamp: result.rows[0].now,
-      database: result.rows[0].db
+      database: result.rows[0].db,
+      businessHours: true
     });
   } catch (error) {
     res.status(503).json({ status: 'error', error: error.message });
   }
 });
-
 // ========================================================================
 // AUTH
 // ========================================================================
