@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import * as XLSX from 'xlsx';
 
 // ─── Tooltip ─────────────────────────────────────────────────────────────────
 function Tooltip({ text, children }) {
@@ -255,6 +256,151 @@ export default function ReplenishmentDashboard() {
     } catch (err) { alert('Export failed: ' + err.message); }
   };
 
+  // ── Export full replenishment report as professional Excel
+  const handleExportReport = () => {
+    if (!data?.products?.length) return alert('No data to export');
+
+    const products = data.products;
+    const now = new Date();
+    const dateStr = now.toLocaleDateString('en-AU', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    const timeStr = now.toLocaleTimeString('en-AU', { hour: '2-digit', minute: '2-digit' });
+
+    const wb = XLSX.utils.book_new();
+
+    // ── Sheet 1: Full Report (all products, sorted Critical first) ──
+    const reportHeaders = [
+      ['SCENT STOCK MANAGER — Replenishment Report'],
+      [`Generated: ${dateStr} ${timeStr}   |   Total Products: ${products.length}   |   Critical: ${products.filter(p => p.safetyStatus === 'Critical').length}   |   Attention: ${products.filter(p => p.safetyStatus === 'Attention').length}   |   Safe: ${products.filter(p => p.safetyStatus === 'Safe').length}`],
+      [], // blank row
+      [
+        'Product Code',
+        'Product Name',
+        'Category',
+        'Supplier',
+        'Real Stock (L)',
+        'Safety Stock (L)',
+        'Avg Daily Demand (L/d)',
+        'Sold Last 30d (L)',
+        'Forecast 120d (L)',
+        'Forecast Daily (L/d)',
+        'Projected Daily (L/d)',
+        'Projected Days',
+        'Days of Stock',
+        'Gap (d)',
+        'Safety Status',
+        'Lead Time (d)',
+        'No Sales Data',
+        'Has Forecast',
+      ]
+    ];
+
+    const reportRows = products.map(p => [
+      p.productCode || '',
+      p.name || '',
+      p.category || '',
+      p.supplier || '',
+      p.realStock ?? 0,
+      p.safetyStockLevel ?? 0,
+      p.avgDailyDemand ?? 0,
+      p.totalSold30d ?? 0,
+      p.forecast120Days ?? '',
+      p.forecastDaily ?? '',
+      p.projectedDaily ?? 0,
+      p.projectedDaysOfStock >= 9990 ? 0 : (p.projectedDaysOfStock ?? 0),
+      p.daysOfStockActual >= 9990 ? 0 : (p.daysOfStockActual ?? 0),
+      p.hasForecast ? (p.gap >= 9990 ? 0 : (p.gap ?? '')) : '',
+      p.safetyStatus || '',
+      p.leadTime ?? '',
+      p.noSalesData ? 'Yes' : 'No',
+      p.hasForecast ? 'Yes' : 'No',
+    ]);
+
+    const wsData = [...reportHeaders, ...reportRows];
+    const ws = XLSX.utils.aoa_to_sheet(wsData);
+
+    // Column widths
+    ws['!cols'] = [
+      { wch: 14 }, // Product Code
+      { wch: 36 }, // Product Name
+      { wch: 18 }, // Category
+      { wch: 20 }, // Supplier
+      { wch: 14 }, // Real Stock
+      { wch: 15 }, // Safety Stock
+      { wch: 22 }, // Avg Daily
+      { wch: 16 }, // Sold 30d
+      { wch: 16 }, // Forecast 120d
+      { wch: 20 }, // Forecast Daily
+      { wch: 22 }, // Projected Daily
+      { wch: 15 }, // Projected Days
+      { wch: 14 }, // Days of Stock
+      { wch: 10 }, // Gap
+      { wch: 14 }, // Safety Status
+      { wch: 13 }, // Lead Time
+      { wch: 14 }, // No Sales
+      { wch: 13 }, // Has Forecast
+    ];
+
+    // Merge title row across all columns
+    ws['!merges'] = [
+      { s: { r: 0, c: 0 }, e: { r: 0, c: 17 } },
+      { s: { r: 1, c: 0 }, e: { r: 1, c: 17 } },
+    ];
+
+    XLSX.utils.book_append_sheet(wb, ws, 'Replenishment Report');
+
+    // ── Sheet 2: Critical Only ──
+    const criticalRows = products.filter(p => p.safetyStatus === 'Critical');
+    if (criticalRows.length > 0) {
+      const wsCritical = XLSX.utils.aoa_to_sheet([
+        [`CRITICAL PRODUCTS — ${dateStr}`],
+        [`${criticalRows.length} products with Days of Stock < 45 days`],
+        [],
+        ['Product Code', 'Product Name', 'Supplier', 'Real Stock (L)', 'Days of Stock', 'Projected Days', 'Lead Time (d)', 'Safety Stock (L)'],
+        ...criticalRows.map(p => [
+          p.productCode,
+          p.name,
+          p.supplier || '',
+          p.realStock ?? 0,
+          p.daysOfStockActual >= 9990 ? 0 : Math.round(p.daysOfStockActual ?? 0),
+          p.projectedDaysOfStock >= 9990 ? 0 : Math.round(p.projectedDaysOfStock ?? 0),
+          p.leadTime ?? '',
+          p.safetyStockLevel ?? 0,
+        ])
+      ]);
+      wsCritical['!cols'] = [{ wch: 14 }, { wch: 36 }, { wch: 20 }, { wch: 14 }, { wch: 14 }, { wch: 15 }, { wch: 13 }, { wch: 15 }];
+      wsCritical['!merges'] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: 7 } }, { s: { r: 1, c: 0 }, e: { r: 1, c: 7 } }];
+      XLSX.utils.book_append_sheet(wb, wsCritical, 'Critical');
+    }
+
+    // ── Sheet 3: Attention Only ──
+    const attentionRows = products.filter(p => p.safetyStatus === 'Attention');
+    if (attentionRows.length > 0) {
+      const wsAttention = XLSX.utils.aoa_to_sheet([
+        [`ATTENTION PRODUCTS — ${dateStr}`],
+        [`${attentionRows.length} products with Days of Stock between 45–90 days`],
+        [],
+        ['Product Code', 'Product Name', 'Supplier', 'Real Stock (L)', 'Days of Stock', 'Projected Days', 'Lead Time (d)', 'Safety Stock (L)'],
+        ...attentionRows.map(p => [
+          p.productCode,
+          p.name,
+          p.supplier || '',
+          p.realStock ?? 0,
+          p.daysOfStockActual >= 9990 ? 0 : Math.round(p.daysOfStockActual ?? 0),
+          p.projectedDaysOfStock >= 9990 ? 0 : Math.round(p.projectedDaysOfStock ?? 0),
+          p.leadTime ?? '',
+          p.safetyStockLevel ?? 0,
+        ])
+      ]);
+      wsAttention['!cols'] = [{ wch: 14 }, { wch: 36 }, { wch: 20 }, { wch: 14 }, { wch: 14 }, { wch: 15 }, { wch: 13 }, { wch: 15 }];
+      wsAttention['!merges'] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: 7 } }, { s: { r: 1, c: 0 }, e: { r: 1, c: 7 } }];
+      XLSX.utils.book_append_sheet(wb, wsAttention, 'Attention');
+    }
+
+    // Download
+    const filename = `Replenishment_Report_${now.toISOString().split('T')[0]}.xlsx`;
+    XLSX.writeFile(wb, filename);
+  };
+
   // FIX 1: unique categories from data
   const allCategories = ['ALL', ...Array.from(new Set((data?.products || []).map(p => p.category).filter(Boolean))).sort()];
 
@@ -376,6 +522,15 @@ export default function ReplenishmentDashboard() {
         <button onClick={fetchData}
           style={{ padding: '9px 18px', background: '#f0fdf4', color: '#16a34a', border: '1px solid #86efac', borderRadius: 8, cursor: 'pointer', fontSize: 13, fontWeight: 600 }}>
           🔄 Refresh
+        </button>
+
+        {/* Export Report button */}
+        <button
+          onClick={handleExportReport}
+          disabled={!data?.products?.length}
+          style={{ padding: '9px 18px', background: '#f0fdf4', color: '#16a34a', border: '1px solid #86efac', borderRadius: 8, cursor: 'pointer', fontSize: 13, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 6 }}
+        >
+          📊 Export Report (.xlsx)
         </button>
         {importResult && (
           <div style={{ padding: '8px 16px', borderRadius: 8, fontSize: 13, fontWeight: 500, background: importResult.type === 'success' ? '#f0fdf4' : '#fef2f2', color: importResult.type === 'success' ? '#16a34a' : '#dc2626', border: `1px solid ${importResult.type === 'success' ? '#86efac' : '#fca5a5'}` }}>
