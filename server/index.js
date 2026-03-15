@@ -265,20 +265,22 @@ const generateAutoSkus = (category, baseNumber) => {
 // HEALTH CHECK — Smart (não acorda o Neon fora do horário comercial)
 // ========================================================================
 app.get('/api/health', async (req, res) => {
-  // Horário de Sydney (AEDT = UTC+11, AEST = UTC+10)
   const now = new Date();
-  const sydneyHour = new Date(now.toLocaleString('en-US', { timeZone: 'Australia/Sydney' })).getHours();
-  const sydneyDay  = new Date(now.toLocaleString('en-US', { timeZone: 'Australia/Sydney' })).getDay(); // 0=Dom, 6=Sab
+
+  // Horário de Sydney (AEDT = UTC+11 / AEST = UTC+10)
+  const sydneyDate = new Date(now.toLocaleString('en-US', { timeZone: 'Australia/Sydney' }));
+  const sydneyHour = sydneyDate.getHours();
+  const sydneyDay  = sydneyDate.getDay(); // 0 = Dom, 6 = Sab
 
   const isWeekday      = sydneyDay >= 1 && sydneyDay <= 5;
-  const isBusinessHour = sydneyHour >= 7 && sydneyHour < 17; // 07:00–17:00
+  const isBusinessHour = sydneyHour >= 7 && sydneyHour < 17; // 07:00–17:00 Sydney
   const isBusinessTime = isWeekday && isBusinessHour;
 
-  // Fora do horário comercial → responde sem query no banco
+  // Fora do horário comercial → responde sem query no banco (Neon não é acordado)
   if (!isBusinessTime) {
     return res.json({
       status: 'ok',
-      message: 'Service active (off-hours - DB not queried)',
+      message: 'Service active (off-hours — DB not queried)',
       timestamp: now.toISOString(),
       businessHours: false
     });
@@ -298,6 +300,7 @@ app.get('/api/health', async (req, res) => {
     res.status(503).json({ status: 'error', error: error.message });
   }
 });
+
 // ========================================================================
 // AUTH
 // ========================================================================
@@ -2004,6 +2007,397 @@ app.post('/api/products/:id/incoming/:index/receive', async (req, res) => {
 });
 
 // ========================================================================
+// REPLENISHMENT DASHBOARD
+// ========================================================================
+
+// ── Migration: create forecasts table + suppliers table + add lead_time to products (idempotent)
+app.get('/api/migrate-replenishment', async (req, res) => {
+  try {
+    // 1. lead_time column on products (override per product)
+    await pool.query(`ALTER TABLE products ADD COLUMN IF NOT EXISTS lead_time INTEGER DEFAULT NULL`);
+
+    // 2. forecasts table
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS forecasts (
+        id                SERIAL PRIMARY KEY,
+        product_code      TEXT NOT NULL,
+        forecast_120_days NUMERIC(12,2) NOT NULL DEFAULT 0,
+        import_date       TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        imported_by       TEXT NOT NULL DEFAULT 'system'
+      )
+    `);
+    await pool.query(`CREATE INDEX IF NOT EXISTS idx_forecasts_product_code ON forecasts(product_code)`);
+    await pool.query(`CREATE INDEX IF NOT EXISTS idx_forecasts_import_date ON forecasts(import_date DESC)`);
+
+    // 3. suppliers table — stores default lead times per supplier name
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS suppliers (
+        id         SERIAL PRIMARY KEY,
+        name       TEXT NOT NULL UNIQUE,
+        lead_time  INTEGER NOT NULL DEFAULT 30,
+        notes      TEXT DEFAULT '',
+        created_at TIMESTAMPTZ DEFAULT NOW(),
+        updated_at TIMESTAMPTZ DEFAULT NOW()
+      )
+    `);
+
+    // 4. Seed known suppliers (ON CONFLICT = update lead_time if already exists)
+    const knownSuppliers = [
+      { name: 'Luxaroma',         lead_time: 15  },
+      { name: 'Smart Fragrances', lead_time: 90  },
+      { name: 'FIA',              lead_time: 15  },
+      { name: 'Scent Method',     lead_time: 15  },
+      { name: 'BELL',             lead_time: 90  },
+      { name: 'Natarom',          lead_time: 90  },
+    ];
+    for (const s of knownSuppliers) {
+      await pool.query(
+        `INSERT INTO suppliers (name, lead_time) VALUES ($1, $2)
+         ON CONFLICT (name) DO UPDATE SET lead_time = EXCLUDED.lead_time, updated_at = NOW()`,
+        [s.name, s.lead_time]
+      );
+    }
+
+    console.log('✅ Replenishment migration complete');
+    res.json({ success: true, message: 'Migration complete: lead_time column added, forecasts + suppliers tables created with default suppliers seeded.' });
+  } catch (error) {
+    console.error('Migration error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// ── POST /api/forecast/import — Upload Salesforce Excel forecast
+app.post('/api/forecast/import', upload.single('file'), async (req, res) => {
+  if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
+  try {
+    const { read, utils } = await import('xlsx');
+    const workbook = read(req.file.path, { type: 'file' });
+    const sheetName = workbook.SheetNames[0];
+    const sheet = workbook.Sheets[sheetName];
+
+    // ── Parse raw rows (no header auto-detection — file has blank row 1, header on row 2)
+    const rawRows = utils.sheet_to_json(sheet, { header: 1, defval: null });
+
+    // Find the actual header row (first row that contains 'productCode' or 'product_code')
+    let headerRowIndex = -1;
+    for (let i = 0; i < rawRows.length; i++) {
+      const row = rawRows[i];
+      if (!row) continue;
+      const hasProductCol = row.some(cell =>
+        cell && String(cell).toLowerCase().replace(/\s/g,'').includes('productcode')
+      );
+      if (hasProductCol) { headerRowIndex = i; break; }
+    }
+
+    if (headerRowIndex === -1) {
+      return res.status(400).json({ error: 'Could not find header row. Make sure the file has a "productCode" column.' });
+    }
+
+    const headers = rawRows[headerRowIndex].map(h => (h ? String(h).trim() : ''));
+    const dataRows = rawRows.slice(headerRowIndex + 1);
+
+    // Find column indexes (flexible matching)
+    const productCodeIdx = headers.findIndex(h => h.toLowerCase().replace(/[\s_]/g,'').includes('productcode'));
+    const forecastIdx    = headers.findIndex(h => h.toLowerCase().includes('forecast') || h.toLowerCase().includes('demand'));
+
+    if (productCodeIdx === -1 || forecastIdx === -1) {
+      return res.status(400).json({
+        error: 'Could not find required columns.',
+        found: headers,
+        expected: ['productCode (or product_code)', 'any column with "forecast" or "demand"']
+      });
+    }
+
+    const importedBy = req.body.imported_by || 'system';
+    const importDate = new Date();
+    const client = await pool.connect();
+
+    try {
+      await client.query('BEGIN');
+      let inserted = 0, skipped = 0;
+
+      for (const row of dataRows) {
+        if (!row || row.every(c => c === null || c === '')) continue; // skip empty rows
+
+        const productCode = row[productCodeIdx] ? String(row[productCodeIdx]).trim() : '';
+        const rawForecast = row[forecastIdx];
+        const forecast    = parseFloat(rawForecast) || 0;
+
+        // Skip blank/invalid product codes (e.g. "(blank)" row at end)
+        if (!productCode || productCode === '' || productCode.toLowerCase() === '(blank)') {
+          skipped++;
+          continue;
+        }
+
+        await client.query(
+          `INSERT INTO forecasts (product_code, forecast_120_days, import_date, imported_by) VALUES ($1, $2, $3, $4)`,
+          [productCode, forecast, importDate, importedBy]
+        );
+        inserted++;
+      }
+
+      await client.query('COMMIT');
+      try { await fs.unlink(req.file.path); } catch (_) {}
+
+      res.json({ success: true, inserted, skipped, importDate: importDate.toISOString(), importedBy });
+    } catch (err) {
+      await client.query('ROLLBACK');
+      throw err;
+    } finally {
+      client.release();
+    }
+  } catch (error) {
+    console.error('Forecast import error:', error);
+    try { if (req.file) await fs.unlink(req.file.path); } catch (_) {}
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// ── GET /api/forecast/last — Export last forecast as Excel backup
+app.get('/api/forecast/last', async (req, res) => {
+  try {
+    const lastImport = await pool.query(`SELECT import_date, imported_by FROM forecasts ORDER BY import_date DESC LIMIT 1`);
+    if (!lastImport.rows.length) return res.status(404).json({ error: 'No forecast imported yet' });
+
+    const { import_date } = lastImport.rows[0];
+    const rows = await pool.query(
+      `SELECT product_code, forecast_120_days, import_date, imported_by FROM forecasts
+       WHERE DATE_TRUNC('second', import_date) = DATE_TRUNC('second', $1::timestamptz)
+       ORDER BY product_code`,
+      [import_date]
+    );
+
+    const { utils, write } = await import('xlsx');
+    const ws = utils.json_to_sheet(rows.rows.map(r => ({
+      product_code: r.product_code,
+      forecast_120_days: parseFloat(r.forecast_120_days),
+      import_date: new Date(r.import_date).toISOString().split('T')[0],
+      imported_by: r.imported_by
+    })));
+    const wb = utils.book_new();
+    utils.book_append_sheet(wb, ws, 'Forecast');
+    const buffer = write(wb, { type: 'buffer', bookType: 'xlsx' });
+    const dateStr = new Date(import_date).toISOString().split('T')[0];
+
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.setHeader('Content-Disposition', `attachment; filename="forecast_backup_${dateStr}.xlsx"`);
+    res.send(buffer);
+  } catch (error) {
+    console.error('Forecast export error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// ── GET /api/forecast/import-history — List import batches
+app.get('/api/forecast/import-history', async (req, res) => {
+  try {
+    const result = await pool.query(`
+      SELECT DATE_TRUNC('second', import_date) AS import_date, imported_by, COUNT(*) AS product_count
+      FROM forecasts GROUP BY DATE_TRUNC('second', import_date), imported_by
+      ORDER BY import_date DESC LIMIT 20
+    `);
+    res.json(result.rows);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// ── GET /api/suppliers — List all suppliers with their lead times
+app.get('/api/suppliers', async (req, res) => {
+  try {
+    const result = await pool.query(`SELECT * FROM suppliers ORDER BY name`);
+    res.json(result.rows);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// ── POST /api/suppliers — Create a new supplier
+app.post('/api/suppliers', async (req, res) => {
+  try {
+    const { name, lead_time, notes } = req.body;
+    if (!name || !lead_time) return res.status(400).json({ error: 'name and lead_time are required' });
+    const result = await pool.query(
+      `INSERT INTO suppliers (name, lead_time, notes) VALUES ($1, $2, $3)
+       ON CONFLICT (name) DO UPDATE SET lead_time = EXCLUDED.lead_time, notes = EXCLUDED.notes, updated_at = NOW()
+       RETURNING *`,
+      [name.trim(), parseInt(lead_time), notes || '']
+    );
+    res.json(result.rows[0]);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// ── PUT /api/suppliers/:id — Update supplier lead time
+app.put('/api/suppliers/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, lead_time, notes } = req.body;
+    const result = await pool.query(
+      `UPDATE suppliers SET
+         name      = COALESCE($1, name),
+         lead_time = COALESCE($2, lead_time),
+         notes     = COALESCE($3, notes),
+         updated_at = NOW()
+       WHERE id = $4 RETURNING *`,
+      [name || null, lead_time ? parseInt(lead_time) : null, notes ?? null, parseInt(id)]
+    );
+    if (!result.rows.length) return res.status(404).json({ error: 'Supplier not found' });
+    res.json(result.rows[0]);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// ── DELETE /api/suppliers/:id — Delete a supplier
+app.delete('/api/suppliers/:id', async (req, res) => {
+  try {
+    const result = await pool.query(`DELETE FROM suppliers WHERE id = $1 RETURNING id`, [parseInt(req.params.id)]);
+    if (!result.rows.length) return res.status(404).json({ error: 'Supplier not found' });
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// ── PUT /api/products/:id/lead-time — Override lead_time for a specific product (NULL = use supplier default)
+app.put('/api/products/:id/lead-time', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { lead_time } = req.body; // pass null to reset to supplier default
+    const val = lead_time === null || lead_time === '' ? null : parseInt(lead_time);
+    if (val !== null && isNaN(val)) return res.status(400).json({ error: 'lead_time must be a number or null' });
+    const result = await pool.query(
+      `UPDATE products SET lead_time = $1 WHERE id = $2 RETURNING id, lead_time`,
+      [val, id]
+    );
+    if (!result.rows.length) return res.status(404).json({ error: 'Product not found' });
+    res.json({ success: true, id: result.rows[0].id, lead_time: result.rows[0].lead_time });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// ── GET /api/dashboard/replenishment — Main data endpoint (all calculations in backend)
+app.get('/api/dashboard/replenishment', async (req, res) => {
+  try {
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+    const [productsResult, salesResult, forecastResult, lastForecastResult, suppliersResult] = await Promise.all([
+      // Join suppliers to get lead_time: product override first, then supplier default, then 30d fallback
+      pool.query(`
+        SELECT
+          p.id,
+          p."productCode",
+          p.name,
+          p."currentStock",
+          p.supplier,
+          p.lead_time AS product_lead_time_override,
+          COALESCE(p.lead_time, s.lead_time, 30) AS lead_time,
+          p.category
+        FROM products p
+        LEFT JOIN suppliers s ON LOWER(TRIM(p.supplier)) = LOWER(TRIM(s.name))
+        ORDER BY p.name
+      `),
+      pool.query(`
+        SELECT product_id, COALESCE(SUM(quantity), 0) AS total_sold_30d
+        FROM transactions
+        WHERE type IN ('remove', 'shopify_sale', 'sale') AND created_at >= $1
+        GROUP BY product_id
+      `, [thirtyDaysAgo.toISOString()]),
+      pool.query(`
+        SELECT DISTINCT ON (product_code) product_code, forecast_120_days, import_date
+        FROM forecasts ORDER BY product_code, import_date DESC
+      `),
+      pool.query(`SELECT import_date, imported_by FROM forecasts ORDER BY import_date DESC LIMIT 1`),
+      pool.query(`SELECT id, name, lead_time, notes FROM suppliers ORDER BY name`)
+    ]);
+
+    const salesMap = {};
+    for (const row of salesResult.rows) salesMap[row.product_id] = parseFloat(row.total_sold_30d) || 0;
+
+    const forecastMap = {};
+    for (const row of forecastResult.rows) {
+      forecastMap[row.product_code] = { forecast_120_days: parseFloat(row.forecast_120_days) || 0, import_date: row.import_date };
+    }
+
+    // Build supplier lead-time map for reference in response
+    const supplierMap = {};
+    for (const row of suppliersResult.rows) supplierMap[row.name.toLowerCase().trim()] = row.lead_time;
+
+    const MIN_DAILY = 0.1;
+
+    const data = productsResult.rows.map(p => {
+      const realStock      = parseFloat(p.currentStock) || 0;
+      const leadTime       = parseInt(p.lead_time) || 30;
+      // Track where the lead time came from for UI tooltip
+      const leadTimeSource = p.product_lead_time_override != null
+        ? 'product_override'
+        : (p.supplier && supplierMap[p.supplier.toLowerCase().trim()] ? 'supplier_default' : 'fallback');
+      const totalSold30d   = salesMap[p.id] || 0;
+      const avgDailyDemand = totalSold30d > 0 ? totalSold30d / 30 : MIN_DAILY;
+      const fc             = forecastMap[p.productCode] || null;
+      const forecast120    = fc ? fc.forecast_120_days : null;
+      const forecastDaily  = forecast120 != null ? forecast120 / 120 : null;
+      const projectedDaily = forecastDaily != null ? Math.max(avgDailyDemand, forecastDaily) : avgDailyDemand;
+      const safetyStockLevel = avgDailyDemand * leadTime * 1.5;
+      const projectedDaysOfStock = projectedDaily > 0 ? realStock / projectedDaily : (realStock > 0 ? 9999 : 0);
+      const daysOfStockActual    = avgDailyDemand > 0 ? realStock / avgDailyDemand : (realStock > 0 ? 9999 : 0);
+      const gap = projectedDaysOfStock - daysOfStockActual;
+      const safetyStatus = daysOfStockActual < 45 ? 'Critical' : daysOfStockActual <= 90 ? 'Attention' : 'Safe';
+
+      return {
+        id: p.id,
+        productCode: p.productCode,
+        name: p.name,
+        realStock:           Math.round(realStock * 100) / 100,
+        safetyStockLevel:    Math.round(safetyStockLevel * 100) / 100,
+        avgDailyDemand:      Math.round(avgDailyDemand * 1000) / 1000,
+        totalSold30d:        Math.round(totalSold30d * 100) / 100,
+        forecast120Days:     forecast120 != null ? Math.round(forecast120 * 100) / 100 : null,
+        forecastDaily:       forecastDaily != null ? Math.round(forecastDaily * 1000) / 1000 : null,
+        forecastImportDate:  fc ? fc.import_date : null,
+        projectedDaily:      Math.round(projectedDaily * 1000) / 1000,
+        projectedDaysOfStock: projectedDaysOfStock >= 9999 ? 9999 : Math.round(projectedDaysOfStock * 10) / 10,
+        daysOfStockActual:   daysOfStockActual >= 9999 ? 9999 : Math.round(daysOfStockActual * 10) / 10,
+        gap:                 Math.round(gap * 10) / 10,
+        safetyStatus,
+        leadTime,
+        leadTimeSource,
+        supplier:            p.supplier || '',
+        category:            p.category,
+        noSalesData:         totalSold30d === 0,
+        hasForecast:         fc != null
+      };
+    });
+
+    const statusOrder = { Critical: 0, Attention: 1, Safe: 2 };
+    data.sort((a, b) => {
+      const diff = statusOrder[a.safetyStatus] - statusOrder[b.safetyStatus];
+      return diff !== 0 ? diff : a.projectedDaysOfStock - b.projectedDaysOfStock;
+    });
+
+    res.json({
+      products: data,
+      meta: {
+        totalProducts: data.length,
+        critical:  data.filter(d => d.safetyStatus === 'Critical').length,
+        attention: data.filter(d => d.safetyStatus === 'Attention').length,
+        safe:      data.filter(d => d.safetyStatus === 'Safe').length,
+        lastForecastImport: lastForecastResult.rows[0] || null,
+        suppliers: suppliersResult.rows,
+        calculatedAt: new Date().toISOString()
+      }
+    });
+  } catch (error) {
+    console.error('Replenishment dashboard error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// ========================================================================
 // FRONTEND SERVING
 // ========================================================================
 const distPath = join(__dirname, '../dist');
@@ -2127,6 +2521,35 @@ app.post('/api/returns', async (req, res) => {
     client.release();
   }
 });
+
+// ========================================================================
+// CLEANUP JOB — Limpeza automática do webhook_processed (roda 1x por dia)
+// Mantém só os últimos 30 dias — evita crescimento infinito da tabela
+// ========================================================================
+const runCleanup = async () => {
+  try {
+    const result = await pool.query(`
+      DELETE FROM webhook_processed
+      WHERE processed_at < NOW() - INTERVAL '30 days'
+    `);
+    if (result.rowCount > 0) {
+      console.log(`🧹 Cleanup: removed ${result.rowCount} old webhook_processed records`);
+    }
+  } catch (err) {
+    console.error('⚠️ Cleanup job error:', err.message);
+  }
+};
+
+// Roda uma vez na inicialização do servidor
+runCleanup();
+
+// Roda todo dia às 03:00 AM Sydney time (intervalo de 24h)
+setInterval(() => {
+  const sydneyHour = new Date(
+    new Date().toLocaleString('en-US', { timeZone: 'Australia/Sydney' })
+  ).getHours();
+  if (sydneyHour === 3) runCleanup();
+}, 60 * 60 * 1000); // Checa a cada 1 hora
 
 // ========================================================================
 // ERROR HANDLING
