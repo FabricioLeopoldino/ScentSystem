@@ -10,10 +10,10 @@ import ProductManagement from './pages/ProductManagement';
 import MachineInventory from './pages/MachineInventory';
 import ProductReturns from './pages/ProductReturns';
 import ColdRoomMap from './pages/ColdRoomMap';
-
 import BOMViewer from './pages/BOMViewer';
 import DiffuserMachineBOM from './pages/DiffuserMachineBOM';
 import Attachments from './pages/Attachments';
+import ReplenishmentDashboard from './pages/ReplenishmentDashboard';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -65,7 +65,7 @@ function App() {
               <li><Link href="/returns">Product Returns</Link></li>
               <li><Link href="/stock">Stock Management</Link></li>
               <li><Link href="/cold-room-map">🗺️ Cold Room Map</Link></li>
-
+              <li><Link href="/replenishment">📦 Replenishment</Link></li>
               <li><Link href="/bom">BOM</Link></li>
               <li><Link href="/diffuser-bom">Diffuser BOM</Link></li>
               <li><Link href="/sku-mapping">SKU Mapping</Link></li>
@@ -106,7 +106,9 @@ function App() {
         <Route path="/stock">
           <StockManagement user={user} />
         </Route>
-
+        <Route path="/replenishment">
+          <ReplenishmentDashboard user={user} />
+        </Route>
         <Route path="/bom">
           <BOMViewer user={user} />
         </Route>
