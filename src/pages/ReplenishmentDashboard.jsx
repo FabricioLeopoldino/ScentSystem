@@ -3,18 +3,45 @@ import * as XLSX from 'xlsx';
 
 // ─── Tooltip ─────────────────────────────────────────────────────────────────
 function Tooltip({ text, children }) {
-  const [show, setShow] = useState(false);
+  const [pos, setPos] = useState(null);
+  const ref = useRef();
+
+  const handleEnter = () => {
+    if (ref.current) {
+      const rect = ref.current.getBoundingClientRect();
+      setPos({ x: rect.left + rect.width / 2, y: rect.top - 8 });
+    }
+  };
+
   return (
     <span
+      ref={ref}
       style={{ position: 'relative', display: 'inline-flex', alignItems: 'center', gap: 4, cursor: 'help' }}
-      onMouseEnter={() => setShow(true)}
-      onMouseLeave={() => setShow(false)}
+      onMouseEnter={handleEnter}
+      onMouseLeave={() => setPos(null)}
     >
       {children}
       <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 14, height: 14, borderRadius: '50%', background: '#94a3b8', color: 'white', fontSize: 9, fontWeight: 700, flexShrink: 0 }}>?</span>
-      {show && (
-        <div style={{ position: 'absolute', bottom: '130%', left: '50%', transform: 'translateX(-50%)', background: '#1e293b', color: '#f1f5f9', padding: '8px 12px', borderRadius: 8, fontSize: 12, lineHeight: 1.5, whiteSpace: 'normal', maxWidth: 260, zIndex: 9999, boxShadow: '0 4px 12px rgba(0,0,0,0.3)', pointerEvents: 'none' }}>
+      {pos && (
+        <div style={{
+          position: 'fixed',
+          left: pos.x,
+          top: pos.y,
+          transform: 'translateX(-50%) translateY(-100%)',
+          background: '#1e293b',
+          color: '#f1f5f9',
+          padding: '8px 12px',
+          borderRadius: 8,
+          fontSize: 12,
+          lineHeight: 1.5,
+          whiteSpace: 'normal',
+          maxWidth: 260,
+          zIndex: 99999,
+          boxShadow: '0 4px 12px rgba(0,0,0,0.4)',
+          pointerEvents: 'none',
+        }}>
           {text}
+          <div style={{ position: 'absolute', bottom: -5, left: '50%', transform: 'translateX(-50%)', width: 10, height: 10, background: '#1e293b', clipPath: 'polygon(0 0, 100% 0, 50% 100%)' }} />
         </div>
       )}
     </span>
