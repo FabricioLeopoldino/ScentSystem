@@ -2279,14 +2279,14 @@ app.put('/api/products/:id/lead-time', async (req, res) => {
   }
 });
 
-// ── GET /api/dashboard/replenishment — Main data endpoint (all calculations in backend)
+// ── GET /api/dashboard/replenishment — Main data endpoint (smart demand calculation)
 app.get('/api/dashboard/replenishment', async (req, res) => {
   try {
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
-    const [productsResult, salesResult, forecastResult, lastForecastResult, suppliersResult] = await Promise.all([
-      // Join suppliers to get lead_time: product override first, then supplier default, then 30d fallback
+    const [productsResult, salesByDayResult, forecastResult, lastForecastResult, suppliersResult] = await Promise.all([
+      // Products with lead_time resolved: product override → supplier default → 30d fallback
       pool.query(`
         SELECT
           p.id,
@@ -2301,61 +2301,206 @@ app.get('/api/dashboard/replenishment', async (req, res) => {
         LEFT JOIN suppliers s ON LOWER(TRIM(p.supplier)) = LOWER(TRIM(s.name))
         ORDER BY p.name
       `),
+      // Sales broken down by product AND day — needed for spike detection
       pool.query(`
-        SELECT product_id, COALESCE(SUM(quantity), 0) AS total_sold_30d
+        SELECT
+          product_id,
+          DATE(created_at) AS sale_date,
+          SUM(quantity) AS daily_volume
         FROM transactions
-        WHERE type IN ('remove', 'shopify_sale', 'sale') AND created_at >= $1
-        GROUP BY product_id
+        WHERE type IN ('remove', 'shopify_sale', 'sale')
+          AND created_at >= $1
+        GROUP BY product_id, DATE(created_at)
+        ORDER BY product_id, sale_date
       `, [thirtyDaysAgo.toISOString()]),
+      // Latest forecast per product
       pool.query(`
-        SELECT DISTINCT ON (product_code) product_code, forecast_120_days, import_date
-        FROM forecasts ORDER BY product_code, import_date DESC
+        SELECT DISTINCT ON (product_code)
+          product_code, forecast_120_days, import_date
+        FROM forecasts
+        ORDER BY product_code, import_date DESC
       `),
       pool.query(`SELECT import_date, imported_by FROM forecasts ORDER BY import_date DESC LIMIT 1`),
       pool.query(`SELECT id, name, lead_time, notes FROM suppliers ORDER BY name`)
     ]);
 
-    const salesMap = {};
-    for (const row of salesResult.rows) salesMap[row.product_id] = parseFloat(row.total_sold_30d) || 0;
-
-    const forecastMap = {};
-    for (const row of forecastResult.rows) {
-      forecastMap[row.product_code] = { forecast_120_days: parseFloat(row.forecast_120_days) || 0, import_date: row.import_date };
+    // ── Build per-product daily sales map { productId -> [{ date, volume }] }
+    const dailySalesMap = {};
+    for (const row of salesByDayResult.rows) {
+      if (!dailySalesMap[row.product_id]) dailySalesMap[row.product_id] = [];
+      dailySalesMap[row.product_id].push(parseFloat(row.daily_volume) || 0);
     }
 
-    // Build supplier lead-time map for reference in response
-    const supplierMap = {};
-    for (const row of suppliersResult.rows) supplierMap[row.name.toLowerCase().trim()] = row.lead_time;
+    // ── Forecast map
+    const forecastMap = {};
+    for (const row of forecastResult.rows) {
+      forecastMap[row.product_code] = {
+        forecast_120_days: parseFloat(row.forecast_120_days) || 0,
+        import_date: row.import_date
+      };
+    }
 
+    // ── Supplier lead-time map
+    const supplierMap = {};
+    for (const row of suppliersResult.rows) {
+      supplierMap[row.name.toLowerCase().trim()] = row.lead_time;
+    }
+
+    // ════════════════════════════════════════════════════════════════════════
+    // SMART DEMAND CALCULATOR
+    // Removes spikes (backlog artifacts), uses dynamic window, blends with
+    // forecast based on how much clean historical data we have.
+    // ════════════════════════════════════════════════════════════════════════
+    const calcSmartDemand = (dailyVolumes, forecastDaily) => {
+      const MIN_DAILY = 0.1;
+
+      // Step 1: No data at all
+      if (!dailyVolumes || dailyVolumes.length === 0) {
+        if (forecastDaily != null && forecastDaily > 0) {
+          // No history — trust forecast fully but apply 80% to be conservative
+          return {
+            avgDailyDemand: forecastDaily * 0.8,
+            cleanDays: 0,
+            totalSold30d: 0,
+            dataConfidence: 'forecast_only',
+            spikesRemoved: 0
+          };
+        }
+        return {
+          avgDailyDemand: MIN_DAILY,
+          cleanDays: 0,
+          totalSold30d: 0,
+          dataConfidence: 'no_data',
+          spikesRemoved: 0
+        };
+      }
+
+      const totalDays = dailyVolumes.length;
+      const totalVolume = dailyVolumes.reduce((a, b) => a + b, 0);
+
+      // Step 2: Spike detection
+      // A day is a spike if its volume > 3x the average of all OTHER days
+      // This catches the backlog days (09-11/03) automatically
+      const cleanVolumes = [];
+      let spikesRemoved = 0;
+
+      if (totalDays === 1) {
+        // Only 1 day of data — can't reliably detect spikes, use it as-is
+        cleanVolumes.push(dailyVolumes[0]);
+      } else {
+        for (let i = 0; i < dailyVolumes.length; i++) {
+          const otherDays = dailyVolumes.filter((_, j) => j !== i);
+          const otherAvg = otherDays.reduce((a, b) => a + b, 0) / otherDays.length;
+          const spikeThreshold = otherAvg * 3;
+
+          if (dailyVolumes[i] > spikeThreshold && otherAvg > 0) {
+            spikesRemoved++;
+            // Don't discard entirely — add at capped level (1x average) to preserve signal
+            cleanVolumes.push(otherAvg);
+          } else {
+            cleanVolumes.push(dailyVolumes[i]);
+          }
+        }
+      }
+
+      const cleanTotal = cleanVolumes.reduce((a, b) => a + b, 0);
+      const cleanDays  = cleanVolumes.length;
+
+      // Step 3: Clean average daily demand (using actual days with data, not 30 fixed)
+      const avgDailyClean = cleanDays > 0 ? cleanTotal / cleanDays : MIN_DAILY;
+
+      // Step 4: Blend with forecast based on data maturity
+      // The less clean history we have, the more we trust the Salesforce forecast
+      let avgDailyDemand;
+      let dataConfidence;
+
+      if (forecastDaily != null && forecastDaily > 0) {
+        if (cleanDays >= 25) {
+          // 25+ clean days: history is mature — trust it more
+          avgDailyDemand = (avgDailyClean * 0.7) + (forecastDaily * 0.3);
+          dataConfidence = 'high';
+        } else if (cleanDays >= 15) {
+          // 15-24 clean days: balanced blend
+          avgDailyDemand = (avgDailyClean * 0.5) + (forecastDaily * 0.5);
+          dataConfidence = 'medium';
+        } else if (cleanDays >= 5) {
+          // 5-14 clean days: lean on forecast more
+          avgDailyDemand = (avgDailyClean * 0.3) + (forecastDaily * 0.7);
+          dataConfidence = 'low';
+        } else {
+          // 1-4 clean days: almost entirely forecast
+          avgDailyDemand = (avgDailyClean * 0.1) + (forecastDaily * 0.9);
+          dataConfidence = 'very_low';
+        }
+      } else {
+        // No forecast — use clean history only
+        avgDailyDemand = avgDailyClean > 0 ? avgDailyClean : MIN_DAILY;
+        dataConfidence = cleanDays >= 20 ? 'high_no_forecast'
+                       : cleanDays >= 10 ? 'medium_no_forecast'
+                       : 'low_no_forecast';
+      }
+
+      // Never go below minimum
+      if (avgDailyDemand < MIN_DAILY) avgDailyDemand = MIN_DAILY;
+
+      return {
+        avgDailyDemand,
+        cleanDays,
+        totalSold30d: totalVolume,
+        dataConfidence,
+        spikesRemoved
+      };
+    };
+
+    // ── Build final product data
     const MIN_DAILY = 0.1;
 
     const data = productsResult.rows.map(p => {
-      const realStock      = parseFloat(p.currentStock) || 0;
-      const leadTime       = parseInt(p.lead_time) || 30;
-      // Track where the lead time came from for UI tooltip
+      const realStock  = parseFloat(p.currentStock) || 0;
+      const leadTime   = parseInt(p.lead_time) || 30;
       const leadTimeSource = p.product_lead_time_override != null
         ? 'product_override'
         : (p.supplier && supplierMap[p.supplier.toLowerCase().trim()] ? 'supplier_default' : 'fallback');
-      const totalSold30d   = salesMap[p.id] || 0;
-      const avgDailyDemand = totalSold30d > 0 ? totalSold30d / 30 : MIN_DAILY;
-      const fc             = forecastMap[p.productCode] || null;
-      const forecast120    = fc ? fc.forecast_120_days : null;
-      const forecastDaily  = forecast120 != null ? forecast120 / 120 : null;
-      const projectedDaily = forecastDaily != null ? Math.max(avgDailyDemand, forecastDaily) : avgDailyDemand;
+
+      const fc           = forecastMap[p.productCode] || null;
+      const forecast120  = fc ? fc.forecast_120_days : null;
+      const forecastDaily = forecast120 != null ? forecast120 / 120 : null;
+
+      const dailyVolumes = dailySalesMap[p.id] || [];
+      const demand = calcSmartDemand(dailyVolumes, forecastDaily);
+
+      const avgDailyDemand = demand.avgDailyDemand;
+
+      // Projected daily = MAX(smart demand, forecast) — always plan for worst case
+      const projectedDaily = forecastDaily != null
+        ? Math.max(avgDailyDemand, forecastDaily)
+        : avgDailyDemand;
+
+      // Safety stock = smart demand × lead time × 1.5 safety factor
       const safetyStockLevel = avgDailyDemand * leadTime * 1.5;
-      const projectedDaysOfStock = projectedDaily > 0 ? realStock / projectedDaily : (realStock > 0 ? 9999 : 0);
-      const daysOfStockActual    = avgDailyDemand > 0 ? realStock / avgDailyDemand : (realStock > 0 ? 9999 : 0);
+
+      const projectedDaysOfStock = projectedDaily > 0
+        ? realStock / projectedDaily
+        : (realStock > 0 ? 9999 : 0);
+
+      const daysOfStockActual = avgDailyDemand > MIN_DAILY
+        ? realStock / avgDailyDemand
+        : (realStock > 0 ? 9999 : 0);
+
       const gap = projectedDaysOfStock - daysOfStockActual;
-      const safetyStatus = daysOfStockActual < 45 ? 'Critical' : daysOfStockActual <= 90 ? 'Attention' : 'Safe';
+
+      const safetyStatus = daysOfStockActual < 45   ? 'Critical'
+                         : daysOfStockActual <= 90  ? 'Attention'
+                         : 'Safe';
 
       return {
-        id: p.id,
-        productCode: p.productCode,
-        name: p.name,
+        id:                  p.id,
+        productCode:         p.productCode,
+        name:                p.name,
         realStock:           Math.round(realStock * 100) / 100,
         safetyStockLevel:    Math.round(safetyStockLevel * 100) / 100,
         avgDailyDemand:      Math.round(avgDailyDemand * 1000) / 1000,
-        totalSold30d:        Math.round(totalSold30d * 100) / 100,
+        totalSold30d:        Math.round(demand.totalSold30d * 100) / 100,
         forecast120Days:     forecast120 != null ? Math.round(forecast120 * 100) / 100 : null,
         forecastDaily:       forecastDaily != null ? Math.round(forecastDaily * 1000) / 1000 : null,
         forecastImportDate:  fc ? fc.import_date : null,
@@ -2368,8 +2513,12 @@ app.get('/api/dashboard/replenishment', async (req, res) => {
         leadTimeSource,
         supplier:            p.supplier || '',
         category:            p.category,
-        noSalesData:         totalSold30d === 0,
-        hasForecast:         fc != null
+        // Data quality indicators
+        noSalesData:         demand.totalSold30d === 0,
+        hasForecast:         fc != null,
+        dataConfidence:      demand.dataConfidence,
+        cleanDays:           demand.cleanDays,
+        spikesRemoved:       demand.spikesRemoved
       };
     });
 
@@ -2382,13 +2531,13 @@ app.get('/api/dashboard/replenishment', async (req, res) => {
     res.json({
       products: data,
       meta: {
-        totalProducts: data.length,
-        critical:  data.filter(d => d.safetyStatus === 'Critical').length,
-        attention: data.filter(d => d.safetyStatus === 'Attention').length,
-        safe:      data.filter(d => d.safetyStatus === 'Safe').length,
+        totalProducts:     data.length,
+        critical:          data.filter(d => d.safetyStatus === 'Critical').length,
+        attention:         data.filter(d => d.safetyStatus === 'Attention').length,
+        safe:              data.filter(d => d.safetyStatus === 'Safe').length,
         lastForecastImport: lastForecastResult.rows[0] || null,
-        suppliers: suppliersResult.rows,
-        calculatedAt: new Date().toISOString()
+        suppliers:         suppliersResult.rows,
+        calculatedAt:      new Date().toISOString()
       }
     });
   } catch (error) {
