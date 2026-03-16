@@ -90,6 +90,28 @@ function StatCard({ label, value, color, icon }) {
   );
 }
 
+// ─── Data Confidence badge ───────────────────────────────────────────────────
+function ConfidenceBadge({ confidence, spikesRemoved, cleanDays }) {
+  const cfg = {
+    high:               { bg: '#f0fdf4', color: '#16a34a', label: '●●●● High',        tip: `${cleanDays} clean days of history. Forecast 30% + History 70%.` },
+    medium:             { bg: '#fffbeb', color: '#d97706', label: '●●●○ Medium',       tip: `${cleanDays} clean days of history. Forecast 50% + History 50%.` },
+    low:                { bg: '#fff7ed', color: '#ea580c', label: '●●○○ Low',          tip: `${cleanDays} clean days of history. Forecast 70% + History 30%.` },
+    very_low:           { bg: '#fef2f2', color: '#dc2626', label: '●○○○ Very Low',     tip: `${cleanDays} clean day(s) of history. Forecast 90% + History 10%.` },
+    forecast_only:      { bg: '#eff6ff', color: '#2563eb', label: '◆ Forecast Only',   tip: 'No sales history. Using Salesforce forecast × 0.8 (conservative).' },
+    no_data:            { bg: '#f9fafb', color: '#9ca3af', label: '○ No Data',         tip: 'No sales history and no forecast. Using minimum 0.1 L/d.' },
+    high_no_forecast:   { bg: '#f0fdf4', color: '#16a34a', label: '●●●● History',     tip: `${cleanDays} clean days. No forecast imported yet.` },
+    medium_no_forecast: { bg: '#fffbeb', color: '#d97706', label: '●●○○ History',     tip: `${cleanDays} clean days. No forecast imported yet.` },
+    low_no_forecast:    { bg: '#fff7ed', color: '#ea580c', label: '●○○○ History',     tip: `${cleanDays} clean day(s). No forecast imported yet.` },
+  };
+  const c = cfg[confidence] || cfg.no_data;
+  const spikeNote = spikesRemoved > 0 ? ` (${spikesRemoved} spike day${spikesRemoved > 1 ? 's' : ''} smoothed)` : '';
+  return (
+    <span title={c.tip + spikeNote} style={{ fontSize: 10, background: c.bg, color: c.color, padding: '2px 7px', borderRadius: 4, fontWeight: 700, whiteSpace: 'nowrap', cursor: 'help' }}>
+      {c.label}{spikesRemoved > 0 ? ' ⚡' : ''}
+    </span>
+  );
+}
+
 // FIX 2: fmt — never shows ∞
 const fmt = (v, decimals = 1) => {
   if (v === null || v === undefined) return '—';
@@ -529,6 +551,7 @@ export default function ReplenishmentDashboard() {
         <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}><span style={{ width: 10, height: 10, background: '#f0fdf4', border: '1px solid #86efac', display: 'inline-block', borderRadius: 2 }}></span>Safe &gt;90d</span>
         <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}><span style={{ width: 10, height: 10, background: 'transparent', border: '3px solid #f97316', display: 'inline-block', borderRadius: 2 }}></span>Projected risk</span>
         <span style={{ color: '#94a3b8' }}>Lead time = automatic from supplier settings</span>
+        <span style={{ color: '#94a3b8' }}>⚡ = spike days detected and smoothed | Data Confidence = blend of history + Salesforce forecast</span>
       </div>
 
       {/* ── Table ── */}
@@ -550,11 +573,12 @@ export default function ReplenishmentDashboard() {
               <th style={thStyle}><Tooltip text="Critical = stock < 45d | Attention = 45–90d | Safe = >90d">Safety Status</Tooltip></th>
               <th style={{ ...thStyle, textAlign: 'right' }}><Tooltip text="Lead time in days — pulled automatically from supplier. Change via 🏭 Manage Suppliers.">Lead Time (d)</Tooltip></th>
               <th style={thStyle}>Supplier</th>
+              <th style={thStyle}><Tooltip text="Data confidence shows how reliable the Avg Daily Demand is. High = 25+ clean days of history. ⚡ = spike days were detected and smoothed automatically.">Data Confidence</Tooltip></th>
             </tr>
           </thead>
           <tbody>
             {filtered.length === 0 ? (
-              <tr><td colSpan={14} style={{ textAlign: 'center', padding: 48, color: '#94a3b8' }}>No products found for the selected filters.</td></tr>
+              <tr><td colSpan={15} style={{ textAlign: 'center', padding: 48, color: '#94a3b8' }}>No products found for the selected filters.</td></tr>
             ) : (
               filtered.map(p => (
                 <tr key={p.id} style={{ background: rowBg(p), borderLeft: rowBorderLeft(p) }}>
@@ -584,6 +608,9 @@ export default function ReplenishmentDashboard() {
                     {p.leadTime}
                   </td>
                   <td style={{ ...tdStyle, color: '#6b7280', maxWidth: 140, overflow: 'hidden', textOverflow: 'ellipsis' }}>{p.supplier || '—'}</td>
+                  <td style={tdStyle}>
+                    <ConfidenceBadge confidence={p.dataConfidence} spikesRemoved={p.spikesRemoved || 0} cleanDays={p.cleanDays || 0} />
+                  </td>
                 </tr>
               ))
             )}
